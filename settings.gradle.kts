@@ -10,3 +10,10 @@ include("account-api:account-application")
 findProject(":account-api:account-application")?.name = "account-application"
 include("account-api:account-infrastructure")
 findProject(":account-api:account-infrastructure")?.name = "account-infrastructure"
+include("payment-api")
+include("payment-api:payment-domain")
+findProject(":payment-api:payment-domain")?.name = "payment-domain"
+include("payment-api:payment-application")
+findProject(":payment-api:payment-application")?.name = "payment-application"
+include("payment-api:payment-infrastructure")
+findProject(":payment-api:payment-infrastructure")?.name = "payment-infrastructure"
