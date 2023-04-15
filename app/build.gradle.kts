@@ -34,9 +34,6 @@ dependencies {
 	testImplementation("org.springframework.restdocs:spring-restdocs-asciidoctor")
 	asciidoctorExtensions("org.springframework.restdocs:spring-restdocs-asciidoctor")
 
-	/** jwt */
-	implementation("com.auth0:java-jwt:4.2.1")
-
 	/** queryDSL */
 	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
 	implementation("com.querydsl:querydsl-core")
