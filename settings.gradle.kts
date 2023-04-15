@@ -20,3 +20,5 @@ include("payment-api:payment-application")
 findProject(":payment-api:payment-application")?.name = "payment-application"
 include("payment-api:payment-infrastructure")
 findProject(":payment-api:payment-infrastructure")?.name = "payment-infrastructure"
+include("account-api:account-presentation")
+findProject(":account-api:account-presentation")?.name = "account-presentation"
