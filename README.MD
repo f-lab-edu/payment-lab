@@ -29,3 +29,22 @@
 3. '[Branch by Abstraction](https://trunkbaseddevelopment.com/branch-by-abstraction/)' 또는 '[Feature Flags](https://martinfowler.com/articles/feature-toggles.html)'를 활용하여 작업이 완료되지 않는 부분은 숨기기
 4. '[소규모 배치](https://cloud.google.com/architecture/devops/devops-process-working-in-small-batches?hl=ko)'로 작업하기
 5. 빠른 빌드 필요(빌드 및 테스트는 수 분 내에 실행되어야 한다.)
+
+## 커밋 메세지 제목 작성 가이드
+
+> 출처 : [Git Commit Message StyleGuide](https://github.com/slashsbin/styleguide-git-commit-message#message-subjectfirst-line)
+
+**"태그: 제목"의 형태이고, : 뒤에 공백이 있음에 유의한다.**
+
+| 태그 이름 | 설명                                                         |
+| --------- | ------------------------------------------------------------ |
+| Feat      | 새로운 기능을 추가할 경우                                    |
+| Fix       | 버그를 고친 경우                                             |
+| !HOTFIX   | 급하게 치명적인 버그를 고쳐야하는 경우                       |
+| Refactor  | 프로덕션 코드 리팩토링                                       |
+| Comment   | 필요한 주석 추가 및 변경                                     |
+| Document  | 문서를 수정한 경우                                           |
+| Test      | 테스트 추가, 테스트 리팩토링(프로덕션 코드 변경 X)           |
+| Chore     | 빌드 task 업데이트, 패키지 매니저를 설정하는 경우(프로덕션 코드 변경 X) |
+| Rename    | 파일 혹은 폴더명을 수정하거나 옮기는 작업만인 경우           |
+| Remove    | 파일을 삭제하는 작업만 수행한 경우                           |
