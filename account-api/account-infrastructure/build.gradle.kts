@@ -10,3 +10,6 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
+tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+	enabled = false
+}

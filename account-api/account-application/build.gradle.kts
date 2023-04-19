@@ -6,3 +6,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 }
 
+tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+	enabled = false
+}
+
