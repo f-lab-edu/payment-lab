@@ -1,8 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+plugins {
+	id("org.springframework.boot") version "3.0.5"
+	id("io.spring.dependency-management") version "1.1.0"
+	id("org.asciidoctor.jvm.convert") version "3.3.2"
+}
 
-group = "org.collaborator"
-version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
@@ -12,6 +15,15 @@ repositories {
 val asciidoctorExtensions: Configuration by configurations.creating
 
 dependencies {
+	implementation(project(":account-api:account-presentation"))
+	implementation(project(":account-api:account-application"))
+	implementation(project(":account-api:account-domain"))
+	implementation(project(":account-api:account-infrastructure"))
+
+	implementation(project(":payment-api:payment-presentation"))
+	implementation(project(":payment-api:payment-application"))
+	implementation(project(":payment-api:payment-domain"))
+	implementation(project(":payment-api:payment-infrastructure"))
 
 	implementation(project(":common"))
 
@@ -42,50 +54,55 @@ dependencies {
 }
 
 tasks {
-	val snippetsDir = file("$buildDir/generated-snippets")
+//	val snippetsDir = file("$buildDir/generated-snippets")
+//
+//	clean {
+//		delete("src/main/resources/static")
+//	}
 
-	clean {
-		delete("src/main/resources/static")
-	}
-
-	test {
-		useJUnitPlatform()
-		systemProperty("org.springframework.restdocs.outputDir", snippetsDir)
-		outputs.dir(snippetsDir)
-	}
-
-	build {
-		dependsOn("copyDocument")
-	}
-
-	asciidoctor {
-		dependsOn(test)
-
-		attributes(
-			mapOf("snippets" to snippetsDir)
-		)
-		inputs.dir(snippetsDir)
-
-		doFirst {
-			delete("src/main/resources/static")
-		}
-	}
-
-	register<Copy>("copyDocument") {
-		dependsOn(asciidoctor)
-
-		destinationDir = file(".")
-		from(asciidoctor.get().outputDir) {
-			into("src/main/resources/static")
-		}
-	}
+//	test {
+//		useJUnitPlatform()
+//		systemProperty("org.springframework.restdocs.outputDir", snippetsDir)
+//		outputs.dir(snippetsDir)
+//	}
+//
+//	build {
+//		dependsOn("copyDocument")
+//	}
+//
+//	asciidoctor {
+//		dependsOn(test)
+//
+//		attributes(
+//			mapOf("snippets" to snippetsDir)
+//		)
+//		inputs.dir(snippetsDir)
+//
+//		doFirst {
+//			delete("src/main/resources/static")
+//		}
+//	}
+//
+//	register<Copy>("copyDocument") {
+//		dependsOn(asciidoctor)
+//
+//		destinationDir = file(".")
+//		from(asciidoctor.get().outputDir) {
+//			into("src/main/resources/static")
+//		}
+//	}
 
 	bootJar {
-		dependsOn(asciidoctor)
+		enabled = true
+//		dependsOn(asciidoctor)
+//
+//		from(asciidoctor.get().outputDir) {
+//			into("BOOT-INF/classes/static")
+//		}
+	}
 
-		from(asciidoctor.get().outputDir) {
-			into("BOOT-INF/classes/static")
-		}
+	jar {
+		enabled = false
 	}
 }
 

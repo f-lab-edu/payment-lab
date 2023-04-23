@@ -12,21 +12,20 @@ plugins {
 }
 
 allprojects {
-	group = project.properties["projectGroups"].toString()
-	version = project.properties["applicationVersion"].toString()
-
 	repositories {
 		mavenCentral()
 	}
 }
 
 subprojects {
+	group = project.properties["projectGroups"].toString()
+	version = project.properties["applicationVersion"].toString()
 
 	apply {
-		plugin("org.springframework.boot")
-		plugin("io.spring.dependency-management")
 		plugin("org.asciidoctor.jvm.convert")
 		plugin("org.jetbrains.kotlin.jvm")
+		plugin("java")
+		plugin("java-library")
 
 		plugin("kotlin")
 		plugin("kotlin-kapt")
@@ -39,6 +38,10 @@ subprojects {
 			freeCompilerArgs = listOf("-Xjsr305=strict")
 			jvmTarget = "17"
 		}
+	}
+
+	tasks.named<Jar>("jar") {
+		enabled = true
 	}
 
 	tasks.withType<Test> {
