@@ -7,7 +7,7 @@ open class ServiceException : RuntimeException {
         this.errorCode = errorCode
     }
 
-    constructor(errorCode: ErrorCode) : super(errorCode.getMessage()) {
+    constructor(errorCode: ErrorCode) : super(errorCode.msg) {
         this.errorCode = errorCode
     }
 }

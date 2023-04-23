@@ -1,4 +1,4 @@
-package org.collaborator.paymentlab.domain
+package org.collaborator.paymentlabs.domain
 
 interface AccountRepository {
     fun existByEmail(email: String): Boolean

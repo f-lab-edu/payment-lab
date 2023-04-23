@@ -1,4 +1,4 @@
-package org.collaborator.paymentlab.domain
+package org.collaborator.paymentlabs.domain
 
 import jakarta.persistence.*
 import java.time.LocalDateTime
@@ -17,7 +17,8 @@ class Account {
     var username: String? = null
     var emailCheckToken: String? = null
     val emailCheckTokenGeneratedAt: LocalDateTime? = null
-    val emailVerified: Boolean? = false
+    var emailVerified: Boolean? = false
+    var joinedAt: LocalDateTime? = null
     @UpdateTimestamp
     val lastModifiedAt: LocalDateTime? = null
     val withdraw: Boolean? = false
@@ -55,5 +56,14 @@ class Account {
 
     override fun hashCode(): Int {
         return id?.hashCode() ?: 0
+    }
+
+    fun completeRegister() {
+        this.emailVerified = true
+        this.joinedAt = LocalDateTime.now()
+    }
+
+    fun isValidToken(token: String): Boolean {
+        return this.emailCheckToken.equals(token)
     }
 }

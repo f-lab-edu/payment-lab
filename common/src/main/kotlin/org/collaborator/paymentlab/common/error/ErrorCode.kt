@@ -12,9 +12,8 @@ enum class ErrorCode(
     DUPLICATE_USERNAME("이미 존재하는 사용자 명입니다.", 400),
     PASSWORD_NOT_MATCHED("비밀번호가 일치하지 않습니다.", 400),
     INVALID_PASSWORD_FORMAT("적절하지 않은 비밀번호 입력 방식입니다.", 400),
-    INVALID_ACCOUNT("유효하지 않은 계정입니다.", 400 );
+    INVALID_ACCOUNT("유효하지 않은 계정입니다.", 400 ),
 
-    fun getMessage(): String {
-        return msg
-    }
+    INVALID_TOKEN("잘못된 토큰입니다.", 400)
+    ;
 }

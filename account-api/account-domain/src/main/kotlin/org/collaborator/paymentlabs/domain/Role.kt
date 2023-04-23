@@ -1,4 +1,4 @@
-package org.collaborator.paymentlab.domain
+package org.collaborator.paymentlabs.domain
 
 import java.lang.IllegalArgumentException
 import java.util.*

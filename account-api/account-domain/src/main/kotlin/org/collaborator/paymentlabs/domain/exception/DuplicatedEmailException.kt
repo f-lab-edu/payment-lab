@@ -1,4 +1,4 @@
-package org.collaborator.paymentlab.domain.exception
+package org.collaborator.paymentlabs.domain.exception
 
 import org.collaborator.paymentlab.common.error.ErrorCode
 import org.collaborator.paymentlab.common.error.ServiceException
