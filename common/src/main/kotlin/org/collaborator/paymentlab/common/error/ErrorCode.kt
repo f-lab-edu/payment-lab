@@ -4,6 +4,16 @@ enum class ErrorCode(
     val msg: String,
     val status: Int
 ) {
+    // service error
+    INVALID_INPUT("잘못된 값을 입력하셨습니다.", 400),
+    UN_AUTHENTICATED("인증되지 않은 접근입니다.", 401),
+    UN_DEFINED_ERROR("일시적인 오류가 발생했습니다. 잠시후에 다시 이용해주세요.", 500),
+    METHOD_NOT_ALLOWED("허용하지 않는 http method 입니다.", 405),
+    UNSUPPORTED_MEDIA_TYPE("지원하지 않는 미디어 타입 입니다..", 415),
+    UN_HANDLED("알 수 없는 요청입니다..", 400),
+    ACCESS_DENIED("접근이 거부되었습니다.", 403),
+
+    // account error
     ACCOUNT_NOT_FOUND("존재하지 않는 계정입니다.", 404),
     ACCOUNT_TOKEN_NOT_VERIFIED(
         "아직 검증되지 않은 계정입니다.", 400),
