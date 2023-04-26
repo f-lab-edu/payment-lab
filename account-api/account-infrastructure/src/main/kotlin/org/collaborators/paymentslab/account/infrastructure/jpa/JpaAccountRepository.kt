@@ -1,6 +1,6 @@
 package org.collaborators.paymentslab.account.infrastructure.jpa
 
-import org.collaborator.paymentlabs.account.domain.Account
+import org.collaborators.paymentslab.account.domain.Account
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface JpaAccountRepository: JpaRepository<Account, Long> {

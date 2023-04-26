@@ -2,8 +2,8 @@ package org.collaborators.paymentslab.account.infrastructure.jpa
 
 import org.collaborator.paymentlab.common.error.ErrorCode
 import org.collaborator.paymentlab.common.error.ResourceNotFoundException
-import org.collaborator.paymentlabs.account.domain.Account
-import org.collaborator.paymentlabs.account.domain.AccountRepository
+import org.collaborators.paymentslab.account.domain.Account
+import org.collaborators.paymentslab.account.domain.AccountRepository
 
 class AccountRepositoryAdapter(
     private val jpaAccountRepository: JpaAccountRepository

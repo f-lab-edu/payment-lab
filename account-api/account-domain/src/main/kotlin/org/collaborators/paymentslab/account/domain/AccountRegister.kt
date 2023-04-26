@@ -1,8 +1,8 @@
-package org.collaborator.paymentlabs.account.domain
+package org.collaborators.paymentslab.account.domain
 
 import org.collaborator.paymentlab.common.error.InvalidTokenException
-import org.collaborator.paymentlabs.account.domain.exception.DuplicatedEmailException
-import org.collaborator.paymentlabs.account.domain.exception.DuplicatedUsernameException
+import org.collaborators.paymentslab.account.domain.exception.DuplicatedEmailException
+import org.collaborators.paymentslab.account.domain.exception.DuplicatedUsernameException
 
 class AccountRegister(
     private val accountRepository: AccountRepository,

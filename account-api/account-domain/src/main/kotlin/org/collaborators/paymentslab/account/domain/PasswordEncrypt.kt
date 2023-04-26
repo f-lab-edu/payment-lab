@@ -1,4 +1,4 @@
-package org.collaborator.paymentlabs.account.domain
+package org.collaborators.paymentslab.account.domain
 
 interface PasswordEncrypt {
     fun encode(rawPasswd: CharSequence): String

@@ -1,6 +1,6 @@
 package org.collaborators.paymentslab.account.infrastructure
 
-import org.collaborator.paymentlabs.account.domain.AccountRegister
+import org.collaborators.paymentslab.account.domain.AccountRegister
 import org.collaborators.paymentslab.account.infrastructure.jpa.AccountRepositoryAdapter
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import

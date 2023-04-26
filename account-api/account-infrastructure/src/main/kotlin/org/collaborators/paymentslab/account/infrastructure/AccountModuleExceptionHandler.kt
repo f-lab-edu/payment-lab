@@ -4,9 +4,9 @@ import org.collaborator.paymentlab.common.error.ErrorCode
 import org.collaborator.paymentlab.common.error.InvalidArgumentException
 import org.collaborator.paymentlab.common.error.ServiceException
 import org.collaborator.paymentlab.common.result.ApiResult
-import org.collaborator.paymentlabs.account.domain.exception.DuplicatedEmailException
-import org.collaborator.paymentlabs.account.domain.exception.InvalidAccountException
-import org.collaborator.paymentlabs.account.domain.exception.PasswordNotMatchedException
+import org.collaborators.paymentslab.account.domain.exception.DuplicatedEmailException
+import org.collaborators.paymentslab.account.domain.exception.InvalidAccountException
+import org.collaborators.paymentslab.account.domain.exception.PasswordNotMatchedException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

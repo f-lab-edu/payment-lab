@@ -1,6 +1,6 @@
 package org.collaborators.paymentslab.account.infrastructure
 
-import org.collaborator.paymentlabs.account.domain.PasswordEncrypt
+import org.collaborators.paymentslab.account.domain.PasswordEncrypt
 import org.springframework.security.crypto.password.PasswordEncoder
 
 class DelegatePasswordEncrypt(
