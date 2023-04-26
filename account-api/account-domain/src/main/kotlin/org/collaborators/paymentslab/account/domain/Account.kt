@@ -1,10 +1,9 @@
 package org.collaborators.paymentslab.account.domain
 
 import jakarta.persistence.*
-import java.time.LocalDateTime
 import org.hibernate.annotations.UpdateTimestamp
-import java.util.UUID
-import kotlin.collections.HashSet
+import java.time.LocalDateTime
+import java.util.*
 
 @Entity
 @Table(name = "ACCOUNTS")
@@ -21,10 +20,10 @@ class Account {
     var joinedAt: LocalDateTime? = null
     @UpdateTimestamp
     val lastModifiedAt: LocalDateTime? = null
-    val withdraw: Boolean? = false
+    val withdraw: Boolean = false
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private var roles = HashSet<Role>()
+    lateinit var roles: MutableSet<Role>
 
     protected constructor()
     private constructor(email: String, password: String, username: String) {
@@ -32,7 +31,7 @@ class Account {
         this.email = email
         this.password = password
         this.username = username
-        roles = HashSet()
+        this.roles = hashSetOf(Role.USER)
     }
 
     companion object {
