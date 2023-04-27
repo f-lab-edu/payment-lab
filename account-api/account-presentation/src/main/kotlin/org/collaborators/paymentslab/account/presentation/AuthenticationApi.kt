@@ -1,5 +1,6 @@
 package org.collaborators.paymentslab.account.presentation
 
+import jakarta.validation.Valid
 import org.collaborators.paymentslab.account.application.AccountService
 import org.collaborators.paymentslab.account.application.command.RegisterAccount
 import org.collaborators.paymentslab.account.presentation.request.RegisterAccountRequest
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 class AuthenticationApi(private val accountService: AccountService) {
 
     @PostMapping("register")
-    fun register(@RequestBody request: RegisterAccountRequest) {
+    fun register(@RequestBody @Valid request: RegisterAccountRequest) {
         accountService.register(RegisterAccount(request.email, request.password, request.username))
     }
 }
