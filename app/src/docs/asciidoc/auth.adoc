@@ -6,3 +6,5 @@
 ==== HTTP request
 include::{snippets}/authentication-api-test/register-test/http-request.adoc[]
 include::{snippets}/authentication-api-test/register-test/request-fields.adoc[]
+==== HTTP response
+include::{snippets}/authentication-api-test/register-test/http-response.adoc[]
