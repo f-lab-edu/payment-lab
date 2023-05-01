@@ -1,0 +1,8 @@
+[[auth]]
+== Auth API
+
+=== 회원가입 api
+
+==== HTTP request
+include::{snippets}/authentication-api-test/register-test/http-request.adoc[]
+include::{snippets}/authentication-api-test/register-test/request-fields.adoc[]

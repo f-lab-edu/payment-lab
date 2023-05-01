@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
 	id("org.springframework.boot") version "3.0.5"
 	id("io.spring.dependency-management") version "1.1.0"
@@ -54,51 +52,51 @@ dependencies {
 }
 
 tasks {
-//	val snippetsDir = file("$buildDir/generated-snippets")
-//
-//	clean {
-//		delete("src/main/resources/static")
-//	}
+	val snippetsDir = file("$buildDir/generated-snippets")
 
-//	test {
-//		useJUnitPlatform()
-//		systemProperty("org.springframework.restdocs.outputDir", snippetsDir)
-//		outputs.dir(snippetsDir)
-//	}
-//
-//	build {
-//		dependsOn("copyDocument")
-//	}
-//
-//	asciidoctor {
-//		dependsOn(test)
-//
-//		attributes(
-//			mapOf("snippets" to snippetsDir)
-//		)
-//		inputs.dir(snippetsDir)
-//
-//		doFirst {
-//			delete("src/main/resources/static")
-//		}
-//	}
-//
-//	register<Copy>("copyDocument") {
-//		dependsOn(asciidoctor)
-//
-//		destinationDir = file(".")
-//		from(asciidoctor.get().outputDir) {
-//			into("src/main/resources/static")
-//		}
-//	}
+	clean {
+		delete("src/main/resources/static")
+	}
+
+	test {
+		useJUnitPlatform()
+		systemProperty("org.springframework.restdocs.outputDir", snippetsDir)
+		outputs.dir(snippetsDir)
+	}
+
+	build {
+		dependsOn("copyDocument")
+	}
+
+	asciidoctor {
+		dependsOn(test)
+
+		attributes(
+			mapOf("snippets" to snippetsDir)
+		)
+		inputs.dir(snippetsDir)
+
+		doFirst {
+			delete("src/main/resources/static")
+		}
+	}
+
+	register<Copy>("copyDocument") {
+		dependsOn(asciidoctor)
+
+		destinationDir = file(".")
+		from(asciidoctor.get().outputDir) {
+			into("src/main/resources/static")
+		}
+	}
 
 	bootJar {
 		enabled = true
-//		dependsOn(asciidoctor)
-//
-//		from(asciidoctor.get().outputDir) {
-//			into("BOOT-INF/classes/static")
-//		}
+		dependsOn(asciidoctor)
+
+		from(asciidoctor.get().outputDir) {
+			into("BOOT-INF/classes/static")
+		}
 	}
 
 	jar {
