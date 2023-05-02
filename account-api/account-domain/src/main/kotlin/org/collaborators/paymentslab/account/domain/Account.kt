@@ -15,7 +15,7 @@ class Account {
     var password: String? = null
     var username: String? = null
     var emailCheckToken: String? = null
-    var emailCheckTokenGeneratedAt: LocalDateTime? = null
+    val emailCheckTokenGeneratedAt: LocalDateTime? = null
     var emailVerified: Boolean = false
     var joinedAt: LocalDateTime? = null
     @UpdateTimestamp
@@ -37,23 +37,9 @@ class Account {
     companion object {
         fun register(email: String, encodedPassword: String, username: String): Account {
             val account = Account(email, encodedPassword, username)
-            account.generateEmailCheckToken()
+            account.emailCheckToken = UUID.randomUUID().toString()
             return account
         }
-    }
-
-    private fun generateEmailCheckToken() {
-        this.emailCheckToken = UUID.randomUUID().toString()
-        this.emailCheckTokenGeneratedAt = LocalDateTime.now()
-    }
-
-    fun completeRegister() {
-        this.emailVerified = true
-        this.joinedAt = LocalDateTime.now()
-    }
-
-    fun isValidToken(token: String): Boolean {
-        return this.emailCheckToken.equals(token)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -69,5 +55,14 @@ class Account {
 
     override fun hashCode(): Int {
         return id?.hashCode() ?: 0
+    }
+
+    fun completeRegister() {
+        this.emailVerified = true
+        this.joinedAt = LocalDateTime.now()
+    }
+
+    fun isValidToken(token: String): Boolean {
+        return this.emailCheckToken.equals(token)
     }
 }
