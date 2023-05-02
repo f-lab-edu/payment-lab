@@ -1,6 +1,7 @@
 package org.collaborators.paymentslab.account.domain
 
 import jakarta.persistence.*
+import org.collaborator.paymentlab.common.KeyGenerator
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
 import java.util.*
@@ -8,6 +9,8 @@ import java.util.*
 @Entity
 @Table(name = "ACCOUNTS")
 class Account {
+    private val PREFIX = "act_"
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
     var accountKey: String? = null
@@ -27,7 +30,7 @@ class Account {
 
     protected constructor()
     private constructor(email: String, password: String, username: String) {
-        accountKey = ""
+        accountKey = KeyGenerator.generate(PREFIX)
         this.email = email
         this.password = password
         this.username = username
