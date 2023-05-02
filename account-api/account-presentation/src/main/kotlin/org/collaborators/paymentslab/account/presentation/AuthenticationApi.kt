@@ -9,6 +9,7 @@ import org.collaborators.paymentslab.account.presentation.request.RegisterConfir
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -24,7 +25,7 @@ class AuthenticationApi(private val accountService: AccountService) {
         accountService.register(RegisterAccount(request.email, request.password, request.username))
     }
 
-    @PostMapping("confirm")
+    @GetMapping("confirm")
     fun registerConfirm(@RequestBody @Valid request: RegisterConfirmRequest): ResponseEntity<Void> {
         accountService.registerConfirm(RegisterConfirm(request.token, request.email))
 
