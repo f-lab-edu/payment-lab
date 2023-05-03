@@ -2,6 +2,7 @@ package org.collaborators.paymentslab.support
 
 import jakarta.servlet.http.HttpServletRequest
 import org.collaborator.paymentlab.common.error.ErrorCode
+import org.collaborator.paymentlab.common.error.ResourceNotFoundException
 import org.collaborator.paymentlab.common.result.ApiResult
 import org.collaborators.paymentslab.PaymentsLabApplication
 import org.slf4j.LoggerFactory
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
 import org.springframework.validation.FieldError
+import org.springframework.web.HttpMediaTypeNotSupportedException
+import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RequestMapping
@@ -34,6 +37,31 @@ class GlobalExceptionHandler: ErrorController {
             .body(ApiResult.error(ErrorCode.UN_HANDLED))
     }
 
+    @ExceptionHandler(ResourceNotFoundException::class)
+    fun onError(exception: ResourceNotFoundException): ResponseEntity<ApiResult<*>> {
+       log.debug("ResourceNotFoundException: {}", exception.message)
+        return ResponseEntity.status(exception.errorCode.status)
+            .body(ApiResult.error(exception.errorCode))
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
+    fun onError(
+        exception: HttpRequestMethodNotSupportedException
+    ): ResponseEntity<ApiResult<ApiResult.Companion.ErrorBody>> {
+        log.debug("HttpRequestMethodNotSupportedException: {}", exception.message)
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+            .body(ApiResult.error(ErrorCode.METHOD_NOT_ALLOWED))
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException::class)
+    fun onError(
+        exception: HttpMediaTypeNotSupportedException
+    ): ResponseEntity<ApiResult<ApiResult.Companion.ErrorBody>> {
+        log.debug("HttpMediaTypeNotSupportedException: {}", exception.message)
+        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+            .body(ApiResult.error(ErrorCode.UNSUPPORTED_MEDIA_TYPE))
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun onError(
         exception: MethodArgumentNotValidException
@@ -51,8 +79,7 @@ class GlobalExceptionHandler: ErrorController {
             this.format(
                 f
             )
-        }
-            .collect(Collectors.joining("  "))
+        }.collect(Collectors.joining("  "))
     }
 
     private fun format(f: FieldError): String? {
