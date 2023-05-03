@@ -1,11 +1,15 @@
 package org.collaborators.paymentslab.account.presentation
 
 import jakarta.validation.Valid
+import org.collaborator.paymentlab.common.result.ApiResult
 import org.collaborators.paymentslab.account.application.AccountService
+import org.collaborators.paymentslab.account.application.command.LoginAccount
 import org.collaborators.paymentslab.account.application.command.RegisterAccount
 import org.collaborators.paymentslab.account.application.command.RegisterConfirm
+import org.collaborators.paymentslab.account.presentation.request.LoginAccountRequest
 import org.collaborators.paymentslab.account.presentation.request.RegisterAccountRequest
 import org.collaborators.paymentslab.account.presentation.request.RegisterConfirmRequest
+import org.collaborators.paymentslab.account.presentation.response.TokenResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -33,5 +37,19 @@ class AuthenticationApi(private val accountService: AccountService) {
         val header = HttpHeaders()
         header.location = uri
         return ResponseEntity(header, HttpStatus.SEE_OTHER)
+    }
+
+    @PostMapping("login")
+    fun login(@RequestBody @Valid request: LoginAccountRequest): ResponseEntity<ApiResult<TokenResponse>> {
+        val tokens = accountService.login(LoginAccount(request.email, request.password))
+        return ResponseEntity.ok(ApiResult.success(TokenResponse(tokens.accessToken, tokens.refreshToken)))
+    }
+
+    @PostMapping("reIssuance")
+    fun reIssuance(payload: String): ResponseEntity<ApiResult<TokenResponse>> {
+        val tokens = accountService.reIssuance(payload)
+        return ResponseEntity.ok(ApiResult.success(
+            TokenResponse(tokens.accessToken, tokens.refreshToken)
+        ))
     }
 }

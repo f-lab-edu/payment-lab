@@ -1,5 +1,6 @@
 package org.collaborators.paymentslab.config.security
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -18,10 +19,12 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.logout.LogoutFilter
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @Import(value = [
     DefaultAuthenticationEntryPoint::class,
     DefaultAccessDeniedHandler::class,
+    JwtAuthenticationFilter::class,
     FilterChainExceptionHelper::class,
     BCryptPasswordEncoder::class
 ])
@@ -30,13 +33,15 @@ import org.springframework.security.web.authentication.logout.LogoutFilter
 class SecurityConfig(
     private val filterChainExceptionHelper: FilterChainExceptionHelper,
     private val authenticationEntryPoint: AuthenticationEntryPoint,
-    private val accessDeniedHandler: AccessDeniedHandler
+    private val accessDeniedHandler: AccessDeniedHandler,
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter
 ) {
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
 
-        http.csrf().disable()
+        http
+            .csrf().disable()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
@@ -45,13 +50,16 @@ class SecurityConfig(
             .accessDeniedHandler(accessDeniedHandler)
             .and()
             .authorizeHttpRequests()
-            .requestMatchers(POST, "/api/v1/auth/register").permitAll()
+            .requestMatchers(POST,"/api/v1/auth/register").permitAll()
+            .requestMatchers(POST,"/api/v1/auth/login").permitAll()
             .requestMatchers(GET, "/api/v1/auth/confirm").permitAll()
             .anyRequest().authenticated()
             .and()
+            .formLogin().disable();
+            http
             .addFilterBefore(filterChainExceptionHelper, LogoutFilter::class.java)
             .addFilterBefore(CustomCorsFilter(), UsernamePasswordAuthenticationFilter::class.java)
-            // TODO jwt 필터 추가
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()
     }
 

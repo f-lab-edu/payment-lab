@@ -24,6 +24,8 @@ enum class ErrorCode(
     INVALID_PASSWORD_FORMAT("적절하지 않은 비밀번호 입력 방식입니다.", 400),
     INVALID_ACCOUNT("유효하지 않은 계정입니다.", 400 ),
 
-    INVALID_TOKEN("잘못된 토큰입니다.", 400)
+    INVALID_TOKEN("잘못된 토큰입니다.", 400),
+    NOT_FOUND_REFRESH_TOKEN("Refresh token is not found.", 404),
+    TOKEN_EXPIRED("Token expired.", 400)
     ;
 }

@@ -12,3 +12,9 @@ uri:
   scheme: http
   host: localhost
   port: 8080
+
+app.security.jwt:
+  tokenExpirationSec: 1800
+  refreshExpirationSec: 604800 # 7 * 24 * 3600
+  tokenIssuer: paymentslab
+  base64TokenSigningKey: u8mG3bUUU2tEFQdxB3ZvRZrlHUX6g9hE0lkyMD0zK+cJi/pvpWBCj731VDVI

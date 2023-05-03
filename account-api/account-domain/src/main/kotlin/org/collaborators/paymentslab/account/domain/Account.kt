@@ -2,6 +2,7 @@ package org.collaborators.paymentslab.account.domain
 
 import jakarta.persistence.*
 import org.collaborator.paymentlab.common.KeyGenerator
+import org.collaborator.paymentlab.common.Role
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
 import java.util.*
