@@ -68,6 +68,7 @@ class JwtTokenGenerator(
         return Jwts.builder()
             .setClaims(claims)
             .setIssuer(tokenIssuer)
+            .setId(randomJti)
             .setIssuedAt(Date.from(currentTime.atZone(ZoneId.systemDefault()).toInstant()))
             .setExpiration(Date.from(currentTime.plusSeconds(refreshExpirationSec.toLong())
                 .atZone(ZoneId.systemDefault()).toInstant()))

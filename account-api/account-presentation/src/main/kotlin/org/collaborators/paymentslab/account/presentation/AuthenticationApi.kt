@@ -13,11 +13,7 @@ import org.collaborators.paymentslab.account.presentation.response.TokenResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
@@ -46,7 +42,7 @@ class AuthenticationApi(private val accountService: AccountService) {
     }
 
     @PostMapping("reIssuance")
-    fun reIssuance(payload: String): ResponseEntity<ApiResult<TokenResponse>> {
+    fun reIssuance(@RequestHeader("Authorization") payload: String): ResponseEntity<ApiResult<TokenResponse>> {
         val tokens = accountService.reIssuance(payload)
         return ResponseEntity.ok(ApiResult.success(
             TokenResponse(tokens.accessToken, tokens.refreshToken)
