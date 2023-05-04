@@ -18,7 +18,7 @@ class DefaultAuthenticationEntryPoint(
         authException: AuthenticationException?
     ) {
         response.status = HttpStatus.UNAUTHORIZED.value()
-        response.setHeader("content-type", "application/json")
+        response.setHeader("content-type", "application/json;charset=utf8")
         val outputStream = response.outputStream
         objectMapper.writeValue(outputStream, ApiResult.error(ErrorCode.UN_AUTHENTICATED))
     }
