@@ -4,16 +4,13 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
-import org.springframework.context.annotation.Profile
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpMethod.GET
 import org.springframework.http.HttpMethod.POST
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
@@ -50,6 +47,7 @@ class SecurityConfig(
             .accessDeniedHandler(accessDeniedHandler)
             .and()
             .authorizeHttpRequests()
+            .requestMatchers(GET, "/", "/index.html").permitAll()
             .requestMatchers(POST,"/api/v1/auth/register").permitAll()
             .requestMatchers(POST,"/api/v1/auth/login").permitAll()
             .requestMatchers(GET, "/api/v1/auth/confirm").permitAll()
@@ -63,5 +61,12 @@ class SecurityConfig(
         return http.build()
     }
 
+    @Bean
+    fun webSecurityCustomizer(): WebSecurityCustomizer {
+        return WebSecurityCustomizer { web ->
+            web.ignoring()
+                .requestMatchers(PathRequest.toH2Console())
+        }
 
+    }
 }
