@@ -10,25 +10,37 @@ import java.time.LocalDateTime
 @Entity
 @DynamicInsert
 @DynamicUpdate
-class TossPayments {
+class TossPayments protected constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    val id: Long,
     @Embedded
-    val tossPaymentsInfo: TossPaymentsInfo? = null
+    var info: TossPaymentsInfo,
     @Embedded
-    val tossPaymentsCancelInfo: TossPaymentsCancelInfo? = null
+    var cancelInfo: TossPaymentsCancelInfo? = null,
     @Embedded
-    val tossPaymentsCardInfo: TossPaymentsCardInfo? = null
-
+    var cardInfo: TossPaymentsCardInfo? = null,
     @Enumerated(EnumType.STRING)
-    private val payMethod: PayMethod? = null
-
+    private var payMethod: PayMethod,
     @CreationTimestamp
-    private val createdAt: LocalDateTime? = null
-
+    private val createdAt: LocalDateTime? = null,
     @UpdateTimestamp
     private val modifiedAt: LocalDateTime? = null
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
-    protected constructor()
+        other as TossPayments
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode() ?: 0
+    }
+
+
 }

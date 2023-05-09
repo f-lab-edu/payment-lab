@@ -9,33 +9,31 @@ import java.util.*
 
 @Entity
 @Table(name = "ACCOUNTS")
-class Account {
-    private val PREFIX = "act_"
-
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
-    var accountKey: String? = null
-    var email: String? = null
-    var password: String? = null
-    var username: String? = null
-    var emailCheckToken: String? = null
-    var emailCheckTokenGeneratedAt: LocalDateTime? = null
-    var emailVerified: Boolean = false
-    var joinedAt: LocalDateTime? = null
+class Account protected constructor(
+    var accountKey: String? = null,
+    var email: String,
+    var password: String,
+    var username: String,
+    var emailCheckToken: String? = null,
+    var emailCheckTokenGeneratedAt: LocalDateTime? = null,
+    var emailVerified: Boolean = false,
+    var joinedAt: LocalDateTime? = null,
     @UpdateTimestamp
-    val lastModifiedAt: LocalDateTime? = null
-    val withdraw: Boolean = false
+    val lastModifiedAt: LocalDateTime?,
+    val withdraw: Boolean? = false,
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    lateinit var roles: MutableSet<Role>
-
-    protected constructor()
-    private constructor(email: String, password: String, username: String) {
-        accountKey = KeyGenerator.generate(PREFIX)
+    var roles: MutableSet<Role>
+) {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null
+    private val PREFIX = "act_"
+    private constructor(email: String, password: String, username: String) : this(
+        KeyGenerator.generate("act_"), email, password, username, null,
+        null, false, null, null, false, hashSetOf(Role.USER)) {
         this.email = email
         this.password = password
         this.username = username
-        this.roles = hashSetOf(Role.USER)
     }
 
     companion object {
