@@ -1,5 +1,14 @@
 package org.collaborators.paymentslab.payment.domain
 
 interface TossPaymentsProcessor {
-    fun payed(orderId: String, paymentKey: String, amount: Int)
+    fun keyInPay(
+        amount: Int,
+        orderId: String,
+        orderName: String,
+        cardNumber: String,
+        cardExpirationYear: String,
+        cardExpirationMonth: String,
+        cardPassword: String,
+        customerIdentityNumber: String
+    )
 }

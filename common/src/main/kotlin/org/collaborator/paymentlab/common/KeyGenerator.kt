@@ -11,7 +11,7 @@ object KeyGenerator {
     private const val ORIGIN: Long = 1000000
     private const val BOUND: Long = 9999999
 
-    fun generate(prefix: String): String? {
+    fun generate(prefix: String): String {
         return prefix + generate()
     }
 

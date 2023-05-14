@@ -7,7 +7,7 @@ plugins {
 val asciidoctorExtensions: Configuration by configurations.creating
 
 dependencies {
-    implementation(project(":account-api:account-application"))
+    implementation(project(":payment-api:payment-application"))
     implementation(project(":common"))
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.restdocs:spring-restdocs-asciidoctor")
