@@ -1,0 +1,34 @@
+[[auth]]
+== Auth API
+
+=== 회원가입 api
+
+==== HTTP request
+include::{snippets}/authentication-api-test/register-test/http-request.adoc[]
+include::{snippets}/authentication-api-test/register-test/request-fields.adoc[]
+==== HTTP response
+include::{snippets}/authentication-api-test/register-test/http-response.adoc[]
+
+=== 회원가입 검증 api
+
+==== HTTP request
+include::{snippets}/authentication-api-test/confirm-test/http-request.adoc[]
+include::{snippets}/authentication-api-test/confirm-test/request-fields.adoc[]
+==== HTTP response
+include::{snippets}/authentication-api-test/confirm-test/http-response.adoc[]
+
+=== 로그인 api
+
+==== HTTP request
+include::{snippets}/authentication-api-test/login-test/http-request.adoc[]
+include::{snippets}/authentication-api-test/login-test/request-fields.adoc[]
+==== HTTP response
+include::{snippets}/authentication-api-test/login-test/http-response.adoc[]
+
+=== 토큰 재발급 api
+
+==== HTTP request
+include::{snippets}/authentication-api-test/re-issuance-test/http-request.adoc[]
+include::{snippets}/authentication-api-test/re-issuance-test/request-headers.adoc[]
+==== HTTP response
+include::{snippets}/authentication-api-test/re-issuance-test/http-response.adoc[]
