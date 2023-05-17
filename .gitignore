@@ -182,3 +182,4 @@ docker/es
 app/src/main/resources/static/
 
 app/src/main/resources/application-local.yml
+app/src/main/resources/application-test.yml

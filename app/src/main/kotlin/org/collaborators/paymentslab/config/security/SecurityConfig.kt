@@ -51,7 +51,6 @@ class SecurityConfig(
             .requestMatchers(POST,"/api/v1/auth/register").permitAll()
             .requestMatchers(POST,"/api/v1/auth/login").permitAll()
             .requestMatchers(GET, "/api/v1/auth/confirm").permitAll()
-            .requestMatchers(POST, "/api/v1/toss-payments/key-in").permitAll() // TODO 테스트 이후 인증 url로 분류
             .anyRequest().authenticated()
             .and()
             .formLogin().disable();
