@@ -1,0 +1,10 @@
+[[payments]]
+== payment API
+
+=== 토스 키인 결제 api
+
+==== HTTP request
+include::{snippets}/payment-api-test/key-in/http-request.adoc[]
+include::{snippets}/payment-api-test/key-in/request-fields.adoc[]
+==== HTTP response
+include::{snippets}/payment-api-test/key-in/http-response.adoc[]

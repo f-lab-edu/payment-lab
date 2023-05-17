@@ -8,3 +8,4 @@ endif::[]
 :adocbase: {snippets}/../../src/docs/asciidoc
 
 include::{adocbase}/auth.adoc[]
+include::{adocbase}/payments.adoc[]
