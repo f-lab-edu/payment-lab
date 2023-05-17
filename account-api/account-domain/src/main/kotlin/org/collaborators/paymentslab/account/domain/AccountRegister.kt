@@ -11,8 +11,6 @@ class AccountRegister(
     fun register(email: String, password: String, username: String): Account {
         if (accountRepository.existByEmail(email))
             throw DuplicatedEmailException()
-        if (accountRepository.existByUsername(username))
-            throw DuplicatedUsernameException()
 
         val account = Account.register(email, encrypt.encode(password), username)
         accountRepository.save(account)

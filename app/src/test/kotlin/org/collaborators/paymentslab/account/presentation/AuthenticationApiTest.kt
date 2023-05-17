@@ -1,8 +1,8 @@
 package org.collaborators.paymentslab.account.presentation
 
 import org.collaborators.paymentslab.AbstractApiTest
+import org.collaborators.paymentslab.account.domain.Account
 import org.collaborators.paymentslab.account.domain.AccountRepository
-import org.collaborators.paymentslab.account.domain.TokenGenerator
 import org.collaborators.paymentslab.account.presentation.request.LoginAccountRequest
 import org.collaborators.paymentslab.account.presentation.request.RegisterAccountRequest
 import org.collaborators.paymentslab.account.presentation.request.RegisterConfirmRequest
@@ -16,18 +16,15 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint
 import org.springframework.restdocs.payload.JsonFieldType
-import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation::class)
 class AuthenticationApiTest @Autowired constructor(
-    private val tokenGenerator: TokenGenerator,
     private val accountRepository: AccountRepository
 ) : AbstractApiTest() {
     @Test
-    @Order(1)
     @DisplayName("회원가입 api 동작")
     fun registerTest() {
         val requestDto = RegisterAccountRequest("hello@gmail.com", "qwer1234", "helloUsername")
@@ -54,7 +51,7 @@ class AuthenticationApiTest @Autowired constructor(
                             .description("회원 등록을 하고 싶은 password.\n " +
                                     "- 문자의 종류 2가지 이하일 경우 최소 10자 이상 50자 이하\n" +
                                     "- 문자의 종류 3가지 이상일 경우 최소 8자 이상 50자 이하"),
-                        PayloadDocumentation.fieldWithPath("username")
+                        fieldWithPath("username")
                             .type(JsonFieldType.STRING)
                             .description("회원 등록을 하고 싶은 username")
                     )
@@ -63,12 +60,13 @@ class AuthenticationApiTest @Autowired constructor(
     }
 
     @Test
-    @Order(2)
     @DisplayName("회원가입 검증 api 동작 테스트")
     fun confirmTest() {
-        val account = accountRepository.findByEmail("hello@gmail.com")
+        val registered = accountRepository.save(Account.register("hello2@gmail.com",
+            encrypt.encode("qqqwww123"), "hello2"))
+        val account = accountRepository.findByEmail(registered.email)
 
-        val requestDto = RegisterConfirmRequest(account.emailCheckToken!!, account.email!!)
+        val requestDto = RegisterConfirmRequest(account.emailCheckToken!!, account.email)
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
 
         this.mockMvc.perform(
@@ -96,10 +94,12 @@ class AuthenticationApiTest @Autowired constructor(
     }
 
     @Test
-    @Order(3)
     @DisplayName("로그인 api 동작 테스트")
     fun loginTest() {
-        val requestDto = LoginAccountRequest("hello@gmail.com", "qwer1234")
+        val registered = testEntityForRegister("hello3@gmail.com")
+        val account = accountRepository.save(registered)
+
+        val requestDto = LoginAccountRequest(account.email, "qqqwww123")
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
 
         this.mockMvc.perform(
@@ -140,12 +140,11 @@ class AuthenticationApiTest @Autowired constructor(
     }
 
     @Test
-    @Order(4)
     @DisplayName("토큰 재발급 api 테스트")
     fun reIssuanceTest() {
-        val account = accountRepository.findByEmail("hello@gmail.com")
-
-        val tokens = tokenGenerator.generate(account.email!!, account.roles)
+        val registered = testEntityForRegister("hello4@gmail.com")
+        val account = accountRepository.save(registered)
+        val tokens = tokenGenerator.generate(account.email, account.roles)
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders

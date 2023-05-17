@@ -24,8 +24,8 @@ class AccountService(
     private val log = LoggerFactory.getLogger(AccountService::class.java)
     fun register(command: RegisterAccount): Boolean {
         val account = accountRegister.register(command.email, command.passwd, command.username)
-        if (env.activeProfiles.contains("local")) {
-            log.info("로컬에서 테스트할 계정입니다. 이메일 인증이 생략됩니다.")
+        if (env.activeProfiles.contains("local") || env.activeProfiles.contains("test")) { // TODO 이메일 인증 완료시, 해당 코드 삭제
+            log.info("Account registered in test env. skipping email check.")
             accountRegister.registerConfirm(account.emailCheckToken!!, account.email)
         }
         return account.id != null
@@ -38,7 +38,7 @@ class AccountService(
 
     fun login(command: LoginAccount): TokenDto {
         val account = accountLoginProcessor.login(command.email, command.password)
-        val tokens = tokenGenerator.generate(account.email!!, account.roles)
+        val tokens = tokenGenerator.generate(account.email, account.roles)
         return TokenDto(tokens.accessToken, tokens.refreshToken)
     }
 

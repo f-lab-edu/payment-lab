@@ -30,6 +30,6 @@ class JwtTokenReIssuer(
         val account = accountRepository.findByEmail(token.subject)
         val refreshTokenJti = refreshTokenInfoRepository.findByRefreshTokenJti(token.jti)
         refreshTokenJti.expire()
-        return tokenGenerator.generate(account.email!!, account.roles)
+        return tokenGenerator.generate(account.email, account.roles)
     }
 }
