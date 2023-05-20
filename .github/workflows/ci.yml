@@ -14,7 +14,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     - name: inject properties yml
-      run: echo $TEST_PROPERTIES >> app/src/main/resources/application.yml
+      run: echo $TEST_PROPERTIES >> app/src/main/resources/application-test.yml
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
