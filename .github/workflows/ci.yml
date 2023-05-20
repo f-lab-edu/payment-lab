@@ -7,15 +7,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: set Java 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-    - name: inject properties yml
-      run: echo $TEST_PROPERTIES >> app/src/main/resources/application-test.yml
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew test --info
+      - uses: actions/checkout@v3
+      - name: set Java 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build with Gradle
+        run: ./gradlew test --info -Djwt.base64=$JWT_BASE64 -Djwt.issuer=$JWT_ISSUER -Djwt.refresh=$JWT_REFRESH -Djwt.token=$JWT_TOKEN -Dtoss.secret=$TOSS_SECRET -Dtoss.url=$TOSS_URL
