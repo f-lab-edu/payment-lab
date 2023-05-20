@@ -13,7 +13,9 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+      - name: inject properties yml
+        run: echo ${{ secrets.APP_PROPS }} >> app/src/main/resources/application.yml
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew test --info -Djwt.base64=$JWT_BASE64 -Djwt.issuer=$JWT_ISSUER -Djwt.refresh=$JWT_REFRESH -Djwt.token=$JWT_TOKEN -Dtoss.secret=$TOSS_SECRET -Dtoss.url=$TOSS_URL
+        run: ./gradlew test --info
