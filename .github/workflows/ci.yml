@@ -13,10 +13,10 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+      - name: make properties directory
+        run: mkdir
       - name: inject properties yml
-      - run: ls
-      - run: mkdir ./app/src/main/resources/
-      - run: echo "${{ secrets.APP_PROPS }}" >> ./app/src/main/resources/application.yml
+        run: echo "${{ secrets.APP_PROPS }}" >> ./app/src/main/resources/application.yml
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
