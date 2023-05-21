@@ -25,7 +25,7 @@ enum class ErrorCode(
     INVALID_ACCOUNT("유효하지 않은 계정입니다.", 400 ),
 
     INVALID_TOKEN("잘못된 토큰입니다.", 400),
-    NOT_FOUND_REFRESH_TOKEN("Refresh token is not found.", 404),
-    TOKEN_EXPIRED("Token expired.", 400)
+    NOT_FOUND_REFRESH_TOKEN("리프래시 토큰을 찾을 수 없습니다.", 404),
+    TOKEN_EXPIRED("이미 만료된 토큰입니다.", 400)
     ;
 }

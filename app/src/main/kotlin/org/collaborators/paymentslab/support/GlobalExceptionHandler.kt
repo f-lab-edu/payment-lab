@@ -23,7 +23,7 @@ import java.util.stream.Collectors
 @RestController
 @RestControllerAdvice(basePackageClasses = [PaymentsLabApplication::class])
 class GlobalExceptionHandler: ErrorController {
-    private val SERVLET_ERROR_CODE = "javax.servlet.error.status_code"
+    private val SERVLET_ERROR_CODE = "jakarta.servlet.error.status_code"
     private val log = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
 
     @RequestMapping("/error")

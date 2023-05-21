@@ -14,21 +14,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
+import org.springframework.security.web.access.ExceptionTranslationFilter
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.web.authentication.logout.LogoutFilter
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @Import(value = [
     DefaultAuthenticationEntryPoint::class,
     DefaultAccessDeniedHandler::class,
     JwtAuthenticationFilter::class,
-    FilterChainExceptionHelper::class,
+    JwtExceptionFilter::class,
     BCryptPasswordEncoder::class
 ])
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val filterChainExceptionHelper: FilterChainExceptionHelper,
+    private val jwtExceptionFilter: JwtExceptionFilter,
     private val authenticationEntryPoint: AuthenticationEntryPoint,
     private val accessDeniedHandler: AccessDeniedHandler,
     private val jwtAuthenticationFilter: JwtAuthenticationFilter
@@ -54,13 +53,17 @@ class SecurityConfig(
             .anyRequest().authenticated()
             .and()
             .formLogin().disable();
-            http
-            .addFilterBefore(filterChainExceptionHelper, LogoutFilter::class.java)
-            .addFilterBefore(CustomCorsFilter(), UsernamePasswordAuthenticationFilter::class.java)
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+            http.addFilterBefore(CustomCorsFilter(), UsernamePasswordAuthenticationFilter::class.java)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter::class.java)
         return http.build()
     }
-
+    @Bean
+    fun exceptionTranslationFilter(): ExceptionTranslationFilter {
+        val filter = ExceptionTranslationFilter(authenticationEntryPoint)
+        filter.setAccessDeniedHandler(accessDeniedHandler)
+        return filter
+    }
     @Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer {
         return WebSecurityCustomizer { web ->
