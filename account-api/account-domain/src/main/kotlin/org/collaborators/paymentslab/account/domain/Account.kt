@@ -3,6 +3,7 @@ package org.collaborators.paymentslab.account.domain
 import jakarta.persistence.*
 import org.collaborator.paymentlab.common.KeyGenerator
 import org.collaborator.paymentlab.common.Role
+import org.collaborator.paymentlab.common.domain.AbstractAggregateRoot
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
 import java.util.*
@@ -24,7 +25,7 @@ class Account protected constructor(
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     var roles: MutableSet<Role>
-) {
+): AbstractAggregateRoot() {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
     private val PREFIX = "act_"

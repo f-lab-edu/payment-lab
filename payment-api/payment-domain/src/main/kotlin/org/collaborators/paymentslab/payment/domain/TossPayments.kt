@@ -1,6 +1,7 @@
 package org.collaborators.paymentslab.payment.domain
 
 import jakarta.persistence.*
+import org.collaborator.paymentlab.common.domain.AbstractAggregateRoot
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.DynamicInsert
 import org.hibernate.annotations.DynamicUpdate
@@ -11,11 +12,8 @@ import java.time.LocalDateTime
 @DynamicInsert
 @DynamicUpdate
 class TossPayments protected constructor(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
     @Embedded
-    var info: TossPaymentsInfo,
+    var info: TossPaymentsInfo? = null,
     @Embedded
     var cancelInfo: TossPaymentsCancelInfo? = null,
     @Embedded
@@ -26,7 +24,18 @@ class TossPayments protected constructor(
     private val createdAt: LocalDateTime? = null,
     @UpdateTimestamp
     private val modifiedAt: LocalDateTime? = null
-) {
+): AbstractAggregateRoot() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
+
+    constructor(
+        info: TossPaymentsInfo, cancelInfo: TossPaymentsCancelInfo?,
+        cardInfo: TossPaymentsCardInfo?, payMethod: PayMethod)
+            : this(info, cancelInfo, cardInfo, payMethod, null, null) {
+        registerEvent(PaymentCompletedEvent(this))
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

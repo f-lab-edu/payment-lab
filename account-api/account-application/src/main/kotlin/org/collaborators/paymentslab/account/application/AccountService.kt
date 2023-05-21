@@ -1,10 +1,10 @@
 package org.collaborators.paymentslab.account.application
 
 import org.collaborators.paymentslab.account.application.command.LoginAccount
-import org.collaborators.paymentslab.account.domain.AccountRegister
 import org.collaborators.paymentslab.account.application.command.RegisterAccount
 import org.collaborators.paymentslab.account.application.command.RegisterConfirm
 import org.collaborators.paymentslab.account.domain.AccountLoginProcessor
+import org.collaborators.paymentslab.account.domain.AccountRegister
 import org.collaborators.paymentslab.account.domain.TokenGenerator
 import org.collaborators.paymentslab.account.domain.TokenReIssuer
 import org.slf4j.LoggerFactory
@@ -22,13 +22,12 @@ class AccountService(
     private val env: Environment
 ) {
     private val log = LoggerFactory.getLogger(AccountService::class.java)
-    fun register(command: RegisterAccount): Boolean {
+    fun register(command: RegisterAccount)  {
         val account = accountRegister.register(command.email, command.passwd, command.username)
-        if (env.activeProfiles.contains("local") || env.activeProfiles.contains("test")) { // TODO 이메일 인증 완료시, 해당 코드 삭제
+        if (env.activeProfiles.contains("local") || env.activeProfiles.contains("test") || env.activeProfiles.contains("default")) { // TODO 이메일 인증 완료시, 해당 코드 삭제
             log.info("Account registered in test env. skipping email check.")
             accountRegister.registerConfirm(account.emailCheckToken!!, account.email)
         }
-        return account.id != null
     }
 
     fun registerConfirm(command: RegisterConfirm): Boolean {
