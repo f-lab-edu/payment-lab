@@ -1,9 +1,13 @@
 package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 
 import org.collaborators.paymentslab.payment.domain.TossPaymentsProcessor
+import org.collaborators.paymentslab.payment.domain.TossPaymentsRepository
+import org.springframework.context.ApplicationEventPublisher
 
 class DefaultTossPaymentsProcessor(
-    private val tossPaymentsKeyInApprovalProcessor: TossPaymentsKeyInApprovalProcessor
+    private val tossPaymentsKeyInApprovalProcessor: TossPaymentsKeyInApprovalProcessor,
+    private val tossPaymentsRepository: TossPaymentsRepository,
+    private val publisher: ApplicationEventPublisher
 ): TossPaymentsProcessor {
 
     override fun keyInPay(
@@ -16,7 +20,7 @@ class DefaultTossPaymentsProcessor(
         cardPassword: String,
         customerIdentityNumber: String
     ) {
-        val result = tossPaymentsKeyInApprovalProcessor.approval(
+        val response = tossPaymentsKeyInApprovalProcessor.approval(
             TossPaymentsKeyInDto(
                 amount,
                 orderId,
@@ -28,5 +32,9 @@ class DefaultTossPaymentsProcessor(
                 customerIdentityNumber
             )
         )
+
+        //
+        val tossPayments = TossPaymentsFactory.create(response)
+        tossPaymentsRepository.save(tossPayments)
     }
 }

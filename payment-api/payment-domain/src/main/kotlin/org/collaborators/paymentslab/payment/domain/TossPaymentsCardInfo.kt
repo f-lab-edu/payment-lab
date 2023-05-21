@@ -5,7 +5,7 @@ import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 
 @Embeddable
-class TossPaymentsCardInfo protected constructor(
+class TossPaymentsCardInfo constructor(
     var amount: Int,
     var issuerCode: String,
     var acquirerCode: String? = null,
