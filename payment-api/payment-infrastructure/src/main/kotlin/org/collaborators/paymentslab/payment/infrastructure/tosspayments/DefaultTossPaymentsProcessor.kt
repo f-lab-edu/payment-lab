@@ -33,7 +33,6 @@ class DefaultTossPaymentsProcessor(
             )
         )
 
-        //
         val tossPayments = TossPaymentsFactory.create(response)
         tossPaymentsRepository.save(tossPayments)
     }

@@ -2,6 +2,7 @@ package org.collaborators.paymentslab.payment.presentation
 
 import org.collaborator.paymentlab.common.Role
 import org.collaborators.paymentslab.AbstractApiTest
+import org.collaborators.paymentslab.account.domain.AccountRepository
 import org.collaborators.paymentslab.payment.application.PaymentService
 import org.collaborators.paymentslab.payment.domain.TossPaymentsProcessor
 import org.collaborators.paymentslab.payment.presentation.mock.MockPayments
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.whenever
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
@@ -18,7 +20,8 @@ import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
-class PaymentApiTest : AbstractApiTest() {
+class PaymentApiTest @Autowired constructor(
+    private val accountRepository: AccountRepository) : AbstractApiTest() {
 
     @Mock
     private lateinit var paymentService: PaymentService
@@ -27,6 +30,8 @@ class PaymentApiTest : AbstractApiTest() {
     @DisplayName("카드결제 api 동작")
     fun keyIn() {
         val account = testEntityForRegister("keyInTest@gmail.com")
+        accountRepository.save(account)
+
         val requestDto = MockPayments.testTossPaymentsRequest
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
         val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
@@ -39,7 +44,7 @@ class PaymentApiTest : AbstractApiTest() {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
-                .header("Authorization", "Bearer ${tokens.refreshToken}")
+                .header("Authorization", "Bearer ${tokens.accessToken}")
         ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
             .andDo(
                 MockMvcRestDocumentation.document(

@@ -10,6 +10,6 @@ object MockPayments {
         cardExpirationYear = "24",
         cardExpirationMonth = "09",
         cardPassword = "12",
-        customerIdentityNumber = "991212"
+        customerIdentityNumber = "991212",
     )
 }
