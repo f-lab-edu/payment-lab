@@ -9,9 +9,12 @@ import org.collaborators.paymentslab.payment.presentation.mock.MockPayments
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
+import org.mockito.Mockito.mock
 import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.context.annotation.Bean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
@@ -36,7 +39,6 @@ class PaymentApiTest @Autowired constructor(
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
         val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
 
-        doNothing().whenever(paymentService).keyInPay(requestDto.toCommand())
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
