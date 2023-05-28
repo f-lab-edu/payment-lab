@@ -17,10 +17,10 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
+import org.springframework.restdocs.payload.ResponseFieldsSnippet
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@TestMethodOrder(value = MethodOrderer.OrderAnnotation::class)
 class AuthenticationApiTest @Autowired constructor(
     private val accountRepository: AccountRepository
 ) : AbstractApiTest() {
@@ -92,17 +92,7 @@ class AuthenticationApiTest @Autowired constructor(
                             .type(JsonFieldType.STRING)
                             .description("회원 등록을 하고 싶은 username")
                     ),
-                    responseFields(
-                        fieldWithPath("isSuccess")
-                            .type(JsonFieldType.BOOLEAN)
-                            .description("api 성공여부"),
-                        fieldWithPath("body.code")
-                            .type(JsonFieldType.STRING)
-                            .description("오류 코드(!= HTTP STATUS CODE)"),
-                        fieldWithPath("body.message")
-                            .type(JsonFieldType.STRING)
-                            .description("오류 메세지 내용")
-                    )
+                    errorResponseFieldsSnippet()
                 )
             )
     }
@@ -188,6 +178,41 @@ class AuthenticationApiTest @Autowired constructor(
     }
 
     @Test
+    @DisplayName("잘못된 로그인 api 에러 테스트")
+    fun loginErrorTest() {
+        val registered = accountRepository.save(Account.register("invalid@gmail.com",
+            encrypt.encode("qqqwww123"), "hello2"))
+        val account = accountRepository.findByEmail(registered.email)
+
+        val requestDto = LoginAccountRequest(account.email, "wrongpassword123")
+        val reqBody = this.objectMapper.writeValueAsString(requestDto)
+
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders
+                .post("/api/v1/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(reqBody)
+        ).andExpect(status().is4xxClientError)
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "{class-name}/{method-name}",
+                    getDocumentRequest(),
+                    Preprocessors.preprocessResponse(prettyPrint()),
+                    requestFields(
+                        fieldWithPath("email")
+                            .type(JsonFieldType.STRING)
+                            .description("로그인을 시도하고자 하는 사용자의 email"),
+                        fieldWithPath("password")
+                            .type(JsonFieldType.STRING)
+                            .description("로그인을 시도하고자 하는 사용자의 password"),
+                    ),
+                    errorResponseFieldsSnippet()
+                )
+            )
+    }
+
+    @Test
     @DisplayName("토큰 재발급 api 테스트")
     fun reIssuanceTest() {
         val registered = testEntityForRegister("hello4@gmail.com")
@@ -222,6 +247,59 @@ class AuthenticationApiTest @Autowired constructor(
                             .type(JsonFieldType.STRING)
                             .description("발급된 jwt 토큰 리프레시 키")
                     )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("회원 등록이 안된 사용자의 토큰으로 재발급 실패 api 테스트")
+    fun notRegisteredReIssuanceTest() {
+        val registered = testEntityForRegister("nouser123@gmail.com")
+        val tokens = tokenGenerator.generate(registered.email, registered.roles)
+
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders
+                .post("/api/v1/auth/reIssuance")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer ${tokens.refreshToken}")
+        ).andExpect(status().isUnauthorized)
+            .andExpect(jsonPath("$.isSuccess").value(false))
+            .andExpect(jsonPath("$.body").exists())
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "{class-name}/{method-name}",
+                    getDocumentRequest(),
+                    Preprocessors.preprocessResponse(prettyPrint()),
+                    requestHeaders(
+                        headerWithName("Authorization").description("재발급 하고자 하는 대상의 리프레시 토큰 값")
+                    ),
+                    errorResponseFieldsSnippet()
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("만료된 회원의 토큰으로 재발급 실패 api 테스트")
+    fun expiredReIssuanceTest() {
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders
+                .post("/api/v1/auth/reIssuance")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer ${MockAuthentication.expiredRefreshToken}")
+        ).andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.isSuccess").value(false))
+            .andExpect(jsonPath("$.body").exists())
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "{class-name}/{method-name}",
+                    getDocumentRequest(),
+                    Preprocessors.preprocessResponse(prettyPrint()),
+                    requestHeaders(
+                        headerWithName("Authorization").description("재발급 하고자 하는 대상의 리프레시 토큰 값")
+                    ),
+                    errorResponseFieldsSnippet()
                 )
             )
     }

@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.collaborator.paymentlab.common.error.ErrorCode
 import org.collaborator.paymentlab.common.error.InvalidTokenException
+import org.collaborator.paymentlab.common.error.ResourceNotFoundException
 import org.collaborator.paymentlab.common.result.ApiResult
 import org.collaborators.paymentslab.account.infrastructure.jwt.exception.AlreadyTokenExpiredException
 import org.springframework.http.HttpStatus
@@ -24,14 +25,17 @@ class JwtExceptionFilter(private val objectMapper: ObjectMapper): OncePerRequest
             streamErrorResponse(response, exception)
         } catch (exception: AlreadyTokenExpiredException) {
             streamErrorResponse(response, exception)
+        } catch (exception: ResourceNotFoundException) {
+            streamErrorResponse(response, exception, HttpStatus.UNAUTHORIZED)
         }
     }
 
     private fun streamErrorResponse(
         response: HttpServletResponse,
-        exception: Exception
+        exception: Exception,
+        httpStatus: HttpStatus? = HttpStatus.BAD_REQUEST
     ) {
-        response.status = HttpStatus.BAD_REQUEST.value()
+        response.status = httpStatus!!.value()
         response.contentType = "application/json; charset=UTF-8"
         response.writer.write(objectMapper.writeValueAsString(ApiResult.error(extractErrorCode(exception))))
     }

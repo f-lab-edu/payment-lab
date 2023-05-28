@@ -1,0 +1,6 @@
+package org.collaborators.paymentslab.account.presentation
+
+object MockAuthentication {
+    val expiredAccessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzY29wZXMiOlsiUk9MRV9VU0VSIl0sImVtYWlsIjoiaGVsbG9AZ21haWwuY29tIiwiaXNzIjoicGF5bWVudHNsYWIiLCJpYXQiOjE2ODUyNzE1OTIsImV4cCI6MTY4NTI3MzM5Mn0.92iGkI5ugZ4kJmOyThfoOGGGNSshWx5e0NCn0pMfexw"
+    val expiredRefreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJzY29wZXMiOlsiUk9MRV9VU0VSIl0sImVtYWlsIjoiaGVsbG9AZ21haWwuY29tIiwiaXNzIjoicGF5bWVudHNsYWIiLCJpYXQiOjE2ODUyODA3OTcsImV4cCI6MTY4NTI4MjU5N30.t9-Qb27MxTleqWVzfqyBouFg7LWndt67WW7Eoi-WXzM"
+}

@@ -17,6 +17,9 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor
 import org.springframework.restdocs.operation.preprocess.Preprocessors
+import org.springframework.restdocs.payload.JsonFieldType
+import org.springframework.restdocs.payload.PayloadDocumentation
+import org.springframework.restdocs.payload.ResponseFieldsSnippet
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 
@@ -65,4 +68,16 @@ abstract class AbstractApiTest {
             Preprocessors.prettyPrint()
         )
     }
+
+    protected fun errorResponseFieldsSnippet(): ResponseFieldsSnippet? = PayloadDocumentation.responseFields(
+        PayloadDocumentation.fieldWithPath("isSuccess")
+            .type(JsonFieldType.BOOLEAN)
+            .description("api 성공여부"),
+        PayloadDocumentation.fieldWithPath("body.code")
+            .type(JsonFieldType.STRING)
+            .description("오류 코드(!= HTTP STATUS CODE)"),
+        PayloadDocumentation.fieldWithPath("body.message")
+            .type(JsonFieldType.STRING)
+            .description("오류 메세지 내용")
+    )
 }
