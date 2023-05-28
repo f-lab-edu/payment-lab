@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 class MockPaymentService(private val tossPaymentsProcessor: TossPaymentsProcessor): PaymentService(tossPaymentsProcessor) {
     override fun keyInPay(command: TossPaymentsKeyInPayCommand) {
         val cardNumber = command.cardNumber
-        if (cardNumber.length != 16 || isDigits(cardNumber))
+        if (cardNumber.length != 16 || !isDigits(cardNumber))
             throw TossPaymentsApiClientException(MockTossPaymentsErrorBody.invalidCardNumber)
     }
 
