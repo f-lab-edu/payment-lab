@@ -2,7 +2,6 @@ package org.collaborators.paymentslab.config.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.ServletException
-import jakarta.servlet.ServletOutputStream
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.collaborator.paymentlab.common.error.ErrorCode

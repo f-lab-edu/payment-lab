@@ -1,8 +1,6 @@
 package org.collaborators.paymentslab.payment.domain
 
 import java.util.*
-import java.util.function.Predicate
-import java.util.function.Supplier
 
 enum class PayMethod(
     val description: String

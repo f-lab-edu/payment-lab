@@ -1,6 +1,5 @@
 package org.collaborators.paymentslab.payment.presentation.mock
 
-import org.collaborator.paymentlab.common.result.ApiResult
 import org.springframework.http.HttpStatus
 import org.springframework.web.client.HttpClientErrorException
 import java.nio.charset.StandardCharsets
