@@ -8,3 +8,11 @@ include::{snippets}/payment-api-test/key-in/http-request.adoc[]
 include::{snippets}/payment-api-test/key-in/request-fields.adoc[]
 ==== HTTP response
 include::{snippets}/payment-api-test/key-in/http-response.adoc[]
+
+=== 토스 키인 결제 카드번호 오류 api
+
+==== HTTP request
+include::{snippets}/payment-api-test/card-num-error-key-in/http-request.adoc[]
+include::{snippets}/payment-api-test/card-num-error-key-in/request-fields.adoc[]
+==== HTTP response
+include::{snippets}/payment-api-test/card-num-error-key-in/http-response.adoc[]

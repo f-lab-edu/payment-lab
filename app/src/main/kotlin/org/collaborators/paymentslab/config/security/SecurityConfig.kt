@@ -52,7 +52,7 @@ class SecurityConfig(
             .requestMatchers(GET, "/api/v1/auth/confirm").permitAll()
             .anyRequest().authenticated()
             .and()
-            .formLogin().disable();
+            .formLogin().disable()
             http.addFilterBefore(CustomCorsFilter(), UsernamePasswordAuthenticationFilter::class.java)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
                 .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter::class.java)
