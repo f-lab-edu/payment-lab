@@ -71,7 +71,7 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("카드번호 입력에 숫자가 아닌 값이 입력되거나 총 16자가 아니면 에러가 발생한다.")
     fun cardNumErrorKeyIn() {
-        val account = testEntityForRegister("keyInTest@gmail.com")
+        val account = testEntityForRegister("keyInCardNumTest@gmail.com")
         accountRepository.save(account)
 
         val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
