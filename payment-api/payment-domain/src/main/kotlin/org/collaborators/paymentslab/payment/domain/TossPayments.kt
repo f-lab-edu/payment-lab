@@ -29,10 +29,17 @@ class TossPayments protected constructor(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
+    @Column(nullable = false)
+    var accountId: Long? = null
+
     constructor(
-        info: TossPaymentsInfo, cancelInfo: TossPaymentsCancelInfo?,
-        cardInfo: TossPaymentsCardInfo?, payMethod: PayMethod)
-            : this(info, cancelInfo, cardInfo, payMethod, null, null) {
+        info: TossPaymentsInfo,
+        cancelInfo: TossPaymentsCancelInfo?,
+        cardInfo: TossPaymentsCardInfo?,
+        payMethod: PayMethod) : this(info, cancelInfo, cardInfo, payMethod, null, null)
+
+    fun completeOf(accountId: Long) {
+        this.accountId = accountId
         registerEvent(PaymentCompletedEvent(this))
     }
 
@@ -48,7 +55,7 @@ class TossPayments protected constructor(
     }
 
     override fun hashCode(): Int {
-        return id.hashCode() ?: 0
+        return id?.hashCode() ?: 0
     }
 
 

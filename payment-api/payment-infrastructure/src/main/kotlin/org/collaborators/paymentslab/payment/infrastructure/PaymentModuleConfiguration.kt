@@ -7,8 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
+import org.collaborators.paymentslab.payment.infrastructure.jpa.PaymentHistoryRepositoryAdapter
 import org.collaborators.paymentslab.payment.infrastructure.jpa.TossPaymentsRepositoryAdapter
-import org.collaborators.paymentslab.payment.infrastructure.tosspayments.DefaultTossPaymentsProcessor
+import org.collaborators.paymentslab.payment.infrastructure.tosspayments.DefaultPaymentsProcessor
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.TossPaymentsKeyInApprovalProcessor
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -21,9 +22,9 @@ import java.time.format.DateTimeFormatter
 
 @Import(value = [
     TossPaymentsRepositoryAdapter::class,
-    DefaultTossPaymentsProcessor::class,
+    PaymentHistoryRepositoryAdapter::class,
+    DefaultPaymentsProcessor::class,
     TossPaymentsKeyInApprovalProcessor::class,
-
 ])
 @Configuration
 class PaymentModuleConfiguration {

@@ -1,6 +1,6 @@
 package org.collaborators.paymentslab.payment.domain
 
-interface TossPaymentsProcessor {
+interface PaymentsProcessor {
     fun keyInPay(
         amount: Int,
         orderId: String,

@@ -28,7 +28,7 @@ class Account protected constructor(
 ): AbstractAggregateRoot() {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
-    private val PREFIX = "act_"
+
     private constructor(email: String, password: String, username: String) : this(
         KeyGenerator.generate("act_"), email, password, username, null,
         null, false, null, null, false, hashSetOf(Role.USER)) {

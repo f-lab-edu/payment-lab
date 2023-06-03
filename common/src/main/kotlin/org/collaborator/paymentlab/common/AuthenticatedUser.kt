@@ -1,6 +1,7 @@
 package org.collaborator.paymentlab.common
 
 data class AuthenticatedUser(
-    val id: String,
+    val id: Long,
+    val accountKey: String,
     val roles: Set<Role>
 )
