@@ -5,7 +5,7 @@ import org.collaborators.paymentslab.payment.domain.*
 object TossPaymentsFactory {
 
     fun create(responseBody: TossPaymentsApprovalResponse): TossPayments {
-        return TossPayments(createInfo(responseBody), null, createCardInfo(responseBody), PayMethod.CARD)
+        return TossPayments(createInfo(responseBody), null, createCardInfo(responseBody), responseBody.status, PayMethod.CARD)
     }
 
     private fun createCardInfo(responseBody: TossPaymentsApprovalResponse): TossPaymentsCardInfo {

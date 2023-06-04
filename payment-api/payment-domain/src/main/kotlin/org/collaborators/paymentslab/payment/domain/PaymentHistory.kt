@@ -23,13 +23,15 @@ class PaymentHistory protected constructor(
     val id: Long? = null
 
     companion object {
-        fun newInstance(accountId: Long,
-                        approvedAt: LocalDateTime,
-                        orderId: String,
-                        orderName: String,
-                        amount: Int,
-                        status: String): PaymentHistory  {
-            return PaymentHistory(accountId, approvedAt, orderId, orderName, amount, status)
+        fun newInstanceFrom(tossPayments: TossPayments): PaymentHistory  {
+            return PaymentHistory(
+                tossPayments.accountId!!,
+                tossPayments.info!!.approvedAt,
+                tossPayments.info!!.orderId,
+                tossPayments.info!!.orderName,
+                tossPayments.cardInfo!!.amount,
+                tossPayments.status
+            )
         }
     }
 

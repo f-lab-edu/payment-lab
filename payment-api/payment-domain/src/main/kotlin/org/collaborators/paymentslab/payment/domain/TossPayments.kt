@@ -18,6 +18,8 @@ class TossPayments protected constructor(
     var cancelInfo: TossPaymentsCancelInfo? = null,
     @Embedded
     var cardInfo: TossPaymentsCardInfo? = null,
+    @Column(nullable = false)
+    val status: String,
     @Enumerated(EnumType.STRING)
     private var payMethod: PayMethod,
     @CreationTimestamp
@@ -36,7 +38,8 @@ class TossPayments protected constructor(
         info: TossPaymentsInfo,
         cancelInfo: TossPaymentsCancelInfo?,
         cardInfo: TossPaymentsCardInfo?,
-        payMethod: PayMethod) : this(info, cancelInfo, cardInfo, payMethod, null, null)
+        status: String,
+        payMethod: PayMethod) : this(info, cancelInfo, cardInfo, status, payMethod, null, null)
 
     fun completeOf(accountId: Long) {
         this.accountId = accountId

@@ -47,14 +47,7 @@ class DefaultPaymentsProcessor(
         newPaymentEntity.completeOf(principal.id)
         val newPaymentRecord = tossPaymentsRepository.save(newPaymentEntity)
 
-        val newPaymentHistoryEntity = PaymentHistory.newInstance(
-            newPaymentRecord.accountId!!,
-            newPaymentRecord.info!!.approvedAt,
-            newPaymentRecord.info!!.orderId,
-            newPaymentRecord.info!!.orderName,
-            newPaymentEntity.cardInfo!!.amount,
-            response.status
-        )
+        val newPaymentHistoryEntity = PaymentHistory.newInstanceFrom(newPaymentRecord)
         paymentHistoryRepository.save(newPaymentHistoryEntity)
         // TODO EventListener 를 활용하여, 비동기로 결제이력 저장하는 코드 작성
 //        newPaymentRecord.pollAllEvents().forEach { publisher.publishEvent(it) }
