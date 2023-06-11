@@ -1,0 +1,22 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: payment-lab:latest
+    ports:
+      - "8080:8080"
+  mysql-local:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=root
+      - MYSQL_DATABASE=payment-lab
+    volumes:
+      - mysql-data:/var/lib/mysql
+volumes:
+  mysql-data:
