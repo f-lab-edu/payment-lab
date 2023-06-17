@@ -16,3 +16,10 @@ include::{snippets}/payment-api-test/card-num-error-key-in/http-request.adoc[]
 include::{snippets}/payment-api-test/card-num-error-key-in/request-fields.adoc[]
 ==== HTTP response
 include::{snippets}/payment-api-test/card-num-error-key-in/http-response.adoc[]
+
+=== 토스 키인 결제 사용자 계정별 결제 이력 조회 api
+
+==== HTTP request
+include::{snippets}/payment-api-test/read-histories-test/http-request.adoc[]
+==== HTTP response
+include::{snippets}/payment-api-test/read-histories-test/http-response.adoc[]
