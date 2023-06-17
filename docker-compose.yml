@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: payment-lab:latest
+    image: payments-lab:latest
     ports:
       - "8080:8080"
   mysql-local:
