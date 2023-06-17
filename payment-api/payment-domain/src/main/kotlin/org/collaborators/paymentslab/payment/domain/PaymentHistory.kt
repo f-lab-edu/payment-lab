@@ -16,6 +16,8 @@ class PaymentHistory protected constructor(
     @Column(nullable = false)
     val amount: Int,
     @Column(nullable = false)
+    val paymentKey: String,
+    @Column(nullable = false)
     val status: String
 ) {
     @Id
@@ -30,6 +32,7 @@ class PaymentHistory protected constructor(
                 tossPayments.info!!.orderId,
                 tossPayments.info!!.orderName,
                 tossPayments.cardInfo!!.amount,
+                tossPayments.info!!.paymentKey,
                 tossPayments.status
             )
         }
