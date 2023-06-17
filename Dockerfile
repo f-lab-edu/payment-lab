@@ -8,6 +8,6 @@ FROM eclipse-temurin:17-jre
 EXPOSE 8080
 COPY --from=build /temp/app/build/libs/*.jar app.jar
 ENTRYPOINT ["java", \
-"-Dspring.profiles.active=local", \
+"-Dspring.profiles.active=docker-local", \
 "-jar", \
 "/app.jar"]

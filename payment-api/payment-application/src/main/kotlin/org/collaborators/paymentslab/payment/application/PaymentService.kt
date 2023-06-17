@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-@Profile(value = ["local", "default"])
+@Profile(value = ["!test"])
 @Transactional
 class PaymentService(
     private val paymentsProcessor: PaymentsProcessor,
