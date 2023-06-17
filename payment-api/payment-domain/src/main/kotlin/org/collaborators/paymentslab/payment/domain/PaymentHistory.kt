@@ -36,6 +36,24 @@ class PaymentHistory protected constructor(
                 tossPayments.status
             )
         }
+
+        fun newInstanceFrom(accountId: Long,
+                            approvedAt: LocalDateTime,
+                            orderId: String,
+                            orderName: String,
+                            amount: Int,
+                            paymentKey: String,
+                            status: String): PaymentHistory  {
+            return PaymentHistory(
+                accountId,
+                approvedAt,
+                orderId,
+                orderName,
+                amount,
+                paymentKey,
+                status
+            )
+        }
     }
 
     override fun equals(other: Any?): Boolean {

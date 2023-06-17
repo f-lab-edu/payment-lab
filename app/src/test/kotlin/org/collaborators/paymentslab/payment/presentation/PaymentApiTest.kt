@@ -3,6 +3,8 @@ package org.collaborators.paymentslab.payment.presentation
 import org.collaborator.paymentlab.common.Role
 import org.collaborators.paymentslab.AbstractApiTest
 import org.collaborators.paymentslab.account.domain.AccountRepository
+import org.collaborators.paymentslab.payment.domain.PaymentHistory
+import org.collaborators.paymentslab.payment.domain.PaymentHistoryRepository
 import org.collaborators.paymentslab.payment.presentation.mock.MockPayments
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -14,9 +16,12 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import java.time.LocalDateTime
 
 class PaymentApiTest @Autowired constructor(
-    private val accountRepository: AccountRepository) : AbstractApiTest() {
+    private val accountRepository: AccountRepository,
+    private val paymentHistoryRepository: PaymentHistoryRepository
+) : AbstractApiTest() {
 
     @Test
     @DisplayName("카드결제 api 동작")
@@ -115,6 +120,63 @@ class PaymentApiTest @Autowired constructor(
                             .description("카드 소유자의 주민등록번호 앞자리 6")
                     ),
                     errorResponseFieldsSnippet()
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("사용자 계정별 카드결제 이력 조회 api")
+    fun readHistoriesTest() {
+        val account = testEntityForRegister("readHistoriesTest@gmail.com")
+        val entity = accountRepository.save(account)
+
+        val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
+
+        paymentHistoryRepository.save(
+            PaymentHistory.newInstanceFrom(
+            entity.id!!,
+            LocalDateTime.now(),
+            "ord_202306172137299642490491",
+            "테스트결제",
+            10000,
+            "testPaymentKey",
+            "DONE"
+        ))
+
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders
+                .get("/api/v1/toss-payments")
+                .param("pageNum", "0")
+                .param("pageSize", "6")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer ${tokens.accessToken}")
+        ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "{class-name}/{method-name}",
+                    getDocumentRequest(),
+                    Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                    PayloadDocumentation.responseFields(
+                        PayloadDocumentation.fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("api 성공여부"),
+                        PayloadDocumentation.fieldWithPath("body[].orderId")
+                            .type(JsonFieldType.STRING)
+                            .description("결제 주문 번호"),
+                        PayloadDocumentation.fieldWithPath("body[].orderName")
+                            .type(JsonFieldType.STRING)
+                            .description("결제 주문 명"),
+                        PayloadDocumentation.fieldWithPath("body[].amount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("결제 금액"),
+                        PayloadDocumentation.fieldWithPath("body[].status")
+                            .type(JsonFieldType.STRING)
+                            .description("결제 상태"),
+                        PayloadDocumentation.fieldWithPath("body[].approvedAt")
+                            .type(JsonFieldType.STRING)
+                            .description("결제 승인 일자")
+                    )
                 )
             )
     }
