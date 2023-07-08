@@ -53,7 +53,9 @@ abstract class AbstractApiTest {
     protected fun testEntityForRegister(email: String): Account {
         val account = Account.register(
             email,
-            encrypt.encode("qqqwww123"), "testName"
+            encrypt.encode("qqqwww123"),
+            "testName",
+            "010-1234-1234"
         )
         account.completeRegister()
         return account

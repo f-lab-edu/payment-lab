@@ -7,11 +7,11 @@ class AccountRegister(
     private val accountRepository: AccountRepository,
     private val encrypt: PasswordEncrypt
     ) {
-    fun register(email: String, password: String, username: String): Account {
+    fun register(email: String, password: String, username: String, phoneNumber: String): Account {
         if (accountRepository.existByEmail(email))
             throw DuplicatedEmailException()
 
-        val account = Account.register(email, encrypt.encode(password), username)
+        val account = Account.register(email, encrypt.encode(password), username, phoneNumber)
         accountRepository.save(account)
 
         return account

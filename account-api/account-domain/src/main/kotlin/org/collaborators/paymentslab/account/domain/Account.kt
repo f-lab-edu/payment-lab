@@ -18,6 +18,7 @@ class Account protected constructor(
     var emailCheckToken: String? = null,
     var emailCheckTokenGeneratedAt: LocalDateTime? = null,
     var emailVerified: Boolean = false,
+    var phoneNumber: String,
     var joinedAt: LocalDateTime? = null,
     @UpdateTimestamp
     val lastModifiedAt: LocalDateTime?,
@@ -29,17 +30,18 @@ class Account protected constructor(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
-    private constructor(email: String, password: String, username: String) : this(
+    private constructor(email: String, password: String, username: String, phoneNumber: String) : this(
         KeyGenerator.generate("act_"), email, password, username, null,
-        null, false, null, null, false, hashSetOf(Role.USER)) {
+        null, false, phoneNumber, null, null, false, hashSetOf(Role.USER)) {
         this.email = email
         this.password = password
         this.username = username
+        this.phoneNumber = phoneNumber
     }
 
     companion object {
-        fun register(email: String, encodedPassword: String, username: String): Account {
-            val account = Account(email, encodedPassword, username)
+        fun register(email: String, encodedPassword: String, username: String, phoneNumber: String): Account {
+            val account = Account(email, encodedPassword, username, phoneNumber)
             account.generateEmailCheckToken()
             return account
         }

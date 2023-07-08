@@ -26,7 +26,7 @@ class AuthenticationApiTest @Autowired constructor(
     @Test
     @DisplayName("회원가입 api 동작")
     fun registerTest() {
-        val requestDto = RegisterAccountRequest("hello@gmail.com", "qwer1234", "helloUsername")
+        val requestDto = RegisterAccountRequest("hello@gmail.com", "qwer1234", "helloUsername", "010-1234-5678")
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
 
         this.mockMvc.perform(
@@ -52,7 +52,10 @@ class AuthenticationApiTest @Autowired constructor(
                                     "- 문자의 종류 3가지 이상일 경우 최소 8자 이상 50자 이하"),
                         fieldWithPath("username")
                             .type(JsonFieldType.STRING)
-                            .description("회원 등록을 하고 싶은 username")
+                            .description("회원 등록을 하고 싶은 username"),
+                        fieldWithPath("phoneNumber")
+                            .type(JsonFieldType.STRING)
+                            .description("회원 등록을 하고 싶은 phoneNumber")
                     )
                 )
             )
@@ -61,7 +64,7 @@ class AuthenticationApiTest @Autowired constructor(
     @Test
     @DisplayName("잘못된 회원가입 폼 입력으로 인한 오류 발생 테스트")
     fun registerErrorTest() {
-        val wrongRegisterForm = RegisterAccountRequest("hellogmail.com", "qwer1234", "helloUsername")
+        val wrongRegisterForm = RegisterAccountRequest("hellogmail.com", "qwer1234", "helloUsername", "010-1234-1234")
         val reqBody = this.objectMapper.writeValueAsString(wrongRegisterForm)
 
         this.mockMvc.perform(
@@ -89,7 +92,51 @@ class AuthenticationApiTest @Autowired constructor(
                                     "- 문자의 종류 3가지 이상일 경우 최소 8자 이상 50자 이하"),
                         fieldWithPath("username")
                             .type(JsonFieldType.STRING)
-                            .description("회원 등록을 하고 싶은 username")
+                            .description("회원 등록을 하고 싶은 username"),
+                        fieldWithPath("phoneNumber")
+                            .type(JsonFieldType.STRING)
+                            .description("회원 등록을 하고 싶은 phoneNumber")
+                    ),
+                    errorResponseFieldsSnippet()
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("잘못된 회원가입 폼 입력으로 인한 오류 발생 테스트")
+    fun registerWrongPhoneNumberTest() {
+        val wrongRegisterForm = RegisterAccountRequest("hello@gmail.com", "qwer1234", "helloUsername", "0101234-1234")
+        val reqBody = this.objectMapper.writeValueAsString(wrongRegisterForm)
+
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders
+                .post("/api/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(reqBody)
+        ).andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.isSuccess").value(false))
+            .andExpect(jsonPath("$.body").exists())
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "{class-name}/{method-name}",
+                    getDocumentRequest(),
+                    Preprocessors.preprocessResponse(prettyPrint()),
+                    requestFields(
+                        fieldWithPath("email")
+                            .type(JsonFieldType.STRING)
+                            .description("회원 등록을 하고 싶은 email 주소"),
+                        fieldWithPath("password")
+                            .type(JsonFieldType.STRING)
+                            .description("회원 등록을 하고 싶은 password.\n " +
+                                    "- 문자의 종류 2가지 이하일 경우 최소 10자 이상 50자 이하\n" +
+                                    "- 문자의 종류 3가지 이상일 경우 최소 8자 이상 50자 이하"),
+                        fieldWithPath("username")
+                            .type(JsonFieldType.STRING)
+                            .description("회원 등록을 하고 싶은 username"),
+                        fieldWithPath("phoneNumber")
+                            .type(JsonFieldType.STRING)
+                            .description("회원 등록을 하고 싶은 phoneNumber")
                     ),
                     errorResponseFieldsSnippet()
                 )
@@ -100,7 +147,7 @@ class AuthenticationApiTest @Autowired constructor(
     @DisplayName("회원가입 검증 api 동작 테스트")
     fun confirmTest() {
         val registered = accountRepository.save(Account.register("hello2@gmail.com",
-            encrypt.encode("qqqwww123"), "hello2"))
+            encrypt.encode("qqqwww123"), "hello2", "010-1234-1234"))
         val account = accountRepository.findByEmail(registered.email)
 
         val requestDto = RegisterConfirmRequest(account.emailCheckToken!!, account.email)
@@ -180,7 +227,7 @@ class AuthenticationApiTest @Autowired constructor(
     @DisplayName("잘못된 로그인 api 에러 테스트")
     fun loginErrorTest() {
         val registered = accountRepository.save(Account.register("invalid@gmail.com",
-            encrypt.encode("qqqwww123"), "hello2"))
+            encrypt.encode("qqqwww123"), "hello2", "010-1234-1234"))
         val account = accountRepository.findByEmail(registered.email)
 
         val requestDto = LoginAccountRequest(account.email, "wrongpassword123")
