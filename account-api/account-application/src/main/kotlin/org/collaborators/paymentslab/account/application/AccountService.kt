@@ -23,7 +23,7 @@ class AccountService(
 ) {
     private val log = LoggerFactory.getLogger(AccountService::class.java)
     fun register(command: RegisterAccount)  {
-        val account = accountRegister.register(command.email, command.passwd, command.username)
+        val account = accountRegister.register(command.email, command.passwd, command.username, command.phoneNumber)
         if (env.activeProfiles.contains("local") || env.activeProfiles.contains("test") || env.activeProfiles.contains("default")) { // TODO 이메일 인증 완료시, 해당 코드 삭제
             log.info("Account registered in test env. skipping email check.")
             accountRegister.registerConfirm(account.emailCheckToken!!, account.email)

@@ -22,7 +22,7 @@ class AuthenticationApi(private val accountService: AccountService) {
 
     @PostMapping("register")
     fun register(@RequestBody @Valid request: RegisterAccountRequest) {
-        accountService.register(RegisterAccount(request.email, request.password, request.username))
+        accountService.register(RegisterAccount(request.email, request.password, request.username, request.phoneNumber))
     }
 
     @GetMapping("confirm")

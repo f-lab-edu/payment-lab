@@ -10,5 +10,7 @@ data class RegisterAccountRequest(
     @field: NotBlank @field: Password
     val password: String,
     @field:NotBlank
-    val username: String
+    val username: String,
+    @field:NotBlank
+    val phoneNumber: String
 )
