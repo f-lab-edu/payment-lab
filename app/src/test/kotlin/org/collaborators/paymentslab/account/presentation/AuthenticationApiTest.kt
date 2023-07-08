@@ -103,7 +103,7 @@ class AuthenticationApiTest @Autowired constructor(
     }
 
     @Test
-    @DisplayName("잘못된 회원가입 폼 입력으로 인한 오류 발생 테스트")
+    @DisplayName("잘못된 휴대폰 번호 입력으로 인한 오류 발생 테스트")
     fun registerWrongPhoneNumberTest() {
         val wrongRegisterForm = RegisterAccountRequest("hello@gmail.com", "qwer1234", "helloUsername", "0101234-1234")
         val reqBody = this.objectMapper.writeValueAsString(wrongRegisterForm)

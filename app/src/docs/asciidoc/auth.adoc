@@ -10,10 +10,20 @@ include::{snippets}/authentication-api-test/register-test/request-fields.adoc[]
 include::{snippets}/authentication-api-test/register-test/http-response.adoc[]
 
 === 회원가입 입력 에러 api
+
+==== HTTP request
 include::{snippets}/authentication-api-test/register-error-test/http-request.adoc[]
 include::{snippets}/authentication-api-test/register-error-test/request-fields.adoc[]
 ==== HTTP response
 include::{snippets}/authentication-api-test/register-error-test/http-response.adoc[]
+
+=== 회원가입 휴대폰 번호 입력 에러 api
+
+==== HTTP request
+include::{snippets}/authentication-api-test/register-wrong-phone-number-test/http-request.adoc[]
+include::{snippets}/authentication-api-test/register-wrong-phone-number-test/request-fields.adoc[]
+==== HTTP response
+include::{snippets}/authentication-api-test/register-wrong-phone-number-test/http-response.adoc[]
 
 === 회원가입 검증 api
 
