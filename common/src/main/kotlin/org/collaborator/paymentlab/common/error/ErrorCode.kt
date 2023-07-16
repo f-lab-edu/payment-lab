@@ -23,7 +23,7 @@ enum class ErrorCode(
     PASSWORD_NOT_MATCHED("비밀번호가 일치하지 않습니다.", 400),
     INVALID_PASSWORD_FORMAT("적절하지 않은 비밀번호 입력 방식입니다.", 400),
     INVALID_ACCOUNT("유효하지 않은 계정입니다.", 400 ),
-
+    INVALID_PHONE_NUMBER("잘못된 소유자의 핸드폰 번호 입니다.", 400),
     INVALID_TOKEN("잘못된 토큰입니다.", 400),
     NOT_FOUND_REFRESH_TOKEN("리프래시 토큰을 찾을 수 없습니다.", 404),
     TOKEN_EXPIRED("이미 만료된 토큰입니다.", 400)

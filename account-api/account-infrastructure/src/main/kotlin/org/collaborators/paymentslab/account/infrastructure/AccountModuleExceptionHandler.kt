@@ -7,6 +7,7 @@ import org.collaborator.paymentlab.common.error.ServiceException
 import org.collaborator.paymentlab.common.result.ApiResult
 import org.collaborators.paymentslab.account.domain.exception.DuplicatedEmailException
 import org.collaborators.paymentslab.account.domain.exception.InvalidAccountException
+import org.collaborators.paymentslab.account.domain.exception.InvalidPhoneNumberException
 import org.collaborators.paymentslab.account.domain.exception.PasswordNotMatchedException
 import org.collaborators.paymentslab.account.infrastructure.jwt.exception.AlreadyTokenExpiredException
 import org.collaborators.paymentslab.account.infrastructure.jwt.exception.RefreshTokenNotFoundException
@@ -27,7 +28,8 @@ class AccountModuleExceptionHandler {
         DuplicatedEmailException::class,
         PasswordNotMatchedException::class,
         InvalidAccountException::class,
-        InvalidArgumentException::class
+        InvalidArgumentException::class,
+        InvalidPhoneNumberException::class
     ])
     fun onError(e: ServiceException): ResponseEntity<ApiResult<*>> {
         log.error("ServiceError: ", e)

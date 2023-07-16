@@ -3,10 +3,7 @@ package org.collaborators.paymentslab.account.application
 import org.collaborators.paymentslab.account.application.command.LoginAccount
 import org.collaborators.paymentslab.account.application.command.RegisterAccount
 import org.collaborators.paymentslab.account.application.command.RegisterConfirm
-import org.collaborators.paymentslab.account.domain.AccountLoginProcessor
-import org.collaborators.paymentslab.account.domain.AccountRegister
-import org.collaborators.paymentslab.account.domain.TokenGenerator
-import org.collaborators.paymentslab.account.domain.TokenReIssuer
+import org.collaborators.paymentslab.account.domain.*
 import org.slf4j.LoggerFactory
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
@@ -16,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class AccountService(
     private val accountRegister: AccountRegister,
+    private val accountValidator: AccountValidator,
     private val accountLoginProcessor: AccountLoginProcessor,
     private val tokenGenerator: TokenGenerator,
     private val tokenReIssuer: TokenReIssuer,
@@ -44,6 +42,10 @@ class AccountService(
     fun reIssuance(payload: String): TokenDto {
         val tokens = tokenReIssuer.reIssuance(payload)
         return TokenDto(tokens.accessToken, tokens.refreshToken)
+    }
+
+    fun validateWithPhoneNumber(phoneNumber: String) {
+        accountValidator.validatePhoneNumber(phoneNumber)
     }
 
     data class TokenDto(val accessToken: String, val refreshToken: String)
