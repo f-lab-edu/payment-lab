@@ -2,6 +2,7 @@ package org.collaborators.paymentslab.account.infrastructure
 
 import org.collaborators.paymentslab.account.domain.AccountLoginProcessor
 import org.collaborators.paymentslab.account.domain.AccountRegister
+import org.collaborators.paymentslab.account.domain.AccountValidator
 import org.collaborators.paymentslab.account.infrastructure.jpa.AccountRepositoryAdapter
 import org.collaborators.paymentslab.account.infrastructure.jpa.RefreshTokenInfoRepositoryAdapter
 import org.collaborators.paymentslab.account.infrastructure.jwt.impl.JwtTokenExtractor
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Import
         AccountRepositoryAdapter::class,
         DelegatePasswordEncrypt::class,
         AccountRegister::class,
+        AccountValidator::class,
         AccountLoginProcessor::class,
         JwtTokenGenerator::class,
         JwtTokenParser::class,

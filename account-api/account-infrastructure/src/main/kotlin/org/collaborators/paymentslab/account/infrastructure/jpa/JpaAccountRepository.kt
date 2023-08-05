@@ -10,5 +10,7 @@ interface JpaAccountRepository: JpaRepository<Account, Long> {
 
     fun existsByUsername(username: String): Boolean
 
+    fun existsByPhoneNumber(phoneNumber: String): Boolean
+
     fun findByAccountKey(id: String): Account?
 }

@@ -12,6 +12,10 @@ class AccountRepositoryAdapter(
         return jpaAccountRepository.existsByEmail(email)
     }
 
+    override fun existByPhoneNumber(phoneNumber: String): Boolean {
+        return jpaAccountRepository.existsByPhoneNumber(phoneNumber)
+    }
+
     override fun save(account: Account): Account {
         return jpaAccountRepository.save(account)
     }
