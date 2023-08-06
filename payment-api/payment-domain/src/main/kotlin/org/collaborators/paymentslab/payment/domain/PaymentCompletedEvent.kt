@@ -2,11 +2,12 @@ package org.collaborators.paymentslab.payment.domain
 
 import org.collaborator.paymentlab.common.domain.DomainEvent
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.Date
 
 class PaymentCompletedEvent(
     val accountId: Long,
-    val approvedAt: LocalDateTime,
+    val approvedAt: Date,
     var orderId: String,
     val orderName: String,
     val amount: Int,
@@ -16,7 +17,7 @@ class PaymentCompletedEvent(
 ): DomainEvent {
     constructor(tossPayments: TossPayments): this(
         tossPayments.accountId!!,
-        tossPayments.info!!.approvedAt,
+        Date.from(tossPayments.info!!.approvedAt.atZone(ZoneId.systemDefault()).toInstant()),
         tossPayments.info!!.orderId,
         tossPayments.info!!.orderName,
         tossPayments.cardInfo!!.amount,

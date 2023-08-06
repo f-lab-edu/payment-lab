@@ -2,6 +2,8 @@ package org.collaborators.paymentslab.payment.domain
 
 import jakarta.persistence.*
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.util.Date
 
 @Entity
 class PaymentHistory protected constructor(
@@ -28,7 +30,7 @@ class PaymentHistory protected constructor(
         fun newInstanceFrom(event: PaymentCompletedEvent): PaymentHistory {
             return PaymentHistory(
                 event.accountId,
-                event.approvedAt,
+                event.approvedAt.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
                 event.orderId,
                 event.orderName,
                 event.amount,
