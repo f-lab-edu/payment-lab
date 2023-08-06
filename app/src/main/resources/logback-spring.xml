@@ -32,7 +32,7 @@
     </root>
 
     <logger name="org.springframework" level="INFO"/>
-    <logger name="org.collaborators.paymentslab" level="INFO" additivity="false">
+    <logger name="payment" level="INFO" additivity="false">
         <appender-ref ref="PAYMENT_FILE" />
     </logger>
 </configuration>
