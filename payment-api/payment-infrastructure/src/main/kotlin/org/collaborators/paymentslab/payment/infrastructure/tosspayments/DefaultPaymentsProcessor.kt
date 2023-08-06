@@ -2,7 +2,6 @@ package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.collaborator.paymentlab.common.AuthenticatedUser
-import org.collaborators.paymentslab.payment.domain.PaymentHistory
 import org.collaborators.paymentslab.payment.domain.PaymentHistoryRepository
 import org.collaborators.paymentslab.payment.domain.PaymentsProcessor
 import org.collaborators.paymentslab.payment.domain.TossPaymentsRepository
@@ -55,11 +54,7 @@ open class DefaultPaymentsProcessor(
         val newPaymentRecord = tossPaymentsRepository.save(newPaymentEntity)
 
         logger.info("complete {}", objectMapper.writeValueAsString(newPaymentRecord))
-        val newPaymentHistoryEntity = PaymentHistory.newInstanceFrom(newPaymentRecord)
-        paymentHistoryRepository.save(newPaymentHistoryEntity)
-        logger.info("history {}",objectMapper.writeValueAsString(newPaymentHistoryEntity))
 
-        // TODO EventListener 를 활용하여, 비동기로 결제이력 저장하는 코드 작성
-//        newPaymentRecord.pollAllEvents().forEach { publisher.publishEvent(it) }
+        newPaymentRecord.pollAllEvents().forEach { publisher.publishEvent(it) }
     }
 }

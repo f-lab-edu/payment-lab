@@ -25,6 +25,18 @@ class PaymentHistory protected constructor(
     val id: Long? = null
 
     companion object {
+        fun newInstanceFrom(event: PaymentCompletedEvent): PaymentHistory {
+            return PaymentHistory(
+                event.accountId,
+                event.approvedAt,
+                event.orderId,
+                event.orderName,
+                event.amount,
+                event.paymentKey,
+                event.status
+            )
+        }
+
         fun newInstanceFrom(tossPayments: TossPayments): PaymentHistory  {
             return PaymentHistory(
                 tossPayments.accountId!!,
