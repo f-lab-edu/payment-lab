@@ -11,14 +11,13 @@ import org.springframework.stereotype.Component
 
 @Component
 class PaymentCompleteHistoryEventHandler(
-    private val paymentHistoryRepository: PaymentHistoryRepository
+    private val paymentHistoryRepository: PaymentHistoryRepository,
+    private val objectMapper: ObjectMapper
 ) {
-
     private val logger = LoggerFactory.getLogger("payment")
 
     @EventListener
     fun handle(event: PaymentCompletedEvent) {
-        val objectMapper = ObjectMapper()
         val newPaymentHistoryEntity = PaymentHistory.newInstanceFrom(event)
         try {
             paymentHistoryRepository.save(newPaymentHistoryEntity)
