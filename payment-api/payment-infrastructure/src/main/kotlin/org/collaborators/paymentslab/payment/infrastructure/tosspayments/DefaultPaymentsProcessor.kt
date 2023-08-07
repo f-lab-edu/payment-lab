@@ -53,8 +53,9 @@ open class DefaultPaymentsProcessor(
         newPaymentEntity.completeOf(principal.id)
         val newPaymentRecord = tossPaymentsRepository.save(newPaymentEntity)
 
-        logger.info("complete {}", objectMapper.writeValueAsString(newPaymentRecord))
-
-        newPaymentRecord.pollAllEvents().forEach { publisher.publishEvent(it) }
+        newPaymentRecord.pollAllEvents().forEach {
+            logger.info("complete {}", objectMapper.writeValueAsString(it))
+            publisher.publishEvent(it)
+        }
     }
 }
