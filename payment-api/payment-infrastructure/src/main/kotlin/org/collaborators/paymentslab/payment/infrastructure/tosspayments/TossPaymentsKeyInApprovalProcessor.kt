@@ -39,6 +39,7 @@ class TossPaymentsKeyInApprovalProcessor(
 
         headers.setBasicAuth(String(Base64.getEncoder().encode("${secretKey}:".toByteArray(StandardCharsets.ISO_8859_1))))
         headers.contentType = MediaType.APPLICATION_JSON
+        headers.set("Idempotency-Key", "SAAABPQbcqjEXiDL")
 
         return HttpEntity(dto, headers)
     }
