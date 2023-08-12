@@ -1,8 +1,8 @@
 package org.collaborators.paymentslab.payment.infrastructure.jpa
 
 import org.collaborators.paymentslab.payment.data.PageData
-import org.collaborators.paymentslab.payment.domain.PaymentHistory
-import org.collaborators.paymentslab.payment.domain.PaymentHistoryRepository
+import org.collaborators.paymentslab.payment.domain.entity.PaymentHistory
+import org.collaborators.paymentslab.payment.domain.repository.PaymentHistoryRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 

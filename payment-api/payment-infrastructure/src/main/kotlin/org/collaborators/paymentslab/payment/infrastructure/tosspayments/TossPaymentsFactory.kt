@@ -1,6 +1,9 @@
 package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 
 import org.collaborators.paymentslab.payment.domain.*
+import org.collaborators.paymentslab.payment.domain.entity.PayMethod
+import org.collaborators.paymentslab.payment.domain.entity.TossPayments
+import org.collaborators.paymentslab.payment.domain.entity.TossPaymentsInfo
 
 object TossPaymentsFactory {
 

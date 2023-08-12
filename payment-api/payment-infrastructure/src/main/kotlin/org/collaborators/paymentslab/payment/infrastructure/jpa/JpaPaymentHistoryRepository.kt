@@ -1,6 +1,6 @@
 package org.collaborators.paymentslab.payment.infrastructure.jpa
 
-import org.collaborators.paymentslab.payment.domain.PaymentHistory
+import org.collaborators.paymentslab.payment.domain.entity.PaymentHistory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository

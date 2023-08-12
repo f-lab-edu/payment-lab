@@ -3,8 +3,8 @@ package org.collaborators.paymentslab.payment.presentation
 import org.collaborator.paymentlab.common.Role
 import org.collaborators.paymentslab.AbstractApiTest
 import org.collaborators.paymentslab.account.domain.AccountRepository
-import org.collaborators.paymentslab.payment.domain.PaymentHistory
-import org.collaborators.paymentslab.payment.domain.PaymentHistoryRepository
+import org.collaborators.paymentslab.payment.domain.entity.PaymentHistory
+import org.collaborators.paymentslab.payment.domain.repository.PaymentHistoryRepository
 import org.collaborators.paymentslab.payment.presentation.mock.MockPayments
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
