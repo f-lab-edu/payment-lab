@@ -1,7 +1,7 @@
 package org.collaborators.paymentslab.payment.domain
 
 import org.collaborator.paymentlab.common.domain.DomainEvent
-import java.time.LocalDateTime
+import org.collaborators.paymentslab.payment.domain.entity.TossPayments
 import java.time.ZoneId
 import java.util.Date
 

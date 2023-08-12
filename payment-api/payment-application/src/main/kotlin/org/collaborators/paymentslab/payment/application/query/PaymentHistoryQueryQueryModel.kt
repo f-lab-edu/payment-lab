@@ -1,6 +1,6 @@
 package org.collaborators.paymentslab.payment.application.query
 
-import org.collaborators.paymentslab.payment.domain.PaymentHistory
+import org.collaborators.paymentslab.payment.domain.entity.PaymentHistory
 import java.time.LocalDateTime
 
 data class PaymentHistoryQueryQueryModel(

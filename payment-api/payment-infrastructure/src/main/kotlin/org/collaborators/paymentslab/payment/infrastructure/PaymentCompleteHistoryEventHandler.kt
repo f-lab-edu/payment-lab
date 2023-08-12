@@ -3,8 +3,8 @@ package org.collaborators.paymentslab.payment.infrastructure
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.collaborator.paymentlab.common.error.InvalidArgumentException
 import org.collaborators.paymentslab.payment.domain.PaymentCompletedEvent
-import org.collaborators.paymentslab.payment.domain.PaymentHistory
-import org.collaborators.paymentslab.payment.domain.PaymentHistoryRepository
+import org.collaborators.paymentslab.payment.domain.entity.PaymentHistory
+import org.collaborators.paymentslab.payment.domain.repository.PaymentHistoryRepository
 import org.slf4j.LoggerFactory
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component

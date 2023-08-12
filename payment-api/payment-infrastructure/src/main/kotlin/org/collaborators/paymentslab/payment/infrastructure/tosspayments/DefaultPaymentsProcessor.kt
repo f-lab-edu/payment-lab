@@ -2,9 +2,9 @@ package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.collaborator.paymentlab.common.AuthenticatedUser
-import org.collaborators.paymentslab.payment.domain.PaymentHistoryRepository
+import org.collaborators.paymentslab.payment.domain.repository.PaymentHistoryRepository
 import org.collaborators.paymentslab.payment.domain.PaymentsProcessor
-import org.collaborators.paymentslab.payment.domain.TossPaymentsRepository
+import org.collaborators.paymentslab.payment.domain.repository.TossPaymentsRepository
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.security.core.context.SecurityContextHolder
