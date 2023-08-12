@@ -8,8 +8,6 @@ class PaymentOrder(
     @Column(nullable = false)
     val accountId: Long,
     @Column(nullable = false)
-    val orderId: String,
-    @Column(nullable = false)
     val orderName: String,
     @Column(nullable = false)
     val amount: Int,

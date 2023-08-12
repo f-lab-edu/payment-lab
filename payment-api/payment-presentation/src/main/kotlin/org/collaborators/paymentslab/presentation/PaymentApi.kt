@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.*
 class PaymentApi(private val paymentService: PaymentService) {
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @PostMapping("key-in")
+    @PostMapping("key-in/{paymentOrderId}")
     fun keyInPayed(
+        @PathVariable paymentOrderId: Long,
         @RequestBody @Valid request: TossPaymentsKeyInRequest
     ) {
-        paymentService.keyInPay(request.toCommand())
+        paymentService.keyInPay(paymentOrderId, request.toCommand())
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
