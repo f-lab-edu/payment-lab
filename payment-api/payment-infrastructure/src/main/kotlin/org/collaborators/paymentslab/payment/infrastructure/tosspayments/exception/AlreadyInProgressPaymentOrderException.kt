@@ -1,0 +1,6 @@
+package org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception
+
+import org.collaborator.paymentlab.common.error.ErrorCode
+import org.collaborator.paymentlab.common.error.ServiceException
+
+class AlreadyInProgressPaymentOrderException: ServiceException(ErrorCode.ALREADY_IN_PROGRESS_PAYMENT_ORDER)

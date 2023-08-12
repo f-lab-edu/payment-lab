@@ -11,8 +11,9 @@ class PaymentOrder(
     val orderName: String,
     @Column(nullable = false)
     val amount: Int,
+    @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
-    val status: String,
+    val status: PaymentsStatus,
     @Column(nullable = false)
     val createAt: LocalDateTime,
 ) {

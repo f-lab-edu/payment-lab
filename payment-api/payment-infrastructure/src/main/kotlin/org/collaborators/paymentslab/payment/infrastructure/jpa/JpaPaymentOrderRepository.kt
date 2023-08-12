@@ -4,5 +4,5 @@ import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface JpaPaymentOrderRepository: JpaRepository<PaymentOrder, Long> {
-    fun findPaymentOrderById(id: Long): PaymentOrder
+    fun findPaymentOrderById(id: Long): PaymentOrder?
 }

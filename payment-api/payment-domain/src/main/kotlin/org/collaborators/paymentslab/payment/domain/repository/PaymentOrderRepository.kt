@@ -4,5 +4,5 @@ import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 
 interface PaymentOrderRepository {
     fun save(entity: PaymentOrder): PaymentOrder
-    fun findById(id: Long): PaymentOrder
+    fun findById(id: Long): PaymentOrder?
 }

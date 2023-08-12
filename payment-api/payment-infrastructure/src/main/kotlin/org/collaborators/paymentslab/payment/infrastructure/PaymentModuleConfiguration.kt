@@ -13,6 +13,7 @@ import org.collaborators.paymentslab.payment.infrastructure.jpa.TossPaymentsRepo
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.TossPaymentsProcessor
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.TossPaymentsKeyInApprovalProcessor
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.TossPaymentsQueryManager
+import org.collaborators.paymentslab.payment.infrastructure.tosspayments.TossPaymentsValidator
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -28,6 +29,7 @@ import java.time.format.DateTimeFormatter
     PaymentOrderRepositoryAdapter::class,
     TossPaymentsProcessor::class,
     TossPaymentsQueryManager::class,
+    TossPaymentsValidator::class,
     TossPaymentsKeyInApprovalProcessor::class,
 ])
 @Configuration

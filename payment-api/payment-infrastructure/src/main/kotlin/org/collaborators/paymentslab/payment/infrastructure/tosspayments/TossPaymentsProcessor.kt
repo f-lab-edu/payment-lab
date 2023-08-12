@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.transaction.annotation.Transactional
 
 open class TossPaymentsProcessor(
+    private val tossPaymentsValidator: TossPaymentsValidator,
     private val tossPaymentsKeyInApprovalProcessor: TossPaymentsKeyInApprovalProcessor,
     private val tossPaymentsRepository: TossPaymentsRepository,
     private val publisher: ApplicationEventPublisher,
@@ -30,7 +31,7 @@ open class TossPaymentsProcessor(
         cardPassword: String,
         customerIdentityNumber: String
     ) {
-
+        tossPaymentsValidator.validate(paymentOrderId, amount, orderName)
 
         val response = tossPaymentsKeyInApprovalProcessor.approval(
             TossPaymentsKeyInDto(
