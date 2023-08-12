@@ -2,6 +2,7 @@ package org.collaborators.paymentslab.payment.domain
 
 interface PaymentsProcessor {
     fun keyInPay(
+        paymentOrderId: Long,
         amount: Int,
         orderId: String,
         orderName: String,

@@ -16,8 +16,9 @@ class PaymentService(
     private val paymentsProcessor: PaymentsProcessor,
     private val paymentsQueryManager: PaymentsQueryManager
     ) {
-    fun keyInPay(command: TossPaymentsKeyInPayCommand) {
+    fun keyInPay(paymentOrderId: Long, command: TossPaymentsKeyInPayCommand) {
         paymentsProcessor.keyInPay(
+            paymentOrderId,
             command.amount,
             command.orderId,
             command.orderName,
