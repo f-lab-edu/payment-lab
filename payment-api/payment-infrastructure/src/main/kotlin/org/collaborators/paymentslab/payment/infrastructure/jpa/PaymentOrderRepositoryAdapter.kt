@@ -2,6 +2,7 @@ package org.collaborators.paymentslab.payment.infrastructure.jpa
 
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
+import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.PaymentOrderNotFoundException
 
 
 class PaymentOrderRepositoryAdapter(
@@ -11,7 +12,7 @@ class PaymentOrderRepositoryAdapter(
         return jpaPaymentOrderRepository.save(entity)
     }
 
-    override fun findById(id: Long): PaymentOrder? {
-        return jpaPaymentOrderRepository.findPaymentOrderById(id)
+    override fun findById(id: Long): PaymentOrder {
+        return jpaPaymentOrderRepository.findPaymentOrderById(id) ?: throw PaymentOrderNotFoundException()
     }
 }

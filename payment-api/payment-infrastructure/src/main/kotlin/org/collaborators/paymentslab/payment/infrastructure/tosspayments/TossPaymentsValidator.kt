@@ -1,20 +1,19 @@
 package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 
 import org.collaborator.paymentlab.common.AuthenticatedUser
+import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 import org.collaborators.paymentslab.payment.domain.entity.PaymentsStatus
 import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.*
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.context.SecurityContextHolder
 
-class TossPaymentsValidator(
-    private val paymentOrderRepository: PaymentOrderRepository
-) {
+class TossPaymentsValidator {
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    fun validate(paymentOrderId: Long, amount: Int, orderName: String) {
+    fun validate(paymentOrder: PaymentOrder, amount: Int, orderName: String) {
         val accountUser = SecurityContextHolder.getContext().authentication.principal as AuthenticatedUser
-        val paymentOrder = paymentOrderRepository.findById(paymentOrderId) ?: throw PaymentOrderNotFoundException()
+        val paymentOrderId = paymentOrder.id
 
         if (paymentOrder.accountId != accountUser.id) {
             log.error("invalid accountId from paymentOrderId {}", paymentOrderId)
