@@ -11,7 +11,7 @@ class PaymentOrderRepositoryAdapter(
         return jpaPaymentOrderRepository.save(entity)
     }
 
-    override fun findById(id: Long): PaymentOrder {
+    override fun findById(id: Long): PaymentOrder? {
         return jpaPaymentOrderRepository.findPaymentOrderById(id)
     }
 }
