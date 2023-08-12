@@ -3,6 +3,7 @@ package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.collaborator.paymentlab.common.AuthenticatedUser
 import org.collaborators.paymentslab.payment.domain.PaymentsProcessor
+import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
 import org.collaborators.paymentslab.payment.domain.repository.TossPaymentsRepository
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 open class TossPaymentsProcessor(
     private val tossPaymentsValidator: TossPaymentsValidator,
     private val tossPaymentsKeyInApprovalProcessor: TossPaymentsKeyInApprovalProcessor,
+    private val paymentOrderRepository: PaymentOrderRepository,
     private val tossPaymentsRepository: TossPaymentsRepository,
     private val publisher: ApplicationEventPublisher,
     private val objectMapper: ObjectMapper
@@ -31,9 +33,12 @@ open class TossPaymentsProcessor(
         cardPassword: String,
         customerIdentityNumber: String
     ) {
-        tossPaymentsValidator.validate(paymentOrderId, amount, orderName)
+        val paymentOrder = paymentOrderRepository.findById(paymentOrderId)
+
+        tossPaymentsValidator.validate(paymentOrder, amount, orderName)
 
         val response = tossPaymentsKeyInApprovalProcessor.approval(
+            paymentOrder,
             TossPaymentsKeyInDto(
                 amount,
                 orderId,
