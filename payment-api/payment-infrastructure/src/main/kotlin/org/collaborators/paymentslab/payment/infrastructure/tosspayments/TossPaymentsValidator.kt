@@ -3,7 +3,6 @@ package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 import org.collaborator.paymentlab.common.AuthenticatedUser
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 import org.collaborators.paymentslab.payment.domain.entity.PaymentsStatus
-import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.*
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.context.SecurityContextHolder
@@ -19,18 +18,14 @@ class TossPaymentsValidator {
             log.error("invalid accountId from paymentOrderId {}", paymentOrderId)
             throw InvalidPaymentOrderAccountIdException()
         }
-        if (paymentOrder.amount != amount) {
+        if (paymentOrder.amount != amount
+            || paymentOrder.orderName != orderName
+            || !PaymentsStatus.isInRange(paymentOrder.status)
+        ) {
             log.error("invalid amount from paymentOrderId {}", paymentOrderId)
-            throw InvalidPaymentOrderAmountException()
+            throw InvalidPaymentOrderException()
         }
-        if (paymentOrder.orderName != orderName) {
-            log.error("invalid orderName from paymentOrderId {}", paymentOrderId)
-            throw InvalidPaymentOrderNameException()
-        }
-        if (!PaymentsStatus.isInRange(paymentOrder.status)) {
-            log.error("invalid paymentOrderStatus from paymentOrderId {}", paymentOrderId)
-            throw InvalidPaymentOrderStatusException()
-        }
+
         if (paymentOrder.status == PaymentsStatus.IN_PROGRESS) {
             log.error("already in progress paymentOrderId {}", paymentOrderId)
             throw AlreadyInProgressPaymentOrderException()
