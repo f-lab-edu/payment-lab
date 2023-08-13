@@ -17,6 +17,10 @@ class PaymentOrder protected constructor(
     @Column(nullable = false)
     val createAt: LocalDateTime,
 ) {
+    fun complete() {
+        this.status = PaymentsStatus.DONE
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
