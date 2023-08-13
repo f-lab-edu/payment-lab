@@ -44,8 +44,8 @@ class TossPaymentsKeyInApprovalProcessor(
         headers.contentType = MediaType.APPLICATION_JSON
 
         val account = SecurityContextHolder.getContext().authentication.principal as AuthenticatedUser
-        val idempotencyKey = "po_${paymentOrder.id}_acc_${account.id}_sts_${paymentOrder.status}"
-        headers.set("Idempotency-Key", idempotencyKey)
+        val idempotencyKey = "po_${paymentOrder.id}_acc_${account.id}}"
+        headers.set("Idempotency-Key", String(Base64.getEncoder().encode(idempotencyKey.toByteArray(StandardCharsets.ISO_8859_1))))
 
         return HttpEntity(dto, headers)
     }
