@@ -179,7 +179,7 @@ class PaymentApiTest @Autowired constructor(
 
     @Test
     @DisplayName("이미 결제 진행이 불가능한 주문 결제를 승인 요청할 경우 해당 요청은 실패한다.")
-    fun paymentInvalidPaymentOrderError() {
+    fun paymentAlreadyDonePaymentOrderError() {
         val account = testEntityForRegister("keyInInvalidStatusTest@gmail.com")
         accountRepository.save(account)
 
@@ -194,6 +194,43 @@ class PaymentApiTest @Autowired constructor(
         paymentOrderRepository.save(paymentOrder)
 
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
+        val wrongToken = tokenGenerator.generate(account.email, setOf(Role.USER))
+
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders
+                .post("/api/v1/toss-payments/key-in/{paymentOrderId}", paymentOrder.id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(reqBody)
+                .header("Authorization", "Bearer ${wrongToken.accessToken}")
+        ).andExpect(MockMvcResultMatchers.status().isUnprocessableEntity)
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "{class-name}/{method-name}",
+                    getDocumentRequest(),
+                    Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                    keyInRequestFieldsSnippet(),
+                    errorResponseFieldsSnippet()
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("변조된 결제요청 정보로 결제 승인 요청할 경우 해당 요청은 실패한다.")
+    fun paymentInvalidPaymentOrderError() {
+        val account = testEntityForRegister("keyInInvalidPaymentOrderTest@gmail.com")
+        accountRepository.save(account)
+
+        val wrongRequestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
+
+        val paymentOrder = PaymentOrder.newInstance(
+            account.id!!,
+            "originOrderName",
+            wrongRequestDto.amount
+        )
+        paymentOrderRepository.save(paymentOrder)
+
+        val reqBody = this.objectMapper.writeValueAsString(wrongRequestDto)
         val wrongToken = tokenGenerator.generate(account.email, setOf(Role.USER))
 
         this.mockMvc.perform(
