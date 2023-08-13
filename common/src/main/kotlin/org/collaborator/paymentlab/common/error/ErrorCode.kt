@@ -30,6 +30,7 @@ enum class ErrorCode(
 
     // payment error
     PAYMENT_ORDER_NOT_FOUND("존재하지 않는 주문결제 입니다.", 404),
+    INVALID_PAYMENT_ORDER("유효하지 않은 주문결제 입니다.", 422),
     INVALID_PAYMENT_ORDER_ACCOUNT_ID("유효하지 않은 회원의 주문결제 입니다.", 422),
     INVALID_PAYMENT_ORDER_NAME("유효하지 않은 주문결제 이름입니다.", 422),
     INVALID_PAYMENT_ORDER_AMOUNT("유효하지 않은 주문결제 수량입니다.", 422),

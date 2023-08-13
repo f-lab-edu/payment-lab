@@ -5,6 +5,7 @@ import org.collaborators.paymentslab.AbstractApiTest
 import org.collaborators.paymentslab.account.domain.AccountRepository
 import org.collaborators.paymentslab.payment.domain.entity.PaymentHistory
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
+import org.collaborators.paymentslab.payment.domain.entity.PaymentsStatus
 import org.collaborators.paymentslab.payment.domain.repository.PaymentHistoryRepository
 import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
 import org.collaborators.paymentslab.payment.presentation.mock.MockPayments
@@ -17,6 +18,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation
+import org.springframework.restdocs.payload.RequestFieldsSnippet
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.time.LocalDateTime
 
@@ -57,29 +59,7 @@ class PaymentApiTest @Autowired constructor(
                     "{class-name}/{method-name}",
                     getDocumentRequest(),
                     Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
-                    PayloadDocumentation.requestFields(
-                        PayloadDocumentation.fieldWithPath("amount")
-                            .type(JsonFieldType.NUMBER)
-                            .description("주문 상품의 가격"),
-                        PayloadDocumentation.fieldWithPath("orderName")
-                            .type(JsonFieldType.STRING)
-                            .description("주문 상품 이름"),
-                        PayloadDocumentation.fieldWithPath("cardNumber")
-                            .type(JsonFieldType.STRING)
-                            .description("결제 카드의 카드번호"),
-                        PayloadDocumentation.fieldWithPath("cardExpirationYear")
-                            .type(JsonFieldType.STRING)
-                            .description("결제 카드의 만료 년도"),
-                        PayloadDocumentation.fieldWithPath("cardExpirationMonth")
-                            .type(JsonFieldType.STRING)
-                            .description("결제 카드의 만료 월"),
-                        PayloadDocumentation.fieldWithPath("cardPassword")
-                            .type(JsonFieldType.STRING)
-                            .description("결제 카드 비밀번호"),
-                        PayloadDocumentation.fieldWithPath("customerIdentityNumber")
-                            .type(JsonFieldType.STRING)
-                            .description("카드 소유자의 주민등록번호 앞자리 6")
-                    )
+                    keyInRequestFieldsSnippet()
                 )
             )
     }
@@ -115,29 +95,121 @@ class PaymentApiTest @Autowired constructor(
                     "{class-name}/{method-name}",
                     getDocumentRequest(),
                     Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
-                    PayloadDocumentation.requestFields(
-                        PayloadDocumentation.fieldWithPath("amount")
-                            .type(JsonFieldType.NUMBER)
-                            .description("주문 상품의 가격"),
-                        PayloadDocumentation.fieldWithPath("orderName")
-                            .type(JsonFieldType.STRING)
-                            .description("주문 상품 이름"),
-                        PayloadDocumentation.fieldWithPath("cardNumber")
-                            .type(JsonFieldType.STRING)
-                            .description("결제 카드의 카드번호"),
-                        PayloadDocumentation.fieldWithPath("cardExpirationYear")
-                            .type(JsonFieldType.STRING)
-                            .description("결제 카드의 만료 년도"),
-                        PayloadDocumentation.fieldWithPath("cardExpirationMonth")
-                            .type(JsonFieldType.STRING)
-                            .description("결제 카드의 만료 월"),
-                        PayloadDocumentation.fieldWithPath("cardPassword")
-                            .type(JsonFieldType.STRING)
-                            .description("결제 카드 비밀번호"),
-                        PayloadDocumentation.fieldWithPath("customerIdentityNumber")
-                            .type(JsonFieldType.STRING)
-                            .description("카드 소유자의 주민등록번호 앞자리 6")
-                    ),
+                    keyInRequestFieldsSnippet(),
+                    errorResponseFieldsSnippet()
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("주문 결제 정보가 존재하지 않는 주문 결제로 변조된 경우 결제 승인이 실패한다.")
+    fun paymentError() {
+        val account = testEntityForRegister("keyInWrongPaymentOrderTest@gmail.com")
+        accountRepository.save(account)
+
+        val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
+
+        val paymentOrder = PaymentOrder.newInstance(
+            account.id!!,
+            requestDto.orderName,
+            requestDto.amount
+        )
+        paymentOrderRepository.save(paymentOrder)
+
+        val reqBody = this.objectMapper.writeValueAsString(requestDto)
+        val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
+
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders
+                .post("/api/v1/toss-payments/key-in/{paymentOrderId}", 99L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(reqBody)
+                .header("Authorization", "Bearer ${tokens.accessToken}")
+        ).andExpect(MockMvcResultMatchers.status().isNotFound)
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "{class-name}/{method-name}",
+                    getDocumentRequest(),
+                    Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                    keyInRequestFieldsSnippet(),
+                    errorResponseFieldsSnippet()
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("주문 결제 정보의 소유자가 아닌 다른 사용자 계정으로 결제 승인을 요청할 경우 해당 결제 요청은 실패한다.")
+    fun paymentWrongUserError() {
+        val account = testEntityForRegister("keyInWrongUserTest@gmail.com")
+        val wrongAccount = testEntityForRegister("wrongUser123@gmail.com")
+        accountRepository.save(account)
+        accountRepository.save(wrongAccount)
+
+        val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
+
+        val paymentOrder = PaymentOrder.newInstance(
+            account.id!!,
+            requestDto.orderName,
+            requestDto.amount
+        )
+        paymentOrderRepository.save(paymentOrder)
+
+        val reqBody = this.objectMapper.writeValueAsString(requestDto)
+        val wrongToken = tokenGenerator.generate(wrongAccount.email, setOf(Role.USER))
+
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders
+                .post("/api/v1/toss-payments/key-in/{paymentOrderId}", paymentOrder.id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(reqBody)
+                .header("Authorization", "Bearer ${wrongToken.accessToken}")
+        ).andExpect(MockMvcResultMatchers.status().isUnprocessableEntity)
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "{class-name}/{method-name}",
+                    getDocumentRequest(),
+                    Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                    keyInRequestFieldsSnippet(),
+                    errorResponseFieldsSnippet()
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("이미 결제 진행이 불가능한 주문 결제를 승인 요청할 경우 해당 요청은 실패한다.")
+    fun paymentInvalidPaymentOrderError() {
+        val account = testEntityForRegister("keyInInvalidStatusTest@gmail.com")
+        accountRepository.save(account)
+
+        val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
+
+        val paymentOrder = PaymentOrder.newInstance(
+            account.id!!,
+            requestDto.orderName,
+            requestDto.amount,
+            PaymentsStatus.CANCELED
+        )
+        paymentOrderRepository.save(paymentOrder)
+
+        val reqBody = this.objectMapper.writeValueAsString(requestDto)
+        val wrongToken = tokenGenerator.generate(account.email, setOf(Role.USER))
+
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders
+                .post("/api/v1/toss-payments/key-in/{paymentOrderId}", paymentOrder.id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(reqBody)
+                .header("Authorization", "Bearer ${wrongToken.accessToken}")
+        ).andExpect(MockMvcResultMatchers.status().isUnprocessableEntity)
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "{class-name}/{method-name}",
+                    getDocumentRequest(),
+                    Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                    keyInRequestFieldsSnippet(),
                     errorResponseFieldsSnippet()
                 )
             )
@@ -199,4 +271,29 @@ class PaymentApiTest @Autowired constructor(
                 )
             )
     }
+
+    private fun keyInRequestFieldsSnippet(): RequestFieldsSnippet? =
+        PayloadDocumentation.requestFields(
+            PayloadDocumentation.fieldWithPath("amount")
+                .type(JsonFieldType.NUMBER)
+                .description("주문 상품의 가격"),
+            PayloadDocumentation.fieldWithPath("orderName")
+                .type(JsonFieldType.STRING)
+                .description("주문 상품 이름"),
+            PayloadDocumentation.fieldWithPath("cardNumber")
+                .type(JsonFieldType.STRING)
+                .description("결제 카드의 카드번호"),
+            PayloadDocumentation.fieldWithPath("cardExpirationYear")
+                .type(JsonFieldType.STRING)
+                .description("결제 카드의 만료 년도"),
+            PayloadDocumentation.fieldWithPath("cardExpirationMonth")
+                .type(JsonFieldType.STRING)
+                .description("결제 카드의 만료 월"),
+            PayloadDocumentation.fieldWithPath("cardPassword")
+                .type(JsonFieldType.STRING)
+                .description("결제 카드 비밀번호"),
+            PayloadDocumentation.fieldWithPath("customerIdentityNumber")
+                .type(JsonFieldType.STRING)
+                .description("카드 소유자의 주민등록번호 앞자리 6")
+        )
 }
