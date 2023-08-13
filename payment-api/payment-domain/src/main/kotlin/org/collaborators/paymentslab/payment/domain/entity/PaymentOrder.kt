@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import java.time.LocalDateTime
 
 @Entity
-class PaymentOrder(
+class PaymentOrder protected constructor(
     @Column(nullable = false)
     val accountId: Long,
     @Column(nullable = false)
@@ -13,11 +13,22 @@ class PaymentOrder(
     val amount: Int,
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
-    val status: PaymentsStatus,
+    var status: PaymentsStatus,
     @Column(nullable = false)
     val createAt: LocalDateTime,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
+
+    companion object {
+        fun newInstance(
+            accountId: Long,
+            orderName: String,
+            amount: Int,
+            status: PaymentsStatus = PaymentsStatus.READY): PaymentOrder {
+
+            return PaymentOrder(accountId, orderName, amount, status, LocalDateTime.now())
+        }
+    }
 }

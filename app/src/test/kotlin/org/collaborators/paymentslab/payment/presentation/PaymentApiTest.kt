@@ -4,7 +4,9 @@ import org.collaborator.paymentlab.common.Role
 import org.collaborators.paymentslab.AbstractApiTest
 import org.collaborators.paymentslab.account.domain.AccountRepository
 import org.collaborators.paymentslab.payment.domain.entity.PaymentHistory
+import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 import org.collaborators.paymentslab.payment.domain.repository.PaymentHistoryRepository
+import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
 import org.collaborators.paymentslab.payment.presentation.mock.MockPayments
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -20,7 +22,8 @@ import java.time.LocalDateTime
 
 class PaymentApiTest @Autowired constructor(
     private val accountRepository: AccountRepository,
-    private val paymentHistoryRepository: PaymentHistoryRepository
+    private val paymentHistoryRepository: PaymentHistoryRepository,
+    private val paymentOrderRepository: PaymentOrderRepository
 ) : AbstractApiTest() {
 
     @Test
@@ -30,12 +33,20 @@ class PaymentApiTest @Autowired constructor(
         accountRepository.save(account)
 
         val requestDto = MockPayments.testTossPaymentsRequest
+
+        val paymentOrder = PaymentOrder.newInstance(
+            account.id!!,
+            requestDto.orderName,
+            requestDto.amount
+        )
+        paymentOrderRepository.save(paymentOrder)
+
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
         val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/toss-payments/key-in")
+                .post("/api/v1/toss-payments/key-in/{paymentOrderId}", paymentOrder.id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -80,12 +91,20 @@ class PaymentApiTest @Autowired constructor(
         accountRepository.save(account)
 
         val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
+
+        val paymentOrder = PaymentOrder.newInstance(
+            account.id!!,
+            requestDto.orderName,
+            requestDto.amount
+        )
+        paymentOrderRepository.save(paymentOrder)
+
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
         val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/toss-payments/key-in")
+                .post("/api/v1/toss-payments/key-in/{paymentOrderId}", paymentOrder.id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
