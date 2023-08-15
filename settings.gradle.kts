@@ -20,3 +20,12 @@ include(
     ":payment-api:payment-infrastructure",
     ":payment-api:payment-presentation",
 )
+
+/** log **/
+include(
+    ":log-api",
+    ":log-api:log-application",
+    ":log-api:log-domain",
+    ":log-api:log-infrastructure",
+    ":log-api:log-presentation",
+)
