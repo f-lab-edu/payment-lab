@@ -1,4 +1,4 @@
-package org.collaborators.paymentslab.presentation.request
+package org.collaborators.paymentslab.payment.presentation.request
 
 import jakarta.validation.constraints.NotBlank
 import org.collaborator.paymentlab.common.KeyGenerator

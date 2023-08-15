@@ -1,6 +1,6 @@
 package org.collaborators.paymentslab.payment.presentation.mock
 
-import org.collaborators.paymentslab.presentation.request.TossPaymentsKeyInRequest
+import org.collaborators.paymentslab.payment.presentation.request.TossPaymentsKeyInRequest
 
 object MockPayments {
     val testTossPaymentsRequest = TossPaymentsKeyInRequest(

@@ -1,11 +1,11 @@
-package org.collaborators.paymentslab.presentation
+package org.collaborators.paymentslab.payment.presentation
 
 import jakarta.validation.Valid
 import org.collaborator.paymentlab.common.result.ApiResult
 import org.collaborators.paymentslab.payment.application.PaymentService
 import org.collaborators.paymentslab.payment.application.query.PaymentHistoryQuery
-import org.collaborators.paymentslab.presentation.request.TossPaymentsKeyInRequest
-import org.collaborators.paymentslab.presentation.response.PaymentHistoryResponse
+import org.collaborators.paymentslab.payment.presentation.request.TossPaymentsKeyInRequest
+import org.collaborators.paymentslab.payment.presentation.response.PaymentHistoryResponse
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 

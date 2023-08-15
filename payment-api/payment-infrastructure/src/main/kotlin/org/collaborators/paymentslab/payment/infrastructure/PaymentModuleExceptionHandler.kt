@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = ["org.collaborators.paymentslab.payment"])
 class PaymentModuleExceptionHandler {
     private val log = LoggerFactory.getLogger(this.javaClass)
 
