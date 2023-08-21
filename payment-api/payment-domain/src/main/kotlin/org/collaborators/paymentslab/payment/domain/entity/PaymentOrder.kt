@@ -19,6 +19,10 @@ class PaymentOrder protected constructor(
     @Column(nullable = false)
     val createAt: LocalDateTime,
 ): AbstractAggregateRoot() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null
+
     fun complete() {
         this.status = PaymentsStatus.DONE
     }
@@ -26,10 +30,6 @@ class PaymentOrder protected constructor(
     fun registerLogEvent() {
         registerEvent(PaymentRecordEvent(this))
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
 
     companion object {
         fun newInstance(

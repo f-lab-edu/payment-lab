@@ -1,6 +1,5 @@
 package org.collaborators.paymentslab.support
 
-import org.collaborators.paymentslab.payment.domain.PaymentCompletedEvent
 import org.collaborators.paymentslab.payment.domain.PaymentRecordEvent
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
