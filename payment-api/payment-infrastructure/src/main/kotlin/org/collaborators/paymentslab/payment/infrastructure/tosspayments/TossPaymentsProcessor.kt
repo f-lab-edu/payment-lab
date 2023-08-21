@@ -35,6 +35,9 @@ open class TossPaymentsProcessor(
     ) {
         val paymentOrder = paymentOrderRepository.findById(paymentOrderId)
 
+        paymentOrder.registerLogEvent()
+        paymentOrder.pollAllEvents().forEach { publisher.publishEvent(it) }
+
         tossPaymentsValidator.validate(paymentOrder, amount, orderName)
 
         val response = tossPaymentsKeyInApprovalProcessor.approval(
