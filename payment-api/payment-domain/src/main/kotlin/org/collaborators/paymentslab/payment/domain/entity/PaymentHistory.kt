@@ -1,7 +1,7 @@
 package org.collaborators.paymentslab.payment.domain.entity
 
 import jakarta.persistence.*
-import org.collaborators.paymentslab.payment.domain.PaymentCompletedEvent
+import org.collaborators.paymentslab.payment.domain.PaymentResultEvent
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -27,10 +27,10 @@ class PaymentHistory protected constructor(
     val id: Long? = null
 
     companion object {
-        fun newInstanceFrom(event: PaymentCompletedEvent): PaymentHistory {
+        fun newInstanceFrom(event: PaymentResultEvent): PaymentHistory {
             return PaymentHistory(
                 event.accountId,
-                event.approvedAt.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+                event.occurredOn().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
                 event.orderId,
                 event.orderName,
                 event.amount,

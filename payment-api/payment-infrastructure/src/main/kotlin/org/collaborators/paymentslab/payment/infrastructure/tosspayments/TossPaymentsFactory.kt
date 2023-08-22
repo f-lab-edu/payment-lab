@@ -13,7 +13,7 @@ object TossPaymentsFactory {
 
     private fun createCardInfo(responseBody: TossPaymentsApprovalResponse): TossPaymentsCardInfo {
         return TossPaymentsCardInfo(
-            amount = responseBody.card.amount,
+            amount = responseBody.card!!.amount,
             issuerCode = responseBody.card.issuerCode,
             acquirerCode = responseBody.card.acquirerCode,
             number = responseBody.card.number,

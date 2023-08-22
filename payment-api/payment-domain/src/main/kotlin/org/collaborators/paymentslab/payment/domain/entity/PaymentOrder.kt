@@ -23,12 +23,16 @@ class PaymentOrder protected constructor(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
-    fun complete() {
-        this.status = PaymentsStatus.DONE
+    fun aborted() {
+        this.status = PaymentsStatus.ABORTED
     }
 
-    fun registerLogEvent() {
-        registerEvent(PaymentRecordEvent(this))
+    fun inProcess() {
+        this.status = PaymentsStatus.IN_PROGRESS
+    }
+
+    fun complete() {
+        this.status = PaymentsStatus.DONE
     }
 
     companion object {

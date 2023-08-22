@@ -20,7 +20,7 @@ class TossPayments protected constructor(
     @Embedded
     var cardInfo: TossPaymentsCardInfo? = null,
     @Column(nullable = false)
-    val status: String,
+    var status: String,
     @Enumerated(EnumType.STRING)
     private var payMethod: PayMethod,
     @CreationTimestamp
@@ -43,9 +43,10 @@ class TossPayments protected constructor(
         payMethod: PayMethod
     ) : this(info, cancelInfo, cardInfo, status, payMethod, null, null)
 
-    fun completeOf(accountId: Long) {
+    fun resultOf(accountId: Long, paymentsStatus: PaymentsStatus) {
         this.accountId = accountId
-        registerEvent(PaymentCompletedEvent(this))
+        this.status = paymentsStatus.name
+        registerEvent(PaymentResultEvent(this))
     }
 
     override fun equals(other: Any?): Boolean {
