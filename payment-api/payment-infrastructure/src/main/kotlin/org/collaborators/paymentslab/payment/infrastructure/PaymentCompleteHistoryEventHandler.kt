@@ -14,7 +14,7 @@ class PaymentCompleteHistoryEventHandler(
     private val paymentHistoryRepository: PaymentHistoryRepository,
     private val objectMapper: ObjectMapper
 ) {
-    private val logger = LoggerFactory.getLogger("payment")
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     @EventListener
     fun handle(event: PaymentResultEvent) {
