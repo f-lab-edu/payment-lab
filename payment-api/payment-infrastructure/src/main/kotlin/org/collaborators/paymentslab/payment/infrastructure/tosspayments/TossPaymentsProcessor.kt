@@ -2,6 +2,7 @@ package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 
 import org.collaborators.paymentslab.payment.domain.PaymentsProcessor
 import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
 open class TossPaymentsProcessor(
@@ -10,7 +11,6 @@ open class TossPaymentsProcessor(
     private val paymentOrderRepository: PaymentOrderRepository,
 ): PaymentsProcessor {
 
-    @Transactional
     override fun keyInPay(
         paymentOrderId: Long,
         amount: Int,

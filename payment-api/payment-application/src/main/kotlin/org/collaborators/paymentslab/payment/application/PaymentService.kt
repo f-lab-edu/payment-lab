@@ -7,6 +7,7 @@ import org.collaborators.paymentslab.payment.domain.PaymentsProcessor
 import org.collaborators.paymentslab.payment.domain.PaymentsQueryManager
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
 @Service
@@ -16,6 +17,8 @@ class PaymentService(
     private val paymentsProcessor: PaymentsProcessor,
     private val paymentsQueryManager: PaymentsQueryManager
     ) {
+
+    @Transactional(propagation = Propagation.NEVER)
     fun keyInPay(paymentOrderId: Long, command: TossPaymentsKeyInPayCommand) {
         paymentsProcessor.keyInPay(
             paymentOrderId,
