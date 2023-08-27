@@ -4,10 +4,13 @@ import org.collaborator.paymentlab.common.AuthenticatedUser
 import org.collaborator.paymentlab.common.error.ErrorCode
 import org.collaborator.paymentlab.common.error.ServiceException
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
+import org.collaborators.paymentslab.payment.domain.repository.TossPaymentsRepository
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.TossPaymentsApiClientException
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.client.HttpClientErrorException
@@ -17,7 +20,9 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 
 class TossPaymentsKeyInApprovalProcessor(
-    private val restTemplate: RestTemplate
+    private val restTemplate: RestTemplate,
+    private val tossPaymentsRepository: TossPaymentsRepository,
+    private val publisher: ApplicationEventPublisher
 ) {
     @Value("\${toss.payments.url}")
     private lateinit var url: String
@@ -25,15 +30,38 @@ class TossPaymentsKeyInApprovalProcessor(
     @Value("\${toss.payments.secretKey}")
     private lateinit var secretKey: String
 
-    fun approval(paymentOrder: PaymentOrder, dto: TossPaymentsKeyInDto): TossPaymentsApprovalResponse {
+    fun approval(paymentOrder: PaymentOrder, dto: TossPaymentsKeyInDto) {
+        paymentOrder.inProcess()
+        var result = TossPaymentsApprovalResponse.preResponseOf(paymentOrder, dto)
         try {
             val request = createRequest(paymentOrder, dto)
-            val result = restTemplate.postForEntity("${url}key-in", request, TossPaymentsApprovalResponse::class.java)
-            return result.body!!
+            val response = restTemplate.postForEntity("${url}key-in", request, TossPaymentsApprovalResponse::class.java)
+            if (response.statusCode == HttpStatus.OK && response.hasBody()) {
+                paymentOrder.complete()
+                result = response.body!!
+            }
         } catch (e: HttpClientErrorException) {
+            paymentOrder.aborted()
             throw TossPaymentsApiClientException(e)
         } catch (e: RestClientException) {
+            paymentOrder.aborted()
             throw ServiceException(ErrorCode.UN_DEFINED_ERROR)
+        } finally {
+            publishEventForRecordPaymentProcess(result, paymentOrder)
+        }
+    }
+
+    private fun publishEventForRecordPaymentProcess(
+        result: TossPaymentsApprovalResponse,
+        paymentOrder: PaymentOrder
+    ) {
+        val principal = SecurityContextHolder.getContext().authentication.principal as AuthenticatedUser
+        val newPaymentEntity = TossPaymentsFactory.create(result)
+        newPaymentEntity.resultOf(principal.id, paymentOrder.status)
+        val newPaymentRecord = tossPaymentsRepository.save(newPaymentEntity)
+
+        newPaymentRecord.pollAllEvents().forEach {
+            publisher.publishEvent(it)
         }
     }
 

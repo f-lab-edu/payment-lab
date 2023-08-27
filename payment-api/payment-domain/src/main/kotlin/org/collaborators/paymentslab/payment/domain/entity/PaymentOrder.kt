@@ -1,6 +1,8 @@
 package org.collaborators.paymentslab.payment.domain.entity
 
 import jakarta.persistence.*
+import org.collaborator.paymentlab.common.domain.AbstractAggregateRoot
+import org.collaborators.paymentslab.payment.domain.PaymentRecordEvent
 import java.time.LocalDateTime
 
 @Entity
@@ -16,14 +18,22 @@ class PaymentOrder protected constructor(
     var status: PaymentsStatus,
     @Column(nullable = false)
     val createAt: LocalDateTime,
-) {
-    fun complete() {
-        this.status = PaymentsStatus.DONE
-    }
-
+): AbstractAggregateRoot() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
+
+    fun aborted() {
+        this.status = PaymentsStatus.ABORTED
+    }
+
+    fun inProcess() {
+        this.status = PaymentsStatus.IN_PROGRESS
+    }
+
+    fun complete() {
+        this.status = PaymentsStatus.DONE
+    }
 
     companion object {
         fun newInstance(

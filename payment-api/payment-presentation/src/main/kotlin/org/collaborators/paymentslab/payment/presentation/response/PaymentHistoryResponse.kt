@@ -1,4 +1,4 @@
-package org.collaborators.paymentslab.presentation.response
+package org.collaborators.paymentslab.payment.presentation.response
 
 import org.collaborators.paymentslab.payment.application.query.PaymentHistoryQueryQueryModel
 import java.time.LocalDateTime

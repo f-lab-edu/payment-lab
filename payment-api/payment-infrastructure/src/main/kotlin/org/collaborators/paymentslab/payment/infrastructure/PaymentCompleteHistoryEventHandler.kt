@@ -2,7 +2,7 @@ package org.collaborators.paymentslab.payment.infrastructure
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.collaborator.paymentlab.common.error.InvalidArgumentException
-import org.collaborators.paymentslab.payment.domain.PaymentCompletedEvent
+import org.collaborators.paymentslab.payment.domain.PaymentResultEvent
 import org.collaborators.paymentslab.payment.domain.entity.PaymentHistory
 import org.collaborators.paymentslab.payment.domain.repository.PaymentHistoryRepository
 import org.slf4j.LoggerFactory
@@ -14,10 +14,10 @@ class PaymentCompleteHistoryEventHandler(
     private val paymentHistoryRepository: PaymentHistoryRepository,
     private val objectMapper: ObjectMapper
 ) {
-    private val logger = LoggerFactory.getLogger("payment")
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     @EventListener
-    fun handle(event: PaymentCompletedEvent) {
+    fun handle(event: PaymentResultEvent) {
         val newPaymentHistoryEntity = PaymentHistory.newInstanceFrom(event)
         try {
             paymentHistoryRepository.save(newPaymentHistoryEntity)
