@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter
 class FileSystemPaymentTransactionLogProcessor(
     private val objectMapper: ObjectMapper
 ): TransactionLogProcessor<PaymentResultEvent> {
-    private val logger = LoggerFactory.getLogger("payment")
+
     @Value("\${event.record.dir}")
     private lateinit var recordDir: String
 

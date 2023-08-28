@@ -22,8 +22,17 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%msg%n</pattern>
         </encoder>
+    </appender>
+
+    <appender name="ASYNC_PAYMENT_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="PAYMENT_FILE" />
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+        <maxFlushTime>5000</maxFlushTime>
+        <neverBlock>false</neverBlock>
     </appender>
 
     <root level="INFO">
@@ -33,6 +42,6 @@
 
     <logger name="org.springframework" level="INFO"/>
     <logger name="payment" level="INFO" additivity="false">
-        <appender-ref ref="PAYMENT_FILE" />
+        <appender-ref ref="ASYNC_PAYMENT_FILE" />
     </logger>
 </configuration>
