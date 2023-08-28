@@ -1,5 +1,5 @@
 package org.collaborators.paymentslab.log.domain
 
-interface CustomLogProcessor<T> {
+interface TransactionLogProcessor<T> {
     fun execute(event: T)
 }

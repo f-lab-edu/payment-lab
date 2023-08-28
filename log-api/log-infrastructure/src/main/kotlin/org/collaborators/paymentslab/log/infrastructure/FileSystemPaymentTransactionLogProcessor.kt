@@ -1,8 +1,9 @@
 package org.collaborators.paymentslab.log.infrastructure
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.collaborators.paymentslab.log.domain.CustomLogProcessor
+import org.collaborators.paymentslab.log.domain.TransactionLogProcessor
 import org.collaborators.paymentslab.log.domain.PaymentResultEvent
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import java.io.File
 import java.io.FileWriter
@@ -14,10 +15,10 @@ import java.nio.file.Paths
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class FileSystemPaymentCustomLogProcessor(
+class FileSystemPaymentTransactionLogProcessor(
     private val objectMapper: ObjectMapper
-): CustomLogProcessor<PaymentResultEvent> {
-
+): TransactionLogProcessor<PaymentResultEvent> {
+    private val logger = LoggerFactory.getLogger("payment")
     @Value("\${event.record.dir}")
     private lateinit var recordDir: String
 
