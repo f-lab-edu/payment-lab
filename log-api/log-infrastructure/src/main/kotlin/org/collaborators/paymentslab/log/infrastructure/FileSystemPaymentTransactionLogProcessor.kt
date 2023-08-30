@@ -1,9 +1,7 @@
 package org.collaborators.paymentslab.log.infrastructure
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.collaborators.paymentslab.log.domain.TransactionLogProcessor
 import org.collaborators.paymentslab.log.domain.PaymentResultEvent
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import java.io.File
 import java.io.FileWriter
@@ -17,14 +15,14 @@ import java.time.format.DateTimeFormatter
 
 class FileSystemPaymentTransactionLogProcessor(
     private val objectMapper: ObjectMapper
-): TransactionLogProcessor<PaymentResultEvent> {
+) {
 
     @Value("\${event.record.dir}")
     private lateinit var recordDir: String
 
     private val prefix = "payment"
 
-    override fun process(event: PaymentResultEvent) {
+    fun process(event: PaymentResultEvent) {
         try {
             val root = Paths.get(recordDir)
             ensureDirectoryWritable(root)
