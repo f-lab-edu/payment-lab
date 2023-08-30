@@ -24,7 +24,7 @@ class FileSystemPaymentTransactionLogProcessor(
 
     private val prefix = "payment"
 
-    override fun execute(event: PaymentResultEvent) {
+    override fun process(event: PaymentResultEvent) {
         try {
             val root = Paths.get(recordDir)
             ensureDirectoryWritable(root)

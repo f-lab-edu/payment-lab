@@ -11,7 +11,7 @@ class AsyncAppenderPaymentTransactionLogProcessor(
 
     private val logger = LoggerFactory.getLogger("payment")
 
-    override fun execute(event: PaymentResultEvent) {
+    override fun process(event: PaymentResultEvent) {
         logger.info(objectMapper.writeValueAsString(event))
     }
 }

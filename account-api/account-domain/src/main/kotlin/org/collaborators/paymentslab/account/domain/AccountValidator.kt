@@ -5,7 +5,7 @@ import org.collaborators.paymentslab.account.domain.exception.InvalidPhoneNumber
 class AccountValidator(
     private val accountRepository: AccountRepository,
 ) {
-    fun validatePhoneNumber(phoneNumber: String) {
+    fun validate(phoneNumber: String) {
         if (!accountRepository.existByPhoneNumber(phoneNumber))
             throw InvalidPhoneNumberException()
     }

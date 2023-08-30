@@ -20,7 +20,7 @@ class PaymentService(
 
     @Transactional(propagation = Propagation.NEVER)
     fun keyInPay(paymentOrderId: Long, command: TossPaymentsKeyInPayCommand) {
-        paymentsProcessor.keyInPay(
+        paymentsProcessor.process(
             paymentOrderId,
             command.amount,
             command.orderId,
@@ -34,7 +34,7 @@ class PaymentService(
     }
 
     fun readHistoriesFrom(query: PaymentHistoryQuery): List<PaymentHistoryQueryQueryModel> {
-        val entities = paymentsQueryManager.readHistoriesFrom(
+        val entities = paymentsQueryManager.queryHistory(
             query.pageNum, query.pageSize, query.direction, query.properties)
         return entities.map { PaymentHistoryQueryQueryModel.of(it) }
     }

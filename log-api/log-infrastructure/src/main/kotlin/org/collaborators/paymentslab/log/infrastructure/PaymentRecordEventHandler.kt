@@ -13,6 +13,6 @@ class PaymentRecordEventHandler(
     @Async
     @EventListener
     fun handle(event: PaymentResultEvent) {
-        eventRecorder.execute(event)
+        eventRecorder.record(event)
     }
 }

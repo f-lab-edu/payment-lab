@@ -7,7 +7,7 @@ import org.collaborators.paymentslab.log.domain.TransactionLogProcessor
 class PaymentEventResultSyncRecorder(
     private val logProcessor: TransactionLogProcessor<PaymentResultEvent>
 ): EventResultRecorder<PaymentResultEvent> {
-    override fun execute(event: PaymentResultEvent) {
-        logProcessor.execute(event)
+    override fun record(event: PaymentResultEvent) {
+        logProcessor.process(event)
     }
 }

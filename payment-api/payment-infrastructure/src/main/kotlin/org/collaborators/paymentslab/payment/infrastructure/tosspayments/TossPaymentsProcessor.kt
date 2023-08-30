@@ -11,7 +11,7 @@ open class TossPaymentsProcessor(
     private val paymentOrderRepository: PaymentOrderRepository,
 ): PaymentsProcessor {
 
-    override fun keyInPay(
+    override fun process(
         paymentOrderId: Long,
         amount: Int,
         orderId: String,
