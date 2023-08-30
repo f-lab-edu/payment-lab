@@ -4,6 +4,7 @@ import org.collaborator.paymentlab.common.AuthenticatedUser
 import org.collaborator.paymentlab.common.error.ErrorCode
 import org.collaborator.paymentlab.common.error.ServiceException
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
+import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
 import org.collaborators.paymentslab.payment.domain.repository.TossPaymentsRepository
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.TossPaymentsApiClientException
 import org.springframework.beans.factory.annotation.Value
@@ -22,6 +23,7 @@ import java.util.*
 class TossPaymentsKeyInApprovalProcessor(
     private val restTemplate: RestTemplate,
     private val tossPaymentsRepository: TossPaymentsRepository,
+    private val paymentOrderRepository: PaymentOrderRepository,
     private val publisher: ApplicationEventPublisher
 ) {
     @Value("\${toss.payments.url}")
@@ -47,6 +49,7 @@ class TossPaymentsKeyInApprovalProcessor(
             paymentOrder.aborted()
             throw ServiceException(ErrorCode.UN_DEFINED_ERROR)
         } finally {
+            paymentOrderRepository.save(paymentOrder)
             publishEventForRecordPaymentProcess(result, paymentOrder)
         }
     }

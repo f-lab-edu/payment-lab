@@ -1,4 +1,4 @@
-package org.collaborators.paymentslab.config.security
+package org.collaborators.paymentslab.config
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonInclude

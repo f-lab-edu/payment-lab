@@ -5,7 +5,8 @@ import org.springframework.context.annotation.Import
 
 @Import(
     value = [
-        PaymentEventResultSyncRecorder::class
+        PaymentEventResultSyncRecorder::class,
+        AsyncAppenderPaymentTransactionLogProcessor::class
     ]
 )
 @Configuration

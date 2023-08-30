@@ -10,7 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 class TossPaymentsQueryManager(
     private val paymentsHistoryRepository: PaymentHistoryRepository
 ): PaymentsQueryManager {
-    override fun readHistoriesFrom(
+    override fun queryHistory(
         pageNum: Int,
         pageSize: Int,
         direction: String,

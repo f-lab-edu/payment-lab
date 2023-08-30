@@ -45,7 +45,7 @@ class AccountService(
     }
 
     fun validateWithPhoneNumber(phoneNumber: String) {
-        accountValidator.validatePhoneNumber(phoneNumber)
+        accountValidator.validate(phoneNumber)
     }
 
     data class TokenDto(val accessToken: String, val refreshToken: String)
