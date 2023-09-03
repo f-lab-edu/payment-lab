@@ -1,5 +1,6 @@
 package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.collaborator.paymentlab.common.AuthenticatedUser
 import org.collaborator.paymentlab.common.error.ErrorCode
 import org.collaborator.paymentlab.common.error.ServiceException
@@ -13,6 +14,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestClientException
@@ -24,6 +26,8 @@ class TossPaymentsKeyInApprovalProcessor(
     private val restTemplate: RestTemplate,
     private val tossPaymentsRepository: TossPaymentsRepository,
     private val paymentOrderRepository: PaymentOrderRepository,
+    private val kafkaTemplate: KafkaTemplate<String, String>,
+    private val objectMapper: ObjectMapper,
     private val publisher: ApplicationEventPublisher
 ) {
     @Value("\${toss.payments.url}")
@@ -31,6 +35,9 @@ class TossPaymentsKeyInApprovalProcessor(
 
     @Value("\${toss.payments.secretKey}")
     private lateinit var secretKey: String
+
+    @Value("\${collaborators.kafka.topic.payment.transaction.name}")
+    private lateinit var paymentTransactionTopicName: String
 
     fun approval(paymentOrder: PaymentOrder, dto: TossPaymentsKeyInDto) {
         paymentOrder.inProcess()
@@ -65,6 +72,7 @@ class TossPaymentsKeyInApprovalProcessor(
 
         newPaymentRecord.pollAllEvents().forEach {
             publisher.publishEvent(it)
+            kafkaTemplate.send(paymentTransactionTopicName, objectMapper.writeValueAsString(it))
         }
     }
 
