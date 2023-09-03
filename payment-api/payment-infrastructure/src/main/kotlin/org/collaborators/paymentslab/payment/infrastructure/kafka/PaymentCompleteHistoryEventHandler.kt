@@ -6,6 +6,7 @@ import org.collaborators.paymentslab.payment.domain.PaymentResultEvent
 import org.collaborators.paymentslab.payment.domain.entity.PaymentHistory
 import org.collaborators.paymentslab.payment.domain.repository.PaymentHistoryRepository
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.event.EventListener
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
@@ -16,7 +17,10 @@ class PaymentCompleteHistoryEventHandler(
     private val objectMapper: ObjectMapper
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
-    @KafkaListener(topics = ["local.payment.transaction.event"], groupId = "payment.complete")
+
+    @KafkaListener(
+        topics = ["\${collaborators.kafka.topic.payment.transaction.name}"],
+        groupId = "\${collaborators.kafka.topic.payment.transaction.groupId}")
     fun handle(record: String) {
         val event = objectMapper.readValue(record, PaymentResultEvent::class.java)
         val newPaymentHistoryEntity = PaymentHistory.newInstanceFrom(event)
