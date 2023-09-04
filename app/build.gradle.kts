@@ -55,6 +55,9 @@ dependencies {
 	implementation("com.querydsl:querydsl-core")
 	annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")
 	kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
+
+	/** kafka **/
+	implementation("org.springframework.kafka:spring-kafka")
 }
 
 tasks {
