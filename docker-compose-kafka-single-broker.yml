@@ -11,6 +11,9 @@ services:
       ZOOKEEPER_SYNC_LIMIT: 2
     ports:
       - "22181:2181"
+    volumes:
+      - ~/kafka/data/zookeeper_data:/var/lib/zookeeper/data
+      - ~/kafka/data/zookeeper_log:/var/lib/zookeeper/log
 
   kafka:
     image: confluentinc/cp-kafka:latest
