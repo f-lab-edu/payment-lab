@@ -1,4 +1,4 @@
-package org.collaborators.paymentslab.payment.infrastructure.kafka
+package org.collaborators.paymentslab.config.kafka
 
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
@@ -10,7 +10,7 @@ import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.core.ProducerFactory
 
 @Configuration
-class KafkaPaymentProducerConfig {
+class KafkaProducerConfig {
     @Value("\${collaborators.kafka.bootstrap-servers}")
     private lateinit var bootstrapAddress: String
 

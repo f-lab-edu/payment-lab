@@ -1,4 +1,4 @@
-package org.collaborators.paymentslab.payment.infrastructure.kafka
+package org.collaborators.paymentslab.config.kafka
 
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -13,7 +13,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 
 @EnableKafka
 @Configuration
-class KafkaPaymentConsumerConfig {
+class KafkaConsumerConfig {
     @Value("\${collaborators.kafka.bootstrap-servers}")
     private lateinit var bootstrapAddress: String
 
