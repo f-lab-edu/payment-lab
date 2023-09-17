@@ -1,8 +1,10 @@
 package org.collaborators.paymentslab.payment.application
 
+import org.collaborators.paymentslab.payment.application.command.PaymentOrderCommand
 import org.collaborators.paymentslab.payment.application.command.TossPaymentsKeyInPayCommand
 import org.collaborators.paymentslab.payment.application.query.PaymentHistoryQuery
 import org.collaborators.paymentslab.payment.application.query.PaymentHistoryQueryQueryModel
+import org.collaborators.paymentslab.payment.domain.PaymentOrderProcessor
 import org.collaborators.paymentslab.payment.domain.PaymentsProcessor
 import org.collaborators.paymentslab.payment.domain.PaymentsQueryManager
 import org.springframework.context.annotation.Profile
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class PaymentService(
     private val paymentsProcessor: PaymentsProcessor,
+    private val paymentOrderProcessor: PaymentOrderProcessor,
     private val paymentsQueryManager: PaymentsQueryManager
     ) {
 
@@ -37,5 +40,9 @@ class PaymentService(
         val entities = paymentsQueryManager.queryHistory(
             query.pageNum, query.pageSize, query.direction, query.properties)
         return entities.map { PaymentHistoryQueryQueryModel.of(it) }
+    }
+
+    fun generatePaymentOrder(command: PaymentOrderCommand): String {
+        return paymentOrderProcessor.process(command.accountId, command.orderName, command.amount)
     }
 }

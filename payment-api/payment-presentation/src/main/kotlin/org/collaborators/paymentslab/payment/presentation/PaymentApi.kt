@@ -4,6 +4,7 @@ import jakarta.validation.Valid
 import org.collaborator.paymentlab.common.result.ApiResult
 import org.collaborators.paymentslab.payment.application.PaymentService
 import org.collaborators.paymentslab.payment.application.query.PaymentHistoryQuery
+import org.collaborators.paymentslab.payment.presentation.request.PaymentOrderRequest
 import org.collaborators.paymentslab.payment.presentation.request.TossPaymentsKeyInRequest
 import org.collaborators.paymentslab.payment.presentation.response.PaymentHistoryResponse
 import org.springframework.http.HttpHeaders
@@ -31,9 +32,17 @@ class PaymentApi(private val paymentService: PaymentService) {
     fun generatePaymentOrder(
         @RequestBody @Valid request: PaymentOrderRequest
     ): ResponseEntity<Void> {
-        val paymentOrderId = paymentService.generatePaymentOrder()
+        val paymentOrderId = paymentService.generatePaymentOrder(request.toCommand())
         return ResponseEntity.status(HttpStatus.SEE_OTHER).location(URI("/api/v1/toss-payments/${paymentOrderId}")).build()
     }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @GetMapping("{paymentOrderId}")
+    fun getPaymentOrderId(@PathVariable paymentOrderId: Long) {
+        // TODO 결제 주문 페이지 작업 진행하기
+        println("paymentOrderId : $paymentOrderId")
+    }
+
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping
