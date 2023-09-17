@@ -9,6 +9,7 @@ import org.collaborators.paymentslab.payment.domain.entity.PaymentsStatus
 import org.collaborators.paymentslab.payment.domain.repository.PaymentHistoryRepository
 import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
 import org.collaborators.paymentslab.payment.presentation.mock.MockPayments
+import org.collaborators.paymentslab.payment.presentation.request.PaymentOrderRequest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -252,6 +253,8 @@ class PaymentApiTest @Autowired constructor(
             )
     }
 
+
+
     @Test
     @DisplayName("사용자 계정별 카드결제 이력 조회 api")
     fun readHistoriesTest() {
@@ -305,6 +308,80 @@ class PaymentApiTest @Autowired constructor(
                             .type(JsonFieldType.STRING)
                             .description("결제 승인 일자")
                     )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("주문 결제 발행 api 테스트")
+    fun testGeneratePaymentOrder() {
+        val account = testEntityForRegister("generatePaymentOrder@gmail.com")
+        val entity = accountRepository.save(account)
+
+        val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
+        val reqBody = objectMapper.writeValueAsString(PaymentOrderRequest(entity.id!!, "테스트 주문상품", 10))
+
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders
+                .post("/api/v1/toss-payments/payment-order")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(reqBody)
+                .header("Authorization", "Bearer ${tokens.accessToken}")
+        ).andExpect(MockMvcResultMatchers.status().isSeeOther)
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "{class-name}/{method-name}",
+                    getDocumentRequest(),
+                    PayloadDocumentation.requestFields(
+                        PayloadDocumentation.fieldWithPath("accountId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("결제 주문을 이용하고자 하는 사용자의 id 번호"),
+                        PayloadDocumentation.fieldWithPath("orderName")
+                            .type(JsonFieldType.STRING)
+                            .description("결제 주문을 이용하고자 하는 사용자의 주문상품명"),
+                        PayloadDocumentation.fieldWithPath("amount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("결제 주문을 이용하고자 하는 사용자의 주문상품의 수량")
+                    )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("변조된 사용자 계정 id로 주문 결제 발행 api 테스트")
+    fun testWithInvalidAccountGeneratePaymentOrder() {
+        val account = testEntityForRegister("originalGeneratedPaymentOrder@gmail.com")
+        val originalUser = accountRepository.save(account)
+        val invalidAccountId = 9999L
+        val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
+        val invalidPaymentOrderRequest = PaymentOrderRequest(invalidAccountId, "잘못된 테스트 주문상품", 10)
+        val reqBody = objectMapper.writeValueAsString(invalidPaymentOrderRequest)
+
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders
+                .post("/api/v1/toss-payments/payment-order")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(reqBody)
+                .header("Authorization", "Bearer ${tokens.accessToken}")
+        ).andExpect(MockMvcResultMatchers.status().isUnprocessableEntity)
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "{class-name}/{method-name}",
+                    getDocumentRequest(),
+                    PayloadDocumentation.requestFields(
+                        PayloadDocumentation.fieldWithPath("accountId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("결제 주문을 이용하고자 하는 사용자의 id 번호"),
+                        PayloadDocumentation.fieldWithPath("orderName")
+                            .type(JsonFieldType.STRING)
+                            .description("결제 주문을 이용하고자 하는 사용자의 주문상품명"),
+                        PayloadDocumentation.fieldWithPath("amount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("결제 주문을 이용하고자 하는 사용자의 주문상품의 수량")
+                    ),
+                    errorResponseFieldsSnippet()
                 )
             )
     }

@@ -2,6 +2,7 @@ package org.collaborators.paymentslab.payment.presentation.mock
 
 import org.collaborators.paymentslab.payment.application.PaymentService
 import org.collaborators.paymentslab.payment.application.command.TossPaymentsKeyInPayCommand
+import org.collaborators.paymentslab.payment.domain.PaymentOrderProcessor
 import org.collaborators.paymentslab.payment.domain.PaymentsProcessor
 import org.collaborators.paymentslab.payment.domain.PaymentsQueryManager
 import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
@@ -17,9 +18,10 @@ import org.springframework.transaction.annotation.Transactional
 class MockPaymentService(
     private val paymentsProcessor: PaymentsProcessor,
     private val paymentsQueryManager: PaymentsQueryManager,
+    private val paymentOrderProcessor: PaymentOrderProcessor,
     private val paymentOrderRepository: PaymentOrderRepository,
     private val tossPaymentsValidator: TossPaymentsValidator
-): PaymentService(paymentsProcessor, paymentsQueryManager) {
+): PaymentService(paymentsProcessor, paymentOrderProcessor, paymentsQueryManager) {
     override fun keyInPay(paymentOrderId: Long, command: TossPaymentsKeyInPayCommand) {
         val paymentOrder = paymentOrderRepository.findById(paymentOrderId)
         tossPaymentsValidator.validate(paymentOrder, command.amount, command.orderName)
