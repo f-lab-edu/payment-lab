@@ -277,7 +277,7 @@ class PaymentApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .get("/api/v1/toss-payments")
+                .get(V1_API_TOSS_PAYMENTS)
                 .param("pageNum", "0")
                 .param("pageSize", "6")
                 .contentType(MediaType.APPLICATION_JSON)
