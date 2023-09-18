@@ -1,5 +1,6 @@
 package org.collaborators.paymentslab.config.security
 
+import org.collaborator.paymentlab.common.V1_API_AUTH
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -48,9 +49,9 @@ class SecurityConfig(
             .and()
             .authorizeHttpRequests()
             .requestMatchers(GET, "/", "/index.html").permitAll()
-            .requestMatchers(POST,"/api/v1/auth/register").permitAll()
-            .requestMatchers(POST,"/api/v1/auth/login").permitAll()
-            .requestMatchers(GET, "/api/v1/auth/confirm").permitAll()
+            .requestMatchers(POST,"$V1_API_AUTH/register").permitAll()
+            .requestMatchers(POST,"$V1_API_AUTH/login").permitAll()
+            .requestMatchers(GET, "$V1_API_AUTH/confirm").permitAll()
             .anyRequest().authenticated()
             .and()
             .formLogin().disable()

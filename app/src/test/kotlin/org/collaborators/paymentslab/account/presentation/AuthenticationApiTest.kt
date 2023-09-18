@@ -1,5 +1,6 @@
 package org.collaborators.paymentslab.account.presentation
 
+import org.collaborator.paymentlab.common.V1_API_AUTH
 import org.collaborators.paymentslab.AbstractApiTest
 import org.collaborators.paymentslab.account.domain.Account
 import org.collaborators.paymentslab.account.domain.AccountRepository
@@ -31,7 +32,7 @@ class AuthenticationApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/auth/register")
+                .post("$V1_API_AUTH/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -69,7 +70,7 @@ class AuthenticationApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/auth/register")
+                .post("$V1_API_AUTH/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -110,7 +111,7 @@ class AuthenticationApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/auth/register")
+                .post("$V1_API_AUTH/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -155,7 +156,7 @@ class AuthenticationApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .get("/api/v1/auth/confirm")
+                .get("$V1_API_AUTH/confirm")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -188,7 +189,7 @@ class AuthenticationApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/auth/login")
+                .post("$V1_API_AUTH/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -235,7 +236,7 @@ class AuthenticationApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/auth/login")
+                .post("$V1_API_AUTH/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -267,7 +268,7 @@ class AuthenticationApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/auth/reIssuance")
+                .post("$V1_API_AUTH/reIssuance")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer ${tokens.refreshToken}")
@@ -305,7 +306,7 @@ class AuthenticationApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/auth/reIssuance")
+                .post("$V1_API_AUTH/reIssuance")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer ${tokens.refreshToken}")
@@ -330,7 +331,7 @@ class AuthenticationApiTest @Autowired constructor(
     fun expiredReIssuanceTest() {
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/auth/reIssuance")
+                .post("$V1_API_AUTH/reIssuance")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer ${MockAuthentication.expiredRefreshToken}")

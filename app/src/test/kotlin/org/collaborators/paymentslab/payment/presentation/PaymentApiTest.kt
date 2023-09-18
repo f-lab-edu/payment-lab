@@ -1,6 +1,7 @@
 package org.collaborators.paymentslab.payment.presentation
 
 import org.collaborator.paymentlab.common.Role
+import org.collaborator.paymentlab.common.V1_API_TOSS_PAYMENTS
 import org.collaborators.paymentslab.AbstractApiTest
 import org.collaborators.paymentslab.account.domain.AccountRepository
 import org.collaborators.paymentslab.payment.domain.entity.PaymentHistory
@@ -49,7 +50,7 @@ class PaymentApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/toss-payments/key-in/{paymentOrderId}", paymentOrder.id)
+                .post("$V1_API_TOSS_PAYMENTS/key-in/{paymentOrderId}", paymentOrder.id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -85,7 +86,7 @@ class PaymentApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/toss-payments/key-in/{paymentOrderId}", paymentOrder.id)
+                .post("$V1_API_TOSS_PAYMENTS/key-in/{paymentOrderId}", paymentOrder.id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -122,7 +123,7 @@ class PaymentApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/toss-payments/key-in/{paymentOrderId}", 99L)
+                .post("$V1_API_TOSS_PAYMENTS/key-in/{paymentOrderId}", 99L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -161,7 +162,7 @@ class PaymentApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/toss-payments/key-in/{paymentOrderId}", paymentOrder.id)
+                .post("$V1_API_TOSS_PAYMENTS/key-in/{paymentOrderId}", paymentOrder.id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -199,7 +200,7 @@ class PaymentApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/toss-payments/key-in/{paymentOrderId}", paymentOrder.id)
+                .post("$V1_API_TOSS_PAYMENTS/key-in/{paymentOrderId}", paymentOrder.id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -236,7 +237,7 @@ class PaymentApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/toss-payments/key-in/{paymentOrderId}", paymentOrder.id)
+                .post("$V1_API_TOSS_PAYMENTS/key-in/{paymentOrderId}", paymentOrder.id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -323,7 +324,7 @@ class PaymentApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/toss-payments/payment-order")
+                .post("$V1_API_TOSS_PAYMENTS/payment-order")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -360,7 +361,7 @@ class PaymentApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("/api/v1/toss-payments/payment-order")
+                .post("$V1_API_TOSS_PAYMENTS/payment-order")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)

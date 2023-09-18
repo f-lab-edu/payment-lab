@@ -1,6 +1,7 @@
 package org.collaborators.paymentslab.payment.presentation
 
 import jakarta.validation.Valid
+import org.collaborator.paymentlab.common.V1_API_TOSS_PAYMENTS
 import org.collaborator.paymentlab.common.result.ApiResult
 import org.collaborators.paymentslab.payment.application.PaymentService
 import org.collaborators.paymentslab.payment.application.query.PaymentHistoryQuery
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
-@RequestMapping("api/v1/toss-payments")
+@RequestMapping(V1_API_TOSS_PAYMENTS)
 class PaymentApi(private val paymentService: PaymentService) {
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
