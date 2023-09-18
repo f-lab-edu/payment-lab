@@ -6,7 +6,8 @@ import org.collaborators.paymentslab.payment.domain.entity.PaymentsStatus
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.*
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.context.SecurityContextHolder
-import java.util.*
+import java.util.Locale
+
 
 class TossPaymentsValidator {
     private val log = LoggerFactory.getLogger(this::class.java)
