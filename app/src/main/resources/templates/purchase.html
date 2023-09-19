@@ -8,7 +8,7 @@
 <body>
     <form id = "paymentOrderForm" action="/" method="post">
         <label for = "orderName">상품명:</label>
-        <input type = "text" id = "orderName" name="orderName" value="테스트 상품 결제주문 발행" readonly><br><br>
+        <input type = "text" id = "orderName" name="orderName" value="테스트 상품 결제주문 발행"><br><br>
 
         <label for = "amount">수량:</label>
         <input type = "number" id = "amount" name = "amount" min = "1" value = "1"><br><br>
@@ -24,6 +24,7 @@
             formData.forEach((value, key) => {
                 jsonObject[key] = value;
             });
+            jsonObject["accountId"] = 1; // jwt account id
 
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "http://localhost:8080/v1/api/toss-payments/payment-order", true);

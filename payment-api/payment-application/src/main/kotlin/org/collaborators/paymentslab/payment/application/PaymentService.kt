@@ -43,7 +43,6 @@ class PaymentService(
     }
 
     fun generatePaymentOrder(command: PaymentOrderCommand): String {
-        // TODO 프론트에 리액트를 적용하기 전까지는 임시로 accountId 검증은 비활성화
         return paymentOrderProcessor.process(command.accountId, command.orderName, command.amount)
     }
 }

@@ -41,7 +41,7 @@ class PaymentApi(private val paymentService: PaymentService) {
         @RequestBody @Valid request: PaymentOrderRequest
     ): ResponseEntity<Void> {
         val paymentOrderId = paymentService.generatePaymentOrder(request.toCommand())
-        return ResponseEntity.status(HttpStatus.SEE_OTHER).location(URI("$V1_TOSS_PAYMENTS/payment-order/${paymentOrderId}")).build()
+        return ResponseEntity.status(HttpStatus.SEE_OTHER).location(URI("http://localhost:8080$V1_API_TOSS_PAYMENTS/${paymentOrderId}")).build()
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")

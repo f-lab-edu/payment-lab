@@ -12,10 +12,9 @@ class TossPaymentsPaymentOrderProcessor(
 ): PaymentOrderProcessor {
     override fun process(accountId: Long, orderName: String, amount: Int): String {
         val principal = SecurityContextHolder.getContext().authentication.principal as AuthenticatedUser
-        // TODO 프론트에 jwt 토큰 값을 파싱하는 기능을 추가하기 전까지만 비활성화
-//        if (accountId != principal.id)
-//            throw InvalidPaymentOrderException()
-        val newPaymentOrder = PaymentOrder.newInstance(principal.id, orderName, amount)
+        if (accountId != principal.id)
+            throw InvalidPaymentOrderException()
+        val newPaymentOrder = PaymentOrder.newInstance(accountId, orderName, amount)
         paymentOrderRepository.save(newPaymentOrder)
         return newPaymentOrder.id.toString()
     }
