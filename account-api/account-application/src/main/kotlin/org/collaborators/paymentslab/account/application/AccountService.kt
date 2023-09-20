@@ -44,7 +44,7 @@ class AccountService(
         return TokenDto(tokens.accessToken, tokens.refreshToken)
     }
 
-    fun validateWithPhoneNumber(phoneNumber: String) {
+    fun validate(phoneNumber: String) {
         accountValidator.validate(phoneNumber)
     }
 

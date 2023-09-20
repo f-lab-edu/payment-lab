@@ -17,7 +17,7 @@ class AccountApi(private val accountService: AccountService) {
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("phone")
     fun validateAccountByPhoneNumber(@RequestBody @Valid request: AccountPhoneNumberRequest) {
-        accountService.validateWithPhoneNumber(request.phoneNumber)
+        accountService.validate(request.phoneNumber)
     }
 
 }

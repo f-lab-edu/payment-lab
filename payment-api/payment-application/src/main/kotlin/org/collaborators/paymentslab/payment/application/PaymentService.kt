@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class PaymentService(
     private val paymentsProcessor: PaymentsProcessor,
-    private val paymentOrderProcessor: PaymentOrderProcessor,
     private val paymentsQueryManager: PaymentsQueryManager
     ) {
 
@@ -40,9 +39,5 @@ class PaymentService(
         val entities = paymentsQueryManager.queryHistory(
             query.pageNum, query.pageSize, query.direction, query.properties)
         return entities.map { PaymentHistoryQueryQueryModel.of(it) }
-    }
-
-    fun generatePaymentOrder(command: PaymentOrderCommand): String {
-        return paymentOrderProcessor.process(command.accountId, command.orderName, command.amount)
     }
 }

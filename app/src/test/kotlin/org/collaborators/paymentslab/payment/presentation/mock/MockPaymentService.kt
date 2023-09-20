@@ -18,10 +18,9 @@ import org.springframework.transaction.annotation.Transactional
 class MockPaymentService(
     private val paymentsProcessor: PaymentsProcessor,
     private val paymentsQueryManager: PaymentsQueryManager,
-    private val paymentOrderProcessor: PaymentOrderProcessor,
     private val paymentOrderRepository: PaymentOrderRepository,
     private val tossPaymentsValidator: TossPaymentsValidator
-): PaymentService(paymentsProcessor, paymentOrderProcessor, paymentsQueryManager) {
+): PaymentService(paymentsProcessor, paymentsQueryManager) {
     override fun keyInPay(paymentOrderId: Long, command: TossPaymentsKeyInPayCommand) {
         val paymentOrder = paymentOrderRepository.findById(paymentOrderId)
         tossPaymentsValidator.validate(paymentOrder, command.amount, command.orderName)
