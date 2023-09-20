@@ -2,6 +2,7 @@ package org.collaborators.paymentslab.payment.presentation.mock
 
 import org.collaborators.paymentslab.payment.application.PaymentService
 import org.collaborators.paymentslab.payment.application.command.TossPaymentsKeyInPayCommand
+import org.collaborators.paymentslab.payment.domain.PaymentOrderProcessor
 import org.collaborators.paymentslab.payment.domain.PaymentsProcessor
 import org.collaborators.paymentslab.payment.domain.PaymentsQueryManager
 import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository

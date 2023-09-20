@@ -1,6 +1,7 @@
 package org.collaborators.paymentslab.account.presentation
 
 import jakarta.validation.Valid
+import org.collaborator.paymentlab.common.V1_API_AUTH
 import org.collaborator.paymentlab.common.result.ApiResult
 import org.collaborators.paymentslab.account.application.AccountService
 import org.collaborators.paymentslab.account.application.command.LoginAccount
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
-@RequestMapping("api/v1/auth")
+@RequestMapping(V1_API_AUTH)
 class AuthenticationApi(private val accountService: AccountService) {
 
     @PostMapping("register")

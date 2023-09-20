@@ -6,41 +6,47 @@ import org.collaborators.paymentslab.payment.domain.entity.PaymentsStatus
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.*
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.context.SecurityContextHolder
+import java.util.Locale
+
 
 class TossPaymentsValidator {
     private val log = LoggerFactory.getLogger(this::class.java)
 
+    private val statusToException = mapOf(
+        PaymentsStatus.IN_PROGRESS to AlreadyInProgressPaymentOrderException(),
+        PaymentsStatus.DONE to AlreadyDonePaymentOrderException(),
+        PaymentsStatus.CANCELED to AlreadyCanceledPaymentOrderException(),
+        PaymentsStatus.ABORTED to AlreadyAbortedPaymentOrderException()
+    )
+
     fun validate(paymentOrder: PaymentOrder, amount: Int, orderName: String) {
         val accountUser = SecurityContextHolder.getContext().authentication.principal as AuthenticatedUser
-        val paymentOrderId = paymentOrder.id
 
-        if (paymentOrder.accountId != accountUser.id) {
-            log.error("invalid accountId from paymentOrderId {}", paymentOrderId)
-            throw InvalidPaymentOrderAccountIdException()
-        }
-        if (paymentOrder.amount != amount
-            || paymentOrder.orderName != orderName
-            || !PaymentsStatus.isInRange(paymentOrder.status)
-        ) {
-            log.error("invalid amount from paymentOrderId {}", paymentOrderId)
-            throw InvalidPaymentOrderException()
-        }
+        checkAccountId(paymentOrder, accountUser.id)
+        checkPaymentDetails(paymentOrder, amount, orderName)
+        checkPaymentStatus(paymentOrder)
+    }
 
-        if (paymentOrder.status == PaymentsStatus.IN_PROGRESS) {
-            log.error("already in progress paymentOrderId {}", paymentOrderId)
-            throw AlreadyInProgressPaymentOrderException()
+    private fun checkAccountId(paymentOrder: PaymentOrder, accountId: Long) {
+        if (paymentOrder.accountId != accountId) {
+            logAndThrow("invalid accountId from paymentOrderId ${paymentOrder.id}", InvalidPaymentOrderAccountIdException())
         }
-        if (paymentOrder.status == PaymentsStatus.DONE) {
-            log.error("already done paymentOrderId {}", paymentOrderId)
-            throw AlreadyDonePaymentOrderException()
+    }
+
+    private fun checkPaymentDetails(paymentOrder: PaymentOrder, amount: Int, orderName: String) {
+        if (paymentOrder.amount != amount || paymentOrder.orderName != orderName || !PaymentsStatus.isInRange(paymentOrder.status)) {
+            logAndThrow("invalid amount from paymentOrderId ${paymentOrder.id}", InvalidPaymentOrderException())
         }
-        if (paymentOrder.status == PaymentsStatus.CANCELED) {
-            log.error("already canceled paymentOrderId {}", paymentOrderId)
-            throw AlreadyCanceledPaymentOrderException()
+    }
+
+    private fun checkPaymentStatus(paymentOrder: PaymentOrder) {
+        statusToException[paymentOrder.status]?.let {
+            logAndThrow("already ${paymentOrder.status.name.lowercase(Locale.getDefault())} paymentOrderId ${paymentOrder.id}", it)
         }
-        if (paymentOrder.status == PaymentsStatus.ABORTED) {
-            log.error("already aborted paymentOrderId {}", paymentOrderId)
-            throw AlreadyAbortedPaymentOrderException()
-        }
+    }
+
+    private fun logAndThrow(message: String, exception: RuntimeException) {
+        log.error(message)
+        throw exception
     }
 }

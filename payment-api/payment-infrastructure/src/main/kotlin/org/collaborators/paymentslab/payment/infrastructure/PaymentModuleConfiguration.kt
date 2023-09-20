@@ -10,10 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import org.collaborators.paymentslab.payment.infrastructure.jpa.PaymentOrderRepositoryAdapter
 import org.collaborators.paymentslab.payment.infrastructure.jpa.TossPaymentHistoryRepositoryAdapter
 import org.collaborators.paymentslab.payment.infrastructure.jpa.TossPaymentsRepositoryAdapter
-import org.collaborators.paymentslab.payment.infrastructure.tosspayments.TossPaymentsProcessor
-import org.collaborators.paymentslab.payment.infrastructure.tosspayments.TossPaymentsKeyInApprovalProcessor
-import org.collaborators.paymentslab.payment.infrastructure.tosspayments.TossPaymentsQueryManager
-import org.collaborators.paymentslab.payment.infrastructure.tosspayments.TossPaymentsValidator
+import org.collaborators.paymentslab.payment.infrastructure.tosspayments.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -31,6 +28,7 @@ import java.time.format.DateTimeFormatter
     TossPaymentsQueryManager::class,
     TossPaymentsValidator::class,
     TossPaymentsKeyInApprovalProcessor::class,
+    TossPaymentsPaymentOrderProcessor::class,
 ])
 @Configuration
 class PaymentModuleConfiguration

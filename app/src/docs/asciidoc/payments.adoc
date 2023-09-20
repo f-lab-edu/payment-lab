@@ -23,3 +23,17 @@ include::{snippets}/payment-api-test/card-num-error-key-in/http-response.adoc[]
 include::{snippets}/payment-api-test/read-histories-test/http-request.adoc[]
 ==== HTTP response
 include::{snippets}/payment-api-test/read-histories-test/http-response.adoc[]
+
+=== 토스 주문 결제 발행 api
+
+==== HTTP request
+include::{snippets}/payment-api-test/test-generate-payment-order/http-request.adoc[]
+==== HTTP response
+include::{snippets}/payment-api-test/test-generate-payment-order/http-response.adoc[]
+
+=== 토스 주문 결제 발행 오류 api
+
+==== HTTP request
+include::{snippets}/payment-api-test/test-with-invalid-account-generate-payment-order/http-request.adoc[]
+==== HTTP response
+include::{snippets}/payment-api-test/test-with-invalid-account-generate-payment-order/http-response.adoc[]
