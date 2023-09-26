@@ -2,9 +2,10 @@ package org.collaborators.paymentslab.payment.domain
 
 import org.collaborator.paymentlab.common.domain.DomainEvent
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
+import java.time.ZoneId
 import java.util.*
 
-class PaymentRecordEvent(
+class PaymentOrderRecordEvent(
     val accountId: Long,
     val orderName: String,
     val amount: Int,
@@ -16,7 +17,7 @@ class PaymentRecordEvent(
         paymentOrder.orderName,
         paymentOrder.amount,
         paymentOrder.status.name,
-        Date()
+        Date.from(paymentOrder.createAt.atZone(ZoneId.systemDefault()).toInstant())
     )
 
     override fun occurredOn(): Date {
