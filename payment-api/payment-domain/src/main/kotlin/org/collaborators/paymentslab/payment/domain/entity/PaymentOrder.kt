@@ -23,6 +23,11 @@ class PaymentOrder protected constructor(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
+    fun ready() {
+        this.status = PaymentsStatus.READY
+        registerEvent(PaymentOrderRecordEvent(this))
+    }
+
     fun aborted() {
         this.status = PaymentsStatus.ABORTED
         registerEvent(PaymentOrderRecordEvent(this))
@@ -43,7 +48,7 @@ class PaymentOrder protected constructor(
             accountId: Long,
             orderName: String,
             amount: Int,
-            status: PaymentsStatus = PaymentsStatus.READY): PaymentOrder {
+            status: PaymentsStatus = PaymentsStatus.CREATED): PaymentOrder {
 
             return PaymentOrder(accountId, orderName, amount, status, LocalDateTime.now())
         }

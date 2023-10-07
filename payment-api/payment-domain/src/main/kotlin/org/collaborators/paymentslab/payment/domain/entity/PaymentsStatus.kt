@@ -1,5 +1,6 @@
 package org.collaborators.paymentslab.payment.domain.entity
 enum class PaymentsStatus {
+    CREATED,
     READY,
     IN_PROGRESS,
     DONE,
