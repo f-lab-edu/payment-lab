@@ -2,6 +2,7 @@ package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.collaborator.paymentlab.common.AuthenticatedUser
+import org.collaborator.paymentlab.common.domain.DomainEventTypeParser
 import org.collaborator.paymentlab.common.error.ErrorCode
 import org.collaborator.paymentlab.common.error.ServiceException
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
@@ -72,7 +73,9 @@ class TossPaymentsKeyInApprovalProcessor(
 
         newPaymentRecord.pollAllEvents().forEach {
             publisher.publishEvent(it)
-            kafkaTemplate.send(paymentTransactionTopicName, objectMapper.writeValueAsString(it))
+            val eventWithClassType =
+                DomainEventTypeParser.parseSimpleName(objectMapper.writeValueAsString(it), it::class.java)
+            kafkaTemplate.send(paymentTransactionTopicName, eventWithClassType)
         }
     }
 
