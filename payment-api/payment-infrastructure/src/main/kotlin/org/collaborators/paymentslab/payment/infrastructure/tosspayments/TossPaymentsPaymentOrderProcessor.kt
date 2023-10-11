@@ -10,6 +10,7 @@ import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepos
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.InvalidPaymentOrderException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.core.env.Environment
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.security.core.context.SecurityContextHolder
 
@@ -17,7 +18,8 @@ class TossPaymentsPaymentOrderProcessor(
     private val paymentOrderRepository: PaymentOrderRepository,
     private val kafkaTemplate: KafkaTemplate<String, String>,
     private val objectMapper: ObjectMapper,
-    private val publisher: ApplicationEventPublisher
+    private val publisher: ApplicationEventPublisher,
+    private val environment: Environment
 ): PaymentOrderProcessor {
 
     @Value("\${collaborators.kafka.topic.payment.transaction.name}")
@@ -34,8 +36,10 @@ class TossPaymentsPaymentOrderProcessor(
         paymentOrder.ready()
         paymentOrder.pollAllEvents().forEach {
             publisher.publishEvent(it)
-            val eventWithClassType = DomainEventTypeParser.parseSimpleName(objectMapper.writeValueAsString(it), it.javaClass)
-            kafkaTemplate.send(paymentTransactionTopicName, eventWithClassType)
+            if (!environment.activeProfiles.contains("test")) {
+                val eventWithClassType = DomainEventTypeParser.parseSimpleName(objectMapper.writeValueAsString(it), it.javaClass)
+                kafkaTemplate.send(paymentTransactionTopicName, eventWithClassType)
+            }
         }
         return newPaymentOrder.id.toString()
     }

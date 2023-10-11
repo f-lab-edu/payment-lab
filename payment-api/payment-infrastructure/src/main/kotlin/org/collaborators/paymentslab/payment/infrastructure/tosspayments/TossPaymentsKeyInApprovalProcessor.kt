@@ -11,6 +11,7 @@ import org.collaborators.paymentslab.payment.domain.repository.TossPaymentsRepos
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.TossPaymentsApiClientException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.core.env.Environment
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -29,7 +30,8 @@ class TossPaymentsKeyInApprovalProcessor(
     private val paymentOrderRepository: PaymentOrderRepository,
     private val kafkaTemplate: KafkaTemplate<String, String>,
     private val objectMapper: ObjectMapper,
-    private val publisher: ApplicationEventPublisher
+    private val publisher: ApplicationEventPublisher,
+    private val environment: Environment
 ) {
     @Value("\${toss.payments.url}")
     private lateinit var url: String
@@ -73,9 +75,11 @@ class TossPaymentsKeyInApprovalProcessor(
 
         newPaymentRecord.pollAllEvents().forEach {
             publisher.publishEvent(it)
-            val eventWithClassType =
-                DomainEventTypeParser.parseSimpleName(objectMapper.writeValueAsString(it), it::class.java)
-            kafkaTemplate.send(paymentTransactionTopicName, eventWithClassType)
+            if (!environment.activeProfiles.contains("test")) {
+                val eventWithClassType =
+                    DomainEventTypeParser.parseSimpleName(objectMapper.writeValueAsString(it), it::class.java)
+                kafkaTemplate.send(paymentTransactionTopicName, eventWithClassType)
+            }
         }
     }
 
