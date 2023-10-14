@@ -27,11 +27,7 @@ class PaymentHistoryEventHandler(
             val eventJsonValue = record.substring(0, idx)
             val eventType = record.substring(idx + 1)
             val event = parseDomainEventFrom(eventJsonValue, eventType)
-            val newPaymentHistoryEntity = if (eventType == PaymentResultEvent::class.simpleName) {
-                PaymentHistory.newInstanceFrom(event as PaymentResultEvent)
-            } else {
-                PaymentHistory.newInstanceFrom(event as PaymentOrderRecordEvent)
-            }
+            val newPaymentHistoryEntity = newPaymentHistoryWith(event, eventType)
             paymentHistoryRepository.save(newPaymentHistoryEntity)
         } catch (e: Exception) {
             logger.error("error occurred while record payment history")
@@ -44,5 +40,13 @@ class PaymentHistoryEventHandler(
                 objectMapper.readValue(eventJsonValue, PaymentResultEvent::class.java)
             else
                 objectMapper.readValue(eventJsonValue, PaymentOrderRecordEvent::class.java)
+    }
+
+    private fun newPaymentHistoryWith(event:DomainEvent, eventType: String): PaymentHistory {
+        return if (eventType == PaymentResultEvent::class.simpleName) {
+            PaymentHistory.newInstanceFrom(event as PaymentResultEvent)
+        } else {
+            PaymentHistory.newInstanceFrom(event as PaymentOrderRecordEvent)
+        }
     }
 }
