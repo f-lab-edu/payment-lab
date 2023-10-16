@@ -5,9 +5,11 @@ import org.collaborator.paymentlab.common.AuthenticatedUser
 import org.collaborator.paymentlab.common.domain.DomainEventTypeParser
 import org.collaborator.paymentlab.common.error.ErrorCode
 import org.collaborator.paymentlab.common.error.ServiceException
+import org.collaborators.paymentslab.payment.domain.PaymentResultEvent
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
 import org.collaborators.paymentslab.payment.domain.repository.TossPaymentsRepository
+import org.collaborators.paymentslab.payment.infrastructure.log.AsyncAppenderPaymentTransactionLogProcessor
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.TossPaymentsApiClientException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
@@ -30,8 +32,8 @@ class TossPaymentsKeyInApprovalProcessor(
     private val paymentOrderRepository: PaymentOrderRepository,
     private val kafkaTemplate: KafkaTemplate<String, String>,
     private val objectMapper: ObjectMapper,
-    private val publisher: ApplicationEventPublisher,
-    private val environment: Environment
+    private val environment: Environment,
+    private val asyncLogProcessor: AsyncAppenderPaymentTransactionLogProcessor
 ) {
     @Value("\${toss.payments.url}")
     private lateinit var url: String
@@ -74,7 +76,7 @@ class TossPaymentsKeyInApprovalProcessor(
         val newPaymentRecord = tossPaymentsRepository.save(newPaymentEntity)
 
         newPaymentRecord.pollAllEvents().forEach {
-            publisher.publishEvent(it)
+            asyncLogProcessor.process(it as PaymentResultEvent)
             if (!environment.activeProfiles.contains("test")) {
                 val eventWithClassType =
                     DomainEventTypeParser.parseSimpleName(objectMapper.writeValueAsString(it), it::class.java)

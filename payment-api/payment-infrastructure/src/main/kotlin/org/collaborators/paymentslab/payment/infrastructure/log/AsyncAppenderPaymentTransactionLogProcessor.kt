@@ -5,18 +5,21 @@ import org.collaborators.paymentslab.payment.domain.PaymentOrderRecordEvent
 import org.collaborators.paymentslab.payment.domain.PaymentResultEvent
 
 import org.slf4j.LoggerFactory
+import org.springframework.scheduling.annotation.Async
 
-class AsyncAppenderPaymentTransactionLogProcessor(
+open class AsyncAppenderPaymentTransactionLogProcessor(
     private val objectMapper: ObjectMapper
 ) {
 
     private val logger = LoggerFactory.getLogger("payment")
 
-    fun process(event: PaymentResultEvent) {
+    @Async
+    open fun process(event: PaymentResultEvent) {
         logger.info(objectMapper.writeValueAsString(event))
     }
 
-    fun process(event: PaymentOrderRecordEvent) {
+    @Async
+    open fun process(event: PaymentOrderRecordEvent) {
         logger.info(objectMapper.writeValueAsString(event))
     }
 }

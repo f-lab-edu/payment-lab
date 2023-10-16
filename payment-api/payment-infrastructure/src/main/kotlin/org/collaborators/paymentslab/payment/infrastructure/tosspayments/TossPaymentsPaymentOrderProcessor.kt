@@ -20,7 +20,6 @@ class TossPaymentsPaymentOrderProcessor(
     private val paymentOrderRepository: PaymentOrderRepository,
     private val kafkaTemplate: KafkaTemplate<String, String>,
     private val objectMapper: ObjectMapper,
-    private val publisher: ApplicationEventPublisher,
     private val environment: Environment,
     private val asyncLogProcessor: AsyncAppenderPaymentTransactionLogProcessor
 ): PaymentOrderProcessor {
