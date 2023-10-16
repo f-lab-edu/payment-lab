@@ -23,11 +23,6 @@ dependencies {
 	implementation(project(":payment-api:payment-domain"))
 	implementation(project(":payment-api:payment-infrastructure"))
 
-	implementation(project(":log-api:log-presentation"))
-	implementation(project(":log-api:log-application"))
-	implementation(project(":log-api:log-domain"))
-	implementation(project(":log-api:log-infrastructure"))
-
 	implementation(project(":common"))
 
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
