@@ -5,8 +5,10 @@ import org.collaborator.paymentlab.common.AuthenticatedUser
 import org.collaborator.paymentlab.common.domain.DomainEvent
 import org.collaborator.paymentlab.common.domain.DomainEventTypeParser
 import org.collaborators.paymentslab.payment.domain.PaymentOrderProcessor
+import org.collaborators.paymentslab.payment.domain.PaymentOrderRecordEvent
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
+import org.collaborators.paymentslab.payment.infrastructure.log.AsyncAppenderPaymentTransactionLogProcessor
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.InvalidPaymentOrderException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
@@ -19,7 +21,8 @@ class TossPaymentsPaymentOrderProcessor(
     private val kafkaTemplate: KafkaTemplate<String, String>,
     private val objectMapper: ObjectMapper,
     private val publisher: ApplicationEventPublisher,
-    private val environment: Environment
+    private val environment: Environment,
+    private val asyncLogProcessor: AsyncAppenderPaymentTransactionLogProcessor
 ): PaymentOrderProcessor {
 
     @Value("\${collaborators.kafka.topic.payment.transaction.name}")
@@ -35,7 +38,7 @@ class TossPaymentsPaymentOrderProcessor(
         }
         paymentOrder.ready()
         paymentOrder.pollAllEvents().forEach {
-            publisher.publishEvent(it)
+            asyncLogProcessor.process(it as PaymentOrderRecordEvent)
             if (!environment.activeProfiles.contains("test")) {
                 val eventWithClassType = DomainEventTypeParser.parseSimpleName(objectMapper.writeValueAsString(it), it.javaClass)
                 kafkaTemplate.send(paymentTransactionTopicName, eventWithClassType)
