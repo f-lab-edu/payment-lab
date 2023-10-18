@@ -1,10 +1,9 @@
 package org.collaborators.paymentslab.payment.infrastructure.kafka
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.collaborator.paymentlab.common.DomainEventTypeMap
 import org.collaborator.paymentlab.common.domain.DomainEvent
 import org.collaborator.paymentlab.common.error.InvalidArgumentException
-import org.collaborators.paymentslab.payment.domain.PaymentOrderRecordEvent
-import org.collaborators.paymentslab.payment.domain.PaymentResultEvent
 import org.collaborators.paymentslab.payment.domain.entity.PaymentHistory
 import org.collaborators.paymentslab.payment.domain.repository.PaymentHistoryRepository
 import org.slf4j.LoggerFactory
@@ -23,30 +22,18 @@ class PaymentHistoryEventHandler(
         groupId = "\${collaborators.kafka.topic.payment.transaction.groupId}")
     fun handle(record: String) {
         try {
-            val idx = record.lastIndexOf(",")
-            val eventJsonValue = record.substring(0, idx)
-            val eventType = record.substring(idx + 1)
-            val event = parseDomainEventFrom(eventJsonValue, eventType)
-            val newPaymentHistoryEntity = newPaymentHistoryWith(event, eventType)
+            val domainEvent = parseDomainEventFrom(record)
+            val newPaymentHistoryEntity = PaymentHistory.newInstanceFrom(domainEvent)
             paymentHistoryRepository.save(newPaymentHistoryEntity)
         } catch (e: Exception) {
-            logger.error("error occurred while record payment history")
+            logger.error("error occurred while record payment history: {}", e.message)
             throw InvalidArgumentException()
         }
     }
 
-    private fun parseDomainEventFrom(eventJsonValue: String, eventType: String): DomainEvent {
-        return if (eventType == PaymentResultEvent::class.simpleName)
-                objectMapper.readValue(eventJsonValue, PaymentResultEvent::class.java)
-            else
-                objectMapper.readValue(eventJsonValue, PaymentOrderRecordEvent::class.java)
-    }
-
-    private fun newPaymentHistoryWith(event:DomainEvent, eventType: String): PaymentHistory {
-        return if (eventType == PaymentResultEvent::class.simpleName) {
-            PaymentHistory.newInstanceFrom(event as PaymentResultEvent)
-        } else {
-            PaymentHistory.newInstanceFrom(event as PaymentOrderRecordEvent)
-        }
+    private fun parseDomainEventFrom(record: String): DomainEvent {
+        val domainEventMap = objectMapper.readValue(record, Map::class.java) as Map<String, String>
+        val targetType = DomainEventTypeMap.typeFrom(domainEventMap)
+        return objectMapper.convertValue(domainEventMap, targetType)
     }
 }

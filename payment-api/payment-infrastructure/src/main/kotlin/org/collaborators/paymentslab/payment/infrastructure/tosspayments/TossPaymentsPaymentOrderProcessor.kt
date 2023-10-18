@@ -2,8 +2,6 @@ package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.collaborator.paymentlab.common.AuthenticatedUser
-import org.collaborator.paymentlab.common.domain.DomainEvent
-import org.collaborator.paymentlab.common.domain.DomainEventTypeParser
 import org.collaborators.paymentslab.payment.domain.PaymentOrderProcessor
 import org.collaborators.paymentslab.payment.domain.PaymentOrderRecordEvent
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
@@ -11,7 +9,6 @@ import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepos
 import org.collaborators.paymentslab.payment.infrastructure.log.AsyncAppenderPaymentTransactionLogProcessor
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.InvalidPaymentOrderException
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.core.env.Environment
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.security.core.context.SecurityContextHolder
@@ -39,8 +36,7 @@ class TossPaymentsPaymentOrderProcessor(
         paymentOrder.pollAllEvents().forEach {
             asyncLogProcessor.process(it as PaymentOrderRecordEvent)
             if (!environment.activeProfiles.contains("test")) {
-                val eventWithClassType = DomainEventTypeParser.parseSimpleName(objectMapper.writeValueAsString(it), it.javaClass)
-                kafkaTemplate.send(paymentTransactionTopicName, eventWithClassType)
+                kafkaTemplate.send(paymentTransactionTopicName, objectMapper.writeValueAsString(it))
             }
         }
         return newPaymentOrder.id.toString()

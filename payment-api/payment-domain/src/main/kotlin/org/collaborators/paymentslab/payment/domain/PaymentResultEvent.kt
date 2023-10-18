@@ -1,10 +1,8 @@
 package org.collaborators.paymentslab.payment.domain
 
 import org.collaborator.paymentlab.common.domain.DomainEvent
-import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 import org.collaborators.paymentslab.payment.domain.entity.TossPayments
-import java.time.ZoneId
-import java.util.Date
+import java.util.*
 
 class PaymentResultEvent(
     val accountId: Long,
@@ -13,7 +11,8 @@ class PaymentResultEvent(
     val amount: Int,
     val paymentKey: String,
     val status: String,
-    private val occurredOn: Date
+    private val occurredOn: Date,
+    private val typeSimpleName: String = PaymentResultEvent::class.simpleName!!
 ): DomainEvent {
 
     constructor(tossPayments: TossPayments): this(
@@ -28,5 +27,9 @@ class PaymentResultEvent(
 
     override fun occurredOn(): Date {
         return occurredOn
+    }
+
+    override fun typeSimpleName(): String {
+        return typeSimpleName
     }
 }
