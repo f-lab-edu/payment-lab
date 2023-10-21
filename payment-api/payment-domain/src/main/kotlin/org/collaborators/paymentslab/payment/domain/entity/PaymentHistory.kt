@@ -85,12 +85,11 @@ class PaymentHistory protected constructor(
         }
 
         fun newInstanceFrom(domainEvent: DomainEvent): PaymentHistory {
-            if (domainEvent is PaymentOrderRecordEvent) {
-                return newInstanceFrom(domainEvent)
-            } else if (domainEvent is PaymentResultEvent) {
-                return newInstanceFrom(domainEvent)
-            }
-            throw InvalidArgumentException()
+           return when(domainEvent) {
+                is PaymentOrderRecordEvent -> newInstanceFrom(domainEvent)
+                is PaymentResultEvent -> newInstanceFrom(domainEvent)
+                else -> throw InvalidArgumentException()
+           }
         }
     }
 
