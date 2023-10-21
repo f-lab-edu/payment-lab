@@ -2,24 +2,28 @@ package org.collaborators.paymentslab.payment.domain
 
 import org.collaborator.paymentlab.common.domain.DomainEvent
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
-import java.util.*
+import java.time.ZoneId
+import java.util.Date
 
-class PaymentRecordEvent(
+class PaymentOrderRecordEvent(
+    val id: Long,
     val accountId: Long,
-    val orderName: String,
-    val amount: Int,
     val status: String,
-    private val occurredOn: Date
+    private val occurredOn: Date,
+    private val typeSimpleName: String = PaymentOrderRecordEvent::class.simpleName!!
 ): DomainEvent {
     constructor(paymentOrder: PaymentOrder): this(
+        paymentOrder.id!!,
         paymentOrder.accountId,
-        paymentOrder.orderName,
-        paymentOrder.amount,
         paymentOrder.status.name,
-        Date()
+        Date.from(paymentOrder.createAt.atZone(ZoneId.systemDefault()).toInstant())
     )
 
     override fun occurredOn(): Date {
         return occurredOn
+    }
+
+    override fun typeSimpleName(): String {
+        return typeSimpleName
     }
 }

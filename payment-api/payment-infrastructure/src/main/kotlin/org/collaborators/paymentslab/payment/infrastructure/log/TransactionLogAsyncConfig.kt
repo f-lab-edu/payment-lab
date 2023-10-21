@@ -1,4 +1,4 @@
-package org.collaborators.paymentslab.log.infrastructure
+package org.collaborators.paymentslab.payment.infrastructure.log
 
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler
 import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler

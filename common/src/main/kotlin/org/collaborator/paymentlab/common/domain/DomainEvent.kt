@@ -4,4 +4,5 @@ import java.util.Date
 
 interface DomainEvent {
     fun occurredOn(): Date
+    fun typeSimpleName(): String
 }
