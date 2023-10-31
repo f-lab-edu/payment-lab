@@ -44,14 +44,9 @@ class PaymentApi(
     fun generatePaymentOrder(
         @RequestBody @Valid request: PaymentOrderRequest
     ): ResponseEntity<Void> {
-        val paymentOrderId = paymentOrderService.generate(request.toCommand())
-        return ResponseEntity.status(HttpStatus.SEE_OTHER).location(URI("http://localhost:8080$V1_API_TOSS_PAYMENTS/${paymentOrderId}")).build()
-    }
+        paymentOrderService.generate(request.toCommand())
 
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @GetMapping("{paymentOrderId}")
-    fun getPaymentOrderId(@PathVariable paymentOrderId: Long): ResponseEntity<String> {
-        return ResponseEntity.ok(paymentOrderId.toString())
+        return ResponseEntity.ok().build()
     }
 
 

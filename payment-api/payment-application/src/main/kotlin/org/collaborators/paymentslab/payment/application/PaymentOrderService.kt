@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 class PaymentOrderService(
     private val paymentOrderProcessor: PaymentOrderProcessor,
 ) {
-    fun generate(command: PaymentOrderCommand): String {
-        return paymentOrderProcessor.process(command.accountId, command.orderName, command.amount)
+    fun generate(command: PaymentOrderCommand) {
+        paymentOrderProcessor.process(command.accountId, command.orderName, command.amount)
     }
 }

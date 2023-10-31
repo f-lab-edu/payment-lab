@@ -24,7 +24,7 @@ class TossPaymentsPaymentOrderProcessor(
     @Value("\${collaborators.kafka.topic.payment.transaction.name}")
     private lateinit var paymentTransactionTopicName: String
 
-    override fun process(accountId: Long, orderName: String, amount: Int): String {
+    override fun process(accountId: Long, orderName: String, amount: Int) {
         val principal = SecurityContextHolder.getContext().authentication.principal as AuthenticatedUser
         val newPaymentOrder = PaymentOrder.newInstance(accountId, orderName, amount)
         val paymentOrder = paymentOrderRepository.save(newPaymentOrder)
@@ -39,6 +39,5 @@ class TossPaymentsPaymentOrderProcessor(
                 kafkaTemplate.send(paymentTransactionTopicName, objectMapper.writeValueAsString(it))
             }
         }
-        return newPaymentOrder.id.toString()
     }
 }
