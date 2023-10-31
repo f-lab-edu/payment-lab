@@ -330,7 +330,7 @@ class PaymentApiTest @Autowired constructor(
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
                 .header("Authorization", "Bearer ${tokens.accessToken}")
-        ).andExpect(MockMvcResultMatchers.status().isSeeOther)
+        ).andExpect(MockMvcResultMatchers.status().isOk)
             .andDo(
                 MockMvcRestDocumentation.document(
                     "{class-name}/{method-name}",
