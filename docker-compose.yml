@@ -1,11 +1,4 @@
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: payments-lab:latest
-    ports:
-      - "8080:8080"
   mysql-local:
     image: mysql:8.0
     ports:
