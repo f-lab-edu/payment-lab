@@ -26,7 +26,7 @@ class PaymentApi(
     private val paymentOrderService: PaymentOrderService
     ) {
 
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("key-in/{paymentOrderId}")
     fun keyInPayed(
         @PathVariable paymentOrderId: Long,
