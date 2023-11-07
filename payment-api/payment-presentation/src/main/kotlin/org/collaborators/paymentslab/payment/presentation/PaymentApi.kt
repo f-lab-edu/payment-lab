@@ -1,7 +1,6 @@
 package org.collaborators.paymentslab.payment.presentation
 
 import jakarta.validation.Valid
-import org.collaborator.paymentlab.common.V1_API_TOSS_PAYMENTS
 import org.collaborator.paymentlab.common.V1_TOSS_PAYMENTS
 import org.collaborator.paymentlab.common.result.ApiResult
 import org.collaborators.paymentslab.payment.application.PaymentOrderService
@@ -10,7 +9,6 @@ import org.collaborators.paymentslab.payment.application.query.PaymentHistoryQue
 import org.collaborators.paymentslab.payment.presentation.request.PaymentOrderRequest
 import org.collaborators.paymentslab.payment.presentation.request.TossPaymentsKeyInRequest
 import org.collaborators.paymentslab.payment.presentation.response.PaymentHistoryResponse
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,10 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestBody
 
-import java.net.URI
-
 @RestController
-@RequestMapping(V1_API_TOSS_PAYMENTS)
+@RequestMapping(V1_TOSS_PAYMENTS)
 class PaymentApi(
     private val paymentService: PaymentService,
     private val paymentOrderService: PaymentOrderService
