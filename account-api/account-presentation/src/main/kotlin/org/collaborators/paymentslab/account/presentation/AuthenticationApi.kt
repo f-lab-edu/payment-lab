@@ -11,6 +11,7 @@ import org.collaborators.paymentslab.account.presentation.request.LoginAccountRe
 import org.collaborators.paymentslab.account.presentation.request.RegisterAccountRequest
 import org.collaborators.paymentslab.account.presentation.request.RegisterConfirmRequest
 import org.collaborators.paymentslab.account.presentation.response.TokenResponse
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -21,6 +22,9 @@ import java.net.URI
 @RequestMapping(V1_AUTH)
 class AuthenticationApi(private val accountService: AccountService) {
 
+    @Value("\${redirect.url.login}")
+    private lateinit var redirectUrl: String
+
     @PostMapping("register")
     fun register(@RequestBody @Valid request: RegisterAccountRequest) {
         accountService.register(RegisterAccount(request.email, request.password, request.username, request.phoneNumber))
@@ -30,7 +34,7 @@ class AuthenticationApi(private val accountService: AccountService) {
     fun registerConfirm(@RequestBody @Valid request: RegisterConfirmRequest): ResponseEntity<Void> {
         accountService.registerConfirm(RegisterConfirm(request.token, request.email))
 
-        val uri = URI.create("http://localhost:3000/login")
+        val uri = URI.create(redirectUrl)
         val header = HttpHeaders()
         header.location = uri
         return ResponseEntity(header, HttpStatus.SEE_OTHER)
