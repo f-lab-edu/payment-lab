@@ -13,6 +13,8 @@ import org.collaborators.paymentslab.payment.presentation.mock.MockPayments
 import org.collaborators.paymentslab.payment.presentation.request.PaymentOrderRequest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.kotlin.doNothing
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
@@ -349,7 +351,6 @@ class PaymentApiTest @Autowired constructor(
             )
     }
 
-    // 임시로 비활성화
     @Test
     @DisplayName("변조된 사용자 계정 id로 주문 결제 발행 api 테스트")
     fun testWithInvalidAccountGeneratePaymentOrder() {
