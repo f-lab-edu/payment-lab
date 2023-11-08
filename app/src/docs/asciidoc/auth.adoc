@@ -9,6 +9,14 @@ include::{snippets}/authentication-api-test/register-test/request-fields.adoc[]
 ==== HTTP response
 include::{snippets}/authentication-api-test/register-test/http-response.adoc[]
 
+=== 관리자 회원가입 api
+
+==== HTTP request
+include::{snippets}/authentication-api-test/register-admin-test/http-request.adoc[]
+include::{snippets}/authentication-api-test/register-admin-test/request-fields.adoc[]
+==== HTTP response
+include::{snippets}/authentication-api-test/register-admin-test/http-response.adoc[]
+
 === 회원가입 입력 에러 api
 
 ==== HTTP request
