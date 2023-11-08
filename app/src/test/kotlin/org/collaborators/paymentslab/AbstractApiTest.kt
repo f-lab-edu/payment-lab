@@ -1,6 +1,7 @@
 package org.collaborators.paymentslab
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.collaborator.paymentlab.common.Role
 import org.collaborator.paymentlab.common.URI_HOST
 import org.collaborator.paymentlab.common.URI_PORT
 import org.collaborator.paymentlab.common.URI_SCHEME
@@ -74,6 +75,18 @@ abstract class AbstractApiTest {
             encrypt.encode("qqqwww123"),
             "testName",
             "010-1234-1234"
+        )
+        account.completeRegister()
+        return account
+    }
+
+    protected fun testEntityForAdminRegister(email: String): Account {
+        val account = Account.register(
+            email,
+            encrypt.encode("qqqwww123"),
+            "testName",
+            "010-1234-1234",
+            hashSetOf(Role.USER, Role.ADMIN)
         )
         account.completeRegister()
         return account

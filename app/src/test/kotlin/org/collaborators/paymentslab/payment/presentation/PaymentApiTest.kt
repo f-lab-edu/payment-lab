@@ -35,7 +35,7 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("카드결제 api 동작")
     fun keyIn() {
-        val account = testEntityForRegister("keyInTest@gmail.com")
+        val account = testEntityForAdminRegister("keyInTest@gmail.com")
         accountRepository.save(account)
 
         val requestDto = MockPayments.testTossPaymentsRequest
@@ -71,7 +71,7 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("카드번호 입력에 숫자가 아닌 값이 입력되거나 총 16자가 아니면 에러가 발생한다.")
     fun cardNumErrorKeyIn() {
-        val account = testEntityForRegister("keyInCardNumTest@gmail.com")
+        val account = testEntityForAdminRegister("keyInCardNumTest@gmail.com")
         accountRepository.save(account)
 
         val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
@@ -108,7 +108,7 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("주문 결제 정보가 존재하지 않는 주문 결제로 변조된 경우 결제 승인이 실패한다.")
     fun paymentError() {
-        val account = testEntityForRegister("keyInWrongPaymentOrderTest@gmail.com")
+        val account = testEntityForAdminRegister("keyInWrongPaymentOrderTest@gmail.com")
         accountRepository.save(account)
 
         val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
@@ -145,8 +145,8 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("주문 결제 정보의 소유자가 아닌 다른 사용자 계정으로 결제 승인을 요청할 경우 해당 결제 요청은 실패한다.")
     fun paymentWrongUserError() {
-        val account = testEntityForRegister("keyInWrongUserTest@gmail.com")
-        val wrongAccount = testEntityForRegister("wrongUser123@gmail.com")
+        val account = testEntityForAdminRegister("keyInWrongUserTest@gmail.com")
+        val wrongAccount = testEntityForAdminRegister("wrongUser123@gmail.com")
         accountRepository.save(account)
         accountRepository.save(wrongAccount)
 
@@ -184,7 +184,7 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("이미 결제 진행이 불가능한 주문 결제를 승인 요청할 경우 해당 요청은 실패한다.")
     fun paymentAlreadyDonePaymentOrderError() {
-        val account = testEntityForRegister("keyInInvalidStatusTest@gmail.com")
+        val account = testEntityForAdminRegister("keyInInvalidStatusTest@gmail.com")
         accountRepository.save(account)
 
         val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
@@ -222,7 +222,7 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("변조된 결제요청 정보로 결제 승인 요청할 경우 해당 요청은 실패한다.")
     fun paymentInvalidPaymentOrderError() {
-        val account = testEntityForRegister("keyInInvalidPaymentOrderTest@gmail.com")
+        val account = testEntityForAdminRegister("keyInInvalidPaymentOrderTest@gmail.com")
         accountRepository.save(account)
 
         val wrongRequestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
@@ -261,7 +261,7 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("사용자 계정별 카드결제 이력 조회 api")
     fun readHistoriesTest() {
-        val account = testEntityForRegister("readHistoriesTest@gmail.com")
+        val account = testEntityForAdminRegister("readHistoriesTest@gmail.com")
         val entity = accountRepository.save(account)
 
         val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
