@@ -27,6 +27,7 @@ enum class ErrorCode(
     INVALID_TOKEN("잘못된 토큰입니다.", 422),
     NOT_FOUND_REFRESH_TOKEN("리프래시 토큰을 찾을 수 없습니다.", 404),
     TOKEN_EXPIRED("이미 만료된 토큰입니다.", 422),
+    INVALID_ADMIN_KEY("잘못된 관리자 키 입니다.", 422),
 
     // payment error
     PAYMENT_ORDER_NOT_FOUND("존재하지 않는 주문결제 입니다.", 404),

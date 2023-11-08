@@ -6,9 +6,11 @@ import org.collaborator.paymentlab.common.result.ApiResult
 import org.collaborators.paymentslab.account.application.AccountService
 import org.collaborators.paymentslab.account.application.command.LoginAccount
 import org.collaborators.paymentslab.account.application.command.RegisterAccount
+import org.collaborators.paymentslab.account.application.command.RegisterAdminAccount
 import org.collaborators.paymentslab.account.application.command.RegisterConfirm
 import org.collaborators.paymentslab.account.presentation.request.LoginAccountRequest
 import org.collaborators.paymentslab.account.presentation.request.RegisterAccountRequest
+import org.collaborators.paymentslab.account.presentation.request.RegisterAdminAccountRequest
 import org.collaborators.paymentslab.account.presentation.request.RegisterConfirmRequest
 import org.collaborators.paymentslab.account.presentation.response.TokenResponse
 import org.springframework.beans.factory.annotation.Value
@@ -24,6 +26,16 @@ class AuthenticationApi(private val accountService: AccountService) {
 
     @Value("\${redirect.url.login}")
     private lateinit var redirectUrl: String
+
+    @PostMapping("register/admin")
+    fun registerAdmin(@RequestBody @Valid request: RegisterAdminAccountRequest) {
+        accountService
+            .registerAdmin(
+                RegisterAdminAccount(
+                    request.email, request.password, request.username, request.phoneNumber, request.adminKey
+                )
+            )
+    }
 
     @PostMapping("register")
     fun register(@RequestBody @Valid request: RegisterAccountRequest) {
