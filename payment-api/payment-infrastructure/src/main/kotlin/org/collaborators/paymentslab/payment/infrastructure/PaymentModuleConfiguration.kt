@@ -3,6 +3,7 @@ package org.collaborators.paymentslab.payment.infrastructure
 import org.collaborators.paymentslab.payment.infrastructure.jpa.PaymentOrderRepositoryAdapter
 import org.collaborators.paymentslab.payment.infrastructure.jpa.TossPaymentHistoryRepositoryAdapter
 import org.collaborators.paymentslab.payment.infrastructure.jpa.TossPaymentsRepositoryAdapter
+import org.collaborators.paymentslab.payment.infrastructure.kafka.DefaultStringKafkaTemplateWrapper
 import org.collaborators.paymentslab.payment.infrastructure.kafka.StringKafkaTemplateWrapper
 import org.collaborators.paymentslab.payment.infrastructure.log.AsyncAppenderPaymentTransactionLogProcessor
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.*
@@ -21,7 +22,7 @@ import org.springframework.context.annotation.Import
     TossPaymentsKeyInApprovalProcessor::class,
     TossPaymentsPaymentOrderProcessor::class,
     AsyncAppenderPaymentTransactionLogProcessor::class,
-    StringKafkaTemplateWrapper::class
+    DefaultStringKafkaTemplateWrapper::class
 ])
 @Configuration
 class PaymentModuleConfiguration
