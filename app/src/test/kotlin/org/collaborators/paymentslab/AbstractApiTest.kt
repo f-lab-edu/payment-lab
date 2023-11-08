@@ -60,6 +60,9 @@ abstract class AbstractApiTest {
     @Value("\${uri.port}")
     protected lateinit var port: String
 
+    @Value("\${admin.key}")
+    protected lateinit var adminKey: String
+
     @BeforeEach
     fun setUp() {
         doNothing().`when`(stringKafkaTemplateWrapper).send(any(), any())

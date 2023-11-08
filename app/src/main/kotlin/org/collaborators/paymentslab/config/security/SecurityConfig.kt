@@ -52,6 +52,7 @@ class SecurityConfig(
             .requestMatchers(GET, "/", "/index.html").permitAll()
             .requestMatchers(GET, V1_TOSS_PAYMENTS).permitAll()
             .requestMatchers(POST,"$V1_AUTH/register").permitAll()
+            .requestMatchers(POST,"$V1_AUTH/register/admin").permitAll()
             .requestMatchers(POST,"$V1_AUTH/login").permitAll()
             .requestMatchers(GET, "$V1_AUTH/confirm").permitAll()
             .anyRequest().authenticated()

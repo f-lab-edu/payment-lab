@@ -6,6 +6,7 @@ import org.collaborators.paymentslab.account.domain.Account
 import org.collaborators.paymentslab.account.domain.AccountRepository
 import org.collaborators.paymentslab.account.presentation.request.LoginAccountRequest
 import org.collaborators.paymentslab.account.presentation.request.RegisterAccountRequest
+import org.collaborators.paymentslab.account.presentation.request.RegisterAdminAccountRequest
 import org.collaborators.paymentslab.account.presentation.request.RegisterConfirmRequest
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -57,6 +58,48 @@ class AuthenticationApiTest @Autowired constructor(
                         fieldWithPath("phoneNumber")
                             .type(JsonFieldType.STRING)
                             .description("회원 등록을 하고 싶은 phoneNumber")
+                    )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("관리자 회원가입 api 동작")
+    fun registerAdminTest() {
+        val requestDto =
+            RegisterAdminAccountRequest("helloAdmin@gmail.com", "qwer1234", "helloUsername", "010-1234-5678", adminKey)
+        val reqBody = this.objectMapper.writeValueAsString(requestDto)
+
+        this.mockMvc.perform(
+            RestDocumentationRequestBuilders
+                .post("$V1_AUTH/register/admin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(reqBody)
+        ).andExpect(status().is2xxSuccessful)
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "{class-name}/{method-name}",
+                    getDocumentRequest(),
+                    Preprocessors.preprocessResponse(prettyPrint()),
+                    requestFields(
+                        fieldWithPath("email")
+                            .type(JsonFieldType.STRING)
+                            .description("관리자 회원 등록을 하고 싶은 email 주소"),
+                        fieldWithPath("password")
+                            .type(JsonFieldType.STRING)
+                            .description("관리자 회원 등록을 하고 싶은 password.\n " +
+                                    "- 문자의 종류 2가지 이하일 경우 최소 10자 이상 50자 이하\n" +
+                                    "- 문자의 종류 3가지 이상일 경우 최소 8자 이상 50자 이하"),
+                        fieldWithPath("username")
+                            .type(JsonFieldType.STRING)
+                            .description("관리자 회원 등록을 하고 싶은 username"),
+                        fieldWithPath("phoneNumber")
+                            .type(JsonFieldType.STRING)
+                            .description("관리자 회원 등록을 하고 싶은 phoneNumber"),
+                        fieldWithPath("adminKey")
+                            .type(JsonFieldType.STRING)
+                            .description("관리자 회원 등록을 하고 싶은 adminKey")
                     )
                 )
             )
