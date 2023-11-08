@@ -1,5 +1,6 @@
 package org.collaborators.paymentslab.account.application
 
+import org.collaborator.paymentlab.common.Role
 import org.collaborators.paymentslab.account.application.command.LoginAccount
 import org.collaborators.paymentslab.account.application.command.RegisterAccount
 import org.collaborators.paymentslab.account.application.command.RegisterAdminAccount
@@ -28,7 +29,8 @@ class AccountService(
 
     fun registerAdmin(command: RegisterAdminAccount) {
         accountValidator.validate(adminKey, command.adminKey)
-        val account = accountRegister.register(command.email, command.passwd, command.username, command.phoneNumber)
+        val account = accountRegister
+            .register(command.email, command.passwd, command.username, command.phoneNumber, hashSetOf(Role.USER, Role.ADMIN))
         accountRegister.registerConfirm(account.emailCheckToken!!, account.email)
     }
 
