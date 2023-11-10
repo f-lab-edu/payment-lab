@@ -11,41 +11,34 @@ import java.util.*
 @Entity
 @Table(name = "ACCOUNTS")
 class Account protected constructor(
-    var accountKey: String? = null,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
+    var accountKey: String = KeyGenerator.generate("act_"),
     var email: String,
     var password: String,
     var username: String,
+    var phoneNumber: String,
     var emailCheckToken: String? = null,
     var emailCheckTokenGeneratedAt: LocalDateTime? = null,
     var emailVerified: Boolean = false,
-    var phoneNumber: String,
     var joinedAt: LocalDateTime? = null,
     @UpdateTimestamp
-    val lastModifiedAt: LocalDateTime?,
-    val withdraw: Boolean? = false,
+    val lastModifiedAt: LocalDateTime? = null,
+    var withdraw: Boolean = false,
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    var roles: MutableSet<Role>
+    var roles: MutableSet<Role> = hashSetOf(Role.USER)
 ): AbstractAggregateRoot() {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
 
-    private constructor(email: String, password: String, username: String, phoneNumber: String, roles: MutableSet<Role> = hashSetOf(Role.USER)) : this(
-        KeyGenerator.generate("act_"), email, password, username, null,
-        null, false, phoneNumber, null, null, false, roles) {
-        this.email = email
-        this.password = password
-        this.username = username
-        this.phoneNumber = phoneNumber
-        this.roles = roles
+    init {
+        generateEmailCheckToken()
     }
 
     companion object {
-        fun register(email: String, encodedPassword: String, username: String, phoneNumber: String, roles: MutableSet<Role> = hashSetOf(Role.USER)): Account {
-            val account = Account(email, encodedPassword, username, phoneNumber, roles)
-            account.generateEmailCheckToken()
-            return account
-        }
+        fun register(
+            email: String, encodedPassword: String, username: String, phoneNumber: String,
+            roles: MutableSet<Role> = hashSetOf(Role.USER)
+        ) = Account(email = email, password = encodedPassword, username = username, phoneNumber = phoneNumber, roles = roles)
     }
 
     private fun generateEmailCheckToken() {
@@ -58,10 +51,9 @@ class Account protected constructor(
         this.joinedAt = LocalDateTime.now()
     }
 
-    fun isValidToken(token: String): Boolean {
-//        return this.emailCheckToken.equals(token)
-        return true
-    }
+    fun isValidToken(token: String) = true
+//    = token == emailCheckToken
+
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
