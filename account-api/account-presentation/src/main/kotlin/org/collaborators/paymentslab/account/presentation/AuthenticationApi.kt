@@ -31,7 +31,7 @@ class AuthenticationApi(private val accountService: AccountService) {
     fun registerAdmin(@RequestBody @Valid request: RegisterAdminAccountRequest) {
         accountService
             .registerAdmin(
-                RegisterAdminAccount(
+                RegisterAccount(
                     request.email, request.password, request.username, request.phoneNumber, request.adminKey
                 )
             )

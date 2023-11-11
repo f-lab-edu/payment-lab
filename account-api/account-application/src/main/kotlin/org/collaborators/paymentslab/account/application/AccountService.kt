@@ -27,15 +27,17 @@ class AccountService(
     @Value("\${admin.key}")
     private lateinit var adminKey: String
 
-    fun registerAdmin(command: RegisterAdminAccount) {
-        accountValidator.validate(adminKey, command.adminKey)
+    fun registerAdmin(command: RegisterAccount) {
+        accountValidator.validate(adminKey, command.adminKey!!)
         val account = accountRegister
-            .register(command.email, command.passwd, command.username, command.phoneNumber, hashSetOf(Role.USER, Role.ADMIN))
+            .register(command.email, command.password, command.username, command.phoneNumber, hashSetOf(Role.USER, Role.ADMIN))
+        // TODO: 이메일 인증이 완료되면 삭제
         accountRegister.registerConfirm(account.emailCheckToken!!, account.email)
     }
 
     fun register(command: RegisterAccount)  {
         val account = accountRegister.register(command.email, command.password, command.username, command.phoneNumber)
+        // TODO: 이메일 인증이 완료되면 삭제
         accountRegister.registerConfirm(account.emailCheckToken!!, account.email)
     }
 
