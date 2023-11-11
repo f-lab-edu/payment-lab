@@ -15,7 +15,6 @@ class Account protected constructor(
     val id: Long? = null,
     var accountKey: String = KeyGenerator.generate("act_"),
     var email: String,
-    var password: String,
     var username: String,
     var phoneNumber: String,
     var emailCheckToken: String? = null,
@@ -34,11 +33,18 @@ class Account protected constructor(
         generateEmailCheckToken()
     }
 
+    var password: String? = null
+        private set
+
     companion object {
         fun register(
             email: String, encodedPassword: String, username: String, phoneNumber: String,
             roles: MutableSet<Role> = hashSetOf(Role.USER)
-        ) = Account(email = email, password = encodedPassword, username = username, phoneNumber = phoneNumber, roles = roles)
+        ): Account {
+            val account = Account(email = email, username = username, phoneNumber = phoneNumber, roles = roles)
+            account.password = encodedPassword
+            return account
+        }
     }
 
     private fun generateEmailCheckToken() {
@@ -68,5 +74,23 @@ class Account protected constructor(
 
     override fun hashCode(): Int {
         return id?.hashCode() ?: 0
+    }
+
+    override fun toString(): String {
+        return "Account(" +
+                    "id=$id, " +
+                    "accountKey='$accountKey', " +
+                    "email='$email', " +
+                    "username='$username', " +
+                    "phoneNumber='$phoneNumber', " +
+                    "emailCheckToken=$emailCheckToken, " +
+                    "emailCheckTokenGeneratedAt=$emailCheckTokenGeneratedAt, " +
+                    "emailVerified=$emailVerified, " +
+                    "joinedAt=$joinedAt, " +
+                    "lastModifiedAt=$lastModifiedAt, " +
+                    "withdraw=$withdraw, " +
+                    "roles=$roles, " +
+                    "password=[PROTECTED]" +
+                ")"
     }
 }

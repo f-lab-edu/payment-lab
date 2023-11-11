@@ -35,7 +35,7 @@ class AccountService(
     }
 
     fun register(command: RegisterAccount)  {
-        val account = accountRegister.register(command.email, command.passwd, command.username, command.phoneNumber)
+        val account = accountRegister.register(command.email, command.password, command.username, command.phoneNumber)
         accountRegister.registerConfirm(account.emailCheckToken!!, account.email)
     }
 
