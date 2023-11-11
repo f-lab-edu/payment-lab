@@ -1,18 +1,16 @@
 package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.collaborator.paymentlab.common.AuthenticatedUser
 import org.collaborator.paymentlab.common.domain.DomainEventTypeParser
 import org.collaborators.paymentslab.payment.domain.PaymentOrderRecordEvent
 import org.collaborators.paymentslab.payment.domain.PaymentResultEvent
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
 import org.collaborators.paymentslab.payment.domain.repository.TossPaymentsRepository
+import org.collaborators.paymentslab.payment.infrastructure.getCurrentAccount
 import org.collaborators.paymentslab.payment.infrastructure.kafka.StringKafkaTemplateWrapper
 import org.collaborators.paymentslab.payment.infrastructure.log.AsyncAppenderPaymentTransactionLogProcessor
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.InvalidPaymentOrderException
-import org.springframework.kafka.core.KafkaTemplate
-import org.springframework.security.core.context.SecurityContextHolder
 
 class TossPaymentsTransactionEventPublisher(
     private val stringKafkaTemplateWrapper: StringKafkaTemplateWrapper,
@@ -24,9 +22,9 @@ class TossPaymentsTransactionEventPublisher(
 ) {
 
     fun publishAndRecord(result: TossPaymentsApprovalResponse, paymentOrder: PaymentOrder) {
-        val principal = SecurityContextHolder.getContext().authentication.principal as AuthenticatedUser
+        val currentAccount = getCurrentAccount()
         val newPaymentEntity = TossPaymentsFactory.create(result)
-        newPaymentEntity.resultOf(principal.id, paymentOrder.status)
+        newPaymentEntity.resultOf(currentAccount.id, paymentOrder.status)
         val newPaymentRecord = tossPaymentsRepository.save(newPaymentEntity)
 
         newPaymentRecord.pollAllEvents().forEach {
@@ -38,10 +36,10 @@ class TossPaymentsTransactionEventPublisher(
     }
 
     fun publishAndRecord(accountId: Long, orderName: String, amount: Int) {
-        val principal = SecurityContextHolder.getContext().authentication.principal as AuthenticatedUser
+        val currentAccount = getCurrentAccount()
         val newPaymentOrder = PaymentOrder.newInstance(accountId, orderName, amount)
         val paymentOrder = paymentOrderRepository.save(newPaymentOrder)
-        if (accountId != principal.id) {
+        if (accountId != currentAccount.id) {
             paymentOrder.aborted()
             throw InvalidPaymentOrderException()
         }

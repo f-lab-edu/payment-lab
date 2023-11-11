@@ -1,16 +1,16 @@
 package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 
-import org.collaborator.paymentlab.common.AuthenticatedUser
+
 import org.collaborator.paymentlab.common.error.ErrorCode
 import org.collaborator.paymentlab.common.error.ServiceException
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
+import org.collaborators.paymentslab.payment.infrastructure.getCurrentAccount
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.TossPaymentsApiClientException
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestTemplate
@@ -51,7 +51,7 @@ class TossPaymentsKeyInApprovalProcessor(
         headers.setBasicAuth(String(Base64.getEncoder().encode("${paymentProperties.secretKey}:".toByteArray(StandardCharsets.ISO_8859_1))))
         headers.contentType = MediaType.APPLICATION_JSON
 
-        val account = SecurityContextHolder.getContext().authentication.principal as AuthenticatedUser
+        val account = getCurrentAccount()
         val idempotencyKey = "po_${paymentOrder.id}_acc_${account.id}}"
         headers.set("Idempotency-Key", String(Base64.getEncoder().encode(idempotencyKey.toByteArray(StandardCharsets.ISO_8859_1))))
 

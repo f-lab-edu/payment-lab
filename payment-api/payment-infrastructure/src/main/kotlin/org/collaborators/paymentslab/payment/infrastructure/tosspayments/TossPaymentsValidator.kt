@@ -1,11 +1,10 @@
 package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 
-import org.collaborator.paymentlab.common.AuthenticatedUser
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 import org.collaborators.paymentslab.payment.domain.entity.PaymentsStatus
+import org.collaborators.paymentslab.payment.infrastructure.getCurrentAccount
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.*
 import org.slf4j.LoggerFactory
-import org.springframework.security.core.context.SecurityContextHolder
 import java.util.Locale
 
 
@@ -20,9 +19,9 @@ class TossPaymentsValidator {
     )
 
     fun validate(paymentOrder: PaymentOrder, amount: Int, orderName: String) {
-        val accountUser = SecurityContextHolder.getContext().authentication.principal as AuthenticatedUser
+        val currentAccount = getCurrentAccount()
 
-        checkAccountId(paymentOrder, accountUser.id)
+        checkAccountId(paymentOrder, currentAccount.id)
         checkPaymentDetails(paymentOrder, amount, orderName)
         checkPaymentStatus(paymentOrder)
     }
