@@ -1,6 +1,8 @@
 package org.collaborators.paymentslab.payment.presentation
 
 import jakarta.validation.Valid
+import org.collaborator.paymentlab.common.KEY_IN_PAYMENT_ORDER_ID
+import org.collaborator.paymentlab.common.PAYMENT_ORDER
 import org.collaborator.paymentlab.common.V1_TOSS_PAYMENTS
 import org.collaborator.paymentlab.common.result.ApiResult
 import org.collaborators.paymentslab.payment.application.PaymentOrderService
@@ -27,7 +29,7 @@ class PaymentApi(
     ) {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    @PostMapping("key-in/{paymentOrderId}")
+    @PostMapping(KEY_IN_PAYMENT_ORDER_ID)
     fun keyInPayed(
         @PathVariable paymentOrderId: Long,
         @RequestBody @Valid request: TossPaymentsKeyInRequest
@@ -36,7 +38,7 @@ class PaymentApi(
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @PostMapping("payment-order")
+    @PostMapping(PAYMENT_ORDER)
     fun generatePaymentOrder(
         @RequestBody @Valid request: PaymentOrderRequest
     ): ResponseEntity<Void> {

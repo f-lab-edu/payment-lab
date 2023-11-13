@@ -1,7 +1,7 @@
 package org.collaborators.paymentslab.account.presentation
 
 import jakarta.validation.Valid
-import org.collaborator.paymentlab.common.V1_AUTH
+import org.collaborator.paymentlab.common.*
 import org.collaborator.paymentlab.common.result.ApiResult
 import org.collaborators.paymentslab.account.application.AccountService
 import org.collaborators.paymentslab.account.application.command.LoginAccount
@@ -27,7 +27,7 @@ class AuthenticationApi(private val accountService: AccountService) {
     @Value("\${redirect.url.login}")
     private lateinit var redirectUrl: String
 
-    @PostMapping("register/admin")
+    @PostMapping(REGISTER_ADMIN)
     fun registerAdmin(@RequestBody @Valid request: RegisterAdminAccountRequest) {
         accountService
             .registerAdmin(
@@ -37,12 +37,12 @@ class AuthenticationApi(private val accountService: AccountService) {
             )
     }
 
-    @PostMapping("register")
+    @PostMapping(REGISTER)
     fun register(@RequestBody @Valid request: RegisterAccountRequest) {
         accountService.register(RegisterAccount(request.email, request.password, request.username, request.phoneNumber))
     }
 
-    @GetMapping("confirm")
+    @GetMapping(CONFIRM)
     fun registerConfirm(@RequestBody @Valid request: RegisterConfirmRequest): ResponseEntity<Void> {
         accountService.registerConfirm(RegisterConfirm(request.token, request.email))
 
@@ -52,13 +52,13 @@ class AuthenticationApi(private val accountService: AccountService) {
         return ResponseEntity(header, HttpStatus.SEE_OTHER)
     }
 
-    @PostMapping("login")
+    @PostMapping(LOGIN)
     fun login(@RequestBody @Valid request: LoginAccountRequest): ResponseEntity<ApiResult<TokenResponse>> {
         val tokens = accountService.login(LoginAccount(request.email, request.password))
         return ResponseEntity.ok(ApiResult.success(TokenResponse(tokens.accessToken, tokens.refreshToken)))
     }
 
-    @PostMapping("reIssuance")
+    @PostMapping(RE_ISSUANCE)
     fun reIssuance(@RequestHeader("Authorization") payload: String): ResponseEntity<ApiResult<TokenResponse>> {
         val tokens = accountService.reIssuance(payload)
         return ResponseEntity.ok(ApiResult.success(
