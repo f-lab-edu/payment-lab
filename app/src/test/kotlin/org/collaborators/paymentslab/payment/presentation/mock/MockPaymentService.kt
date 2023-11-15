@@ -36,6 +36,6 @@ class MockPaymentService(
             if (!Character.isDigit(arr[i]))
                 return false
         }
-        return true;
+        return true
     }
 }

@@ -1,7 +1,8 @@
 package org.collaborators.paymentslab.payment.presentation
 
 import jakarta.validation.Valid
-import org.collaborator.paymentlab.common.V1_API_TOSS_PAYMENTS
+import org.collaborator.paymentlab.common.KEY_IN_PAYMENT_ORDER_ID
+import org.collaborator.paymentlab.common.PAYMENT_ORDER
 import org.collaborator.paymentlab.common.V1_TOSS_PAYMENTS
 import org.collaborator.paymentlab.common.result.ApiResult
 import org.collaborators.paymentslab.payment.application.PaymentOrderService
@@ -10,7 +11,6 @@ import org.collaborators.paymentslab.payment.application.query.PaymentHistoryQue
 import org.collaborators.paymentslab.payment.presentation.request.PaymentOrderRequest
 import org.collaborators.paymentslab.payment.presentation.request.TossPaymentsKeyInRequest
 import org.collaborators.paymentslab.payment.presentation.response.PaymentHistoryResponse
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,17 +21,15 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestBody
 
-import java.net.URI
-
 @RestController
-@RequestMapping(V1_API_TOSS_PAYMENTS)
+@RequestMapping(V1_TOSS_PAYMENTS)
 class PaymentApi(
     private val paymentService: PaymentService,
     private val paymentOrderService: PaymentOrderService
     ) {
 
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @PostMapping("key-in/{paymentOrderId}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PostMapping(KEY_IN_PAYMENT_ORDER_ID)
     fun keyInPayed(
         @PathVariable paymentOrderId: Long,
         @RequestBody @Valid request: TossPaymentsKeyInRequest
@@ -40,18 +38,13 @@ class PaymentApi(
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @PostMapping("payment-order")
+    @PostMapping(PAYMENT_ORDER)
     fun generatePaymentOrder(
         @RequestBody @Valid request: PaymentOrderRequest
     ): ResponseEntity<Void> {
-        val paymentOrderId = paymentOrderService.generate(request.toCommand())
-        return ResponseEntity.status(HttpStatus.SEE_OTHER).location(URI("http://localhost:8080$V1_API_TOSS_PAYMENTS/${paymentOrderId}")).build()
-    }
+        paymentOrderService.generate(request.toCommand())
 
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @GetMapping("{paymentOrderId}")
-    fun getPaymentOrderId(@PathVariable paymentOrderId: Long): ResponseEntity<String> {
-        return ResponseEntity.ok(paymentOrderId.toString())
+        return ResponseEntity.ok().build()
     }
 
 

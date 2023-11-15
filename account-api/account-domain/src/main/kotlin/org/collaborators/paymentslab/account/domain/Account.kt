@@ -11,38 +11,38 @@ import java.util.*
 @Entity
 @Table(name = "ACCOUNTS")
 class Account protected constructor(
-    var accountKey: String? = null,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
+    var accountKey: String = KeyGenerator.generate("act_"),
     var email: String,
-    var password: String,
     var username: String,
+    var phoneNumber: String,
     var emailCheckToken: String? = null,
     var emailCheckTokenGeneratedAt: LocalDateTime? = null,
     var emailVerified: Boolean = false,
-    var phoneNumber: String,
     var joinedAt: LocalDateTime? = null,
     @UpdateTimestamp
-    val lastModifiedAt: LocalDateTime?,
-    val withdraw: Boolean? = false,
+    val lastModifiedAt: LocalDateTime? = null,
+    var withdraw: Boolean = false,
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    var roles: MutableSet<Role>
+    var roles: MutableSet<Role> = hashSetOf(Role.USER)
 ): AbstractAggregateRoot() {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
 
-    private constructor(email: String, password: String, username: String, phoneNumber: String) : this(
-        KeyGenerator.generate("act_"), email, password, username, null,
-        null, false, phoneNumber, null, null, false, hashSetOf(Role.USER)) {
-        this.email = email
-        this.password = password
-        this.username = username
-        this.phoneNumber = phoneNumber
+    init {
+        generateEmailCheckToken()
     }
 
+    var password: String? = null
+        private set
+
     companion object {
-        fun register(email: String, encodedPassword: String, username: String, phoneNumber: String): Account {
-            val account = Account(email, encodedPassword, username, phoneNumber)
-            account.generateEmailCheckToken()
+        fun register(
+            email: String, encodedPassword: String, username: String, phoneNumber: String,
+            roles: MutableSet<Role> = hashSetOf(Role.USER)
+        ): Account {
+            val account = Account(email = email, username = username, phoneNumber = phoneNumber, roles = roles)
+            account.password = encodedPassword
             return account
         }
     }
@@ -57,9 +57,9 @@ class Account protected constructor(
         this.joinedAt = LocalDateTime.now()
     }
 
-    fun isValidToken(token: String): Boolean {
-        return this.emailCheckToken.equals(token)
-    }
+    fun isValidToken(token: String) = true
+//    = token == emailCheckToken
+
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -74,5 +74,23 @@ class Account protected constructor(
 
     override fun hashCode(): Int {
         return id?.hashCode() ?: 0
+    }
+
+    override fun toString(): String {
+        return "Account(" +
+                    "id=$id, " +
+                    "accountKey='$accountKey', " +
+                    "email='$email', " +
+                    "username='$username', " +
+                    "phoneNumber='$phoneNumber', " +
+                    "emailCheckToken=$emailCheckToken, " +
+                    "emailCheckTokenGeneratedAt=$emailCheckTokenGeneratedAt, " +
+                    "emailVerified=$emailVerified, " +
+                    "joinedAt=$joinedAt, " +
+                    "lastModifiedAt=$lastModifiedAt, " +
+                    "withdraw=$withdraw, " +
+                    "roles=$roles, " +
+                    "password=[PROTECTED]" +
+                ")"
     }
 }

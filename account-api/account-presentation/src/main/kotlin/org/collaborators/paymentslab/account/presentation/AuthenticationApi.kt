@@ -1,16 +1,19 @@
 package org.collaborators.paymentslab.account.presentation
 
 import jakarta.validation.Valid
-import org.collaborator.paymentlab.common.V1_API_AUTH
+import org.collaborator.paymentlab.common.*
 import org.collaborator.paymentlab.common.result.ApiResult
 import org.collaborators.paymentslab.account.application.AccountService
 import org.collaborators.paymentslab.account.application.command.LoginAccount
 import org.collaborators.paymentslab.account.application.command.RegisterAccount
+import org.collaborators.paymentslab.account.application.command.RegisterAdminAccount
 import org.collaborators.paymentslab.account.application.command.RegisterConfirm
 import org.collaborators.paymentslab.account.presentation.request.LoginAccountRequest
 import org.collaborators.paymentslab.account.presentation.request.RegisterAccountRequest
+import org.collaborators.paymentslab.account.presentation.request.RegisterAdminAccountRequest
 import org.collaborators.paymentslab.account.presentation.request.RegisterConfirmRequest
 import org.collaborators.paymentslab.account.presentation.response.TokenResponse
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,31 +21,44 @@ import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
-@RequestMapping(V1_API_AUTH)
+@RequestMapping(V1_AUTH)
 class AuthenticationApi(private val accountService: AccountService) {
 
-    @PostMapping("register")
+    @Value("\${redirect.url.login}")
+    private lateinit var redirectUrl: String
+
+    @PostMapping(REGISTER_ADMIN)
+    fun registerAdmin(@RequestBody @Valid request: RegisterAdminAccountRequest) {
+        accountService
+            .registerAdmin(
+                RegisterAccount(
+                    request.email, request.password, request.username, request.phoneNumber, request.adminKey
+                )
+            )
+    }
+
+    @PostMapping(REGISTER)
     fun register(@RequestBody @Valid request: RegisterAccountRequest) {
         accountService.register(RegisterAccount(request.email, request.password, request.username, request.phoneNumber))
     }
 
-    @GetMapping("confirm")
+    @GetMapping(CONFIRM)
     fun registerConfirm(@RequestBody @Valid request: RegisterConfirmRequest): ResponseEntity<Void> {
         accountService.registerConfirm(RegisterConfirm(request.token, request.email))
 
-        val uri = URI.create("http://localhost:3000/login")
+        val uri = URI.create(redirectUrl)
         val header = HttpHeaders()
         header.location = uri
         return ResponseEntity(header, HttpStatus.SEE_OTHER)
     }
 
-    @PostMapping("login")
+    @PostMapping(LOGIN)
     fun login(@RequestBody @Valid request: LoginAccountRequest): ResponseEntity<ApiResult<TokenResponse>> {
         val tokens = accountService.login(LoginAccount(request.email, request.password))
         return ResponseEntity.ok(ApiResult.success(TokenResponse(tokens.accessToken, tokens.refreshToken)))
     }
 
-    @PostMapping("reIssuance")
+    @PostMapping(RE_ISSUANCE)
     fun reIssuance(@RequestHeader("Authorization") payload: String): ResponseEntity<ApiResult<TokenResponse>> {
         val tokens = accountService.reIssuance(payload)
         return ResponseEntity.ok(ApiResult.success(

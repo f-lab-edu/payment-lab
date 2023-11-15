@@ -1,19 +1,26 @@
 package org.collaborators.paymentslab
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.collaborator.paymentlab.common.Role
 import org.collaborator.paymentlab.common.URI_HOST
 import org.collaborator.paymentlab.common.URI_PORT
 import org.collaborator.paymentlab.common.URI_SCHEME
 import org.collaborators.paymentslab.account.domain.Account
 import org.collaborators.paymentslab.account.domain.PasswordEncrypt
 import org.collaborators.paymentslab.account.domain.TokenGenerator
+import org.collaborators.paymentslab.payment.infrastructure.kafka.StringKafkaTemplateWrapper
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doNothing
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor
 import org.springframework.restdocs.operation.preprocess.Preprocessors
@@ -41,6 +48,10 @@ abstract class AbstractApiTest {
 
     @Autowired lateinit var encrypt: PasswordEncrypt
 
+    @MockBean
+    protected lateinit var stringKafkaTemplateWrapper: StringKafkaTemplateWrapper
+
+
     @Value("\${uri.scheme}")
     protected lateinit var scheme: String
 
@@ -50,12 +61,32 @@ abstract class AbstractApiTest {
     @Value("\${uri.port}")
     protected lateinit var port: String
 
+    @Value("\${admin.key}")
+    protected lateinit var adminKey: String
+
+    @BeforeEach
+    fun setUp() {
+        doNothing().`when`(stringKafkaTemplateWrapper).send(any(), any())
+    }
+
     protected fun testEntityForRegister(email: String): Account {
         val account = Account.register(
             email,
             encrypt.encode("qqqwww123"),
             "testName",
             "010-1234-1234"
+        )
+        account.completeRegister()
+        return account
+    }
+
+    protected fun testEntityForAdminRegister(email: String): Account {
+        val account = Account.register(
+            email,
+            encrypt.encode("qqqwww123"),
+            "testName",
+            "010-1234-1234",
+            hashSetOf(Role.USER, Role.ADMIN)
         )
         account.completeRegister()
         return account

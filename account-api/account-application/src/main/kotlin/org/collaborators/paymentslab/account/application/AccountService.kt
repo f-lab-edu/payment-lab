@@ -1,10 +1,13 @@
 package org.collaborators.paymentslab.account.application
 
+import org.collaborator.paymentlab.common.Role
 import org.collaborators.paymentslab.account.application.command.LoginAccount
 import org.collaborators.paymentslab.account.application.command.RegisterAccount
+import org.collaborators.paymentslab.account.application.command.RegisterAdminAccount
 import org.collaborators.paymentslab.account.application.command.RegisterConfirm
 import org.collaborators.paymentslab.account.domain.*
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -20,12 +23,22 @@ class AccountService(
     private val env: Environment
 ) {
     private val log = LoggerFactory.getLogger(AccountService::class.java)
+
+    @Value("\${admin.key}")
+    private lateinit var adminKey: String
+
+    fun registerAdmin(command: RegisterAccount) {
+        accountValidator.validate(adminKey, command.adminKey!!)
+        val account = accountRegister
+            .register(command.email, command.password, command.username, command.phoneNumber, hashSetOf(Role.USER, Role.ADMIN))
+        // TODO: 이메일 인증이 완료되면 삭제
+        accountRegister.registerConfirm(account.emailCheckToken!!, account.email)
+    }
+
     fun register(command: RegisterAccount)  {
-        val account = accountRegister.register(command.email, command.passwd, command.username, command.phoneNumber)
-        if (env.activeProfiles.contains("local") || env.activeProfiles.contains("test") || env.activeProfiles.contains("default")) { // TODO 이메일 인증 완료시, 해당 코드 삭제
-            log.info("Account registered in test env. skipping email check.")
-            accountRegister.registerConfirm(account.emailCheckToken!!, account.email)
-        }
+        val account = accountRegister.register(command.email, command.password, command.username, command.phoneNumber)
+        // TODO: 이메일 인증이 완료되면 삭제
+        accountRegister.registerConfirm(account.emailCheckToken!!, account.email)
     }
 
     fun registerConfirm(command: RegisterConfirm): Boolean {
