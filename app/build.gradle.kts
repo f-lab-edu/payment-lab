@@ -56,7 +56,6 @@ dependencies {
 
 	/** resilience4j **/
 	implementation("io.github.resilience4j:resilience4j-spring-boot3:2.1.0")
-	implementation("io.github.resilience4j:resilience4j-all")
 }
 
 tasks {
