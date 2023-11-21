@@ -13,12 +13,11 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestClientException
-import org.springframework.web.client.RestTemplate
 import java.nio.charset.StandardCharsets
 import java.util.*
 
 class TossPaymentsKeyInApprovalProcessor(
-    private val restTemplate: RestTemplate,
+    private val restTemplate: TossPaymentsRestClient,
     private val paymentOrderRepository: PaymentOrderRepository,
     private val paymentsTransactionEventPublisher: TossPaymentsTransactionEventPublisher,
     private val paymentProperties: PaymentPropertiesResolver
@@ -28,7 +27,7 @@ class TossPaymentsKeyInApprovalProcessor(
         var result = TossPaymentsApprovalResponse.preResponseOf(paymentOrder, dto)
         try {
             val request = createRequest(paymentOrder, dto)
-            val response = restTemplate.postForEntity("${paymentProperties.url}key-in", request, TossPaymentsApprovalResponse::class.java)
+            val response = restTemplate.postForEntity("${paymentProperties.url}key-in", request)
             if (response.statusCode == HttpStatus.OK && response.hasBody()) {
                 paymentOrder.complete()
                 result = response.body!!
