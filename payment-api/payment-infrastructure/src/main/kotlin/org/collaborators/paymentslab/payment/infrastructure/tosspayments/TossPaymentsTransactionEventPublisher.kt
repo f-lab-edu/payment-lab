@@ -8,12 +8,12 @@ import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
 import org.collaborators.paymentslab.payment.domain.repository.TossPaymentsRepository
 import org.collaborators.paymentslab.payment.infrastructure.getCurrentAccount
-import org.collaborators.paymentslab.payment.infrastructure.kafka.StringKafkaTemplateWrapper
 import org.collaborators.paymentslab.payment.infrastructure.log.AsyncAppenderPaymentTransactionLogProcessor
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.InvalidPaymentOrderException
+import org.springframework.kafka.core.KafkaTemplate
 
 class TossPaymentsTransactionEventPublisher(
-    private val stringKafkaTemplateWrapper: StringKafkaTemplateWrapper,
+    private val kafkaTemplate: KafkaTemplate<String, String>,
     private val asyncLogProcessor: AsyncAppenderPaymentTransactionLogProcessor,
     private val tossPaymentsRepository: TossPaymentsRepository,
     private val paymentOrderRepository: PaymentOrderRepository,
@@ -31,7 +31,7 @@ class TossPaymentsTransactionEventPublisher(
             asyncLogProcessor.process(it as PaymentResultEvent)
             val eventWithClassType =
                 DomainEventTypeParser.parseSimpleName(objectMapper.writeValueAsString(it), it::class.java)
-            stringKafkaTemplateWrapper.send(paymentProperties.paymentTransactionTopicName, eventWithClassType)
+            kafkaTemplate.send(paymentProperties.paymentTransactionTopicName, eventWithClassType)
         }
     }
 
@@ -46,7 +46,7 @@ class TossPaymentsTransactionEventPublisher(
         paymentOrder.ready()
         paymentOrder.pollAllEvents().forEach {
             asyncLogProcessor.process(it as PaymentOrderRecordEvent)
-            stringKafkaTemplateWrapper.send(paymentProperties.paymentTransactionTopicName, objectMapper.writeValueAsString(it))
+            kafkaTemplate.send(paymentProperties.paymentTransactionTopicName, objectMapper.writeValueAsString(it))
         }
     }
 }

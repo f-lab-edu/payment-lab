@@ -8,19 +8,16 @@ import org.collaborator.paymentlab.common.URI_SCHEME
 import org.collaborators.paymentslab.account.domain.Account
 import org.collaborators.paymentslab.account.domain.PasswordEncrypt
 import org.collaborators.paymentslab.account.domain.TokenGenerator
-import org.collaborators.paymentslab.payment.infrastructure.kafka.StringKafkaTemplateWrapper
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.kotlin.any
-import org.mockito.kotlin.doNothing
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.kafka.core.*
+import org.springframework.kafka.listener.*
+import org.springframework.kafka.test.context.EmbeddedKafka
 import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor
 import org.springframework.restdocs.operation.preprocess.Preprocessors
@@ -31,12 +28,14 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@EmbeddedKafka(partitions = 1, brokerProperties = ["listeners=PLAINTEXT://localhost:29092"], ports = [9092])
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(uriScheme = URI_SCHEME, uriHost = URI_HOST, uriPort = URI_PORT)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(RestDocumentationExtension::class)
 @ActiveProfiles("test")
 abstract class AbstractApiTest {
+
     @Autowired
     protected lateinit var mockMvc: MockMvc
 
@@ -48,9 +47,8 @@ abstract class AbstractApiTest {
 
     @Autowired lateinit var encrypt: PasswordEncrypt
 
-    @MockBean
-    protected lateinit var stringKafkaTemplateWrapper: StringKafkaTemplateWrapper
-
+    @Autowired
+    protected lateinit var kafkaTemplate: KafkaTemplate<String, String>
 
     @Value("\${uri.scheme}")
     protected lateinit var scheme: String
@@ -63,11 +61,6 @@ abstract class AbstractApiTest {
 
     @Value("\${admin.key}")
     protected lateinit var adminKey: String
-
-    @BeforeEach
-    fun setUp() {
-        doNothing().`when`(stringKafkaTemplateWrapper).send(any(), any())
-    }
 
     protected fun testEntityForRegister(email: String): Account {
         val account = Account.register(
