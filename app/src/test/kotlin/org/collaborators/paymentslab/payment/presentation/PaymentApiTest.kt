@@ -43,7 +43,7 @@ class PaymentApiTest @Autowired constructor(
         val requestDto = MockPayments.testTossPaymentsRequest
 
         val paymentOrder = PaymentOrder.newInstance(
-            account.id!!,
+            account.id()!!,
             requestDto.orderName,
             requestDto.amount
         )
@@ -54,7 +54,7 @@ class PaymentApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("$V1_TOSS_PAYMENTS/$KEY_IN_PAYMENT_ORDER_ID", paymentOrder.id)
+                .post("$V1_TOSS_PAYMENTS/$KEY_IN_PAYMENT_ORDER_ID", paymentOrder.id())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -79,7 +79,7 @@ class PaymentApiTest @Autowired constructor(
         val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
 
         val paymentOrder = PaymentOrder.newInstance(
-            account.id!!,
+            account.id()!!,
             requestDto.orderName,
             requestDto.amount
         )
@@ -90,7 +90,7 @@ class PaymentApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("$V1_TOSS_PAYMENTS/$KEY_IN_PAYMENT_ORDER_ID", paymentOrder.id)
+                .post("$V1_TOSS_PAYMENTS/$KEY_IN_PAYMENT_ORDER_ID", paymentOrder.id())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -116,7 +116,7 @@ class PaymentApiTest @Autowired constructor(
         val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
 
         val paymentOrder = PaymentOrder.newInstance(
-            account.id!!,
+            account.id()!!,
             requestDto.orderName,
             requestDto.amount
         )
@@ -155,7 +155,7 @@ class PaymentApiTest @Autowired constructor(
         val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
 
         val paymentOrder = PaymentOrder.newInstance(
-            account.id!!,
+            account.id()!!,
             requestDto.orderName,
             requestDto.amount
         )
@@ -166,7 +166,7 @@ class PaymentApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("$V1_TOSS_PAYMENTS/$KEY_IN_PAYMENT_ORDER_ID", paymentOrder.id)
+                .post("$V1_TOSS_PAYMENTS/$KEY_IN_PAYMENT_ORDER_ID", paymentOrder.id())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -192,7 +192,7 @@ class PaymentApiTest @Autowired constructor(
         val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
 
         val paymentOrder = PaymentOrder.newInstance(
-            account.id!!,
+            account.id()!!,
             requestDto.orderName,
             requestDto.amount,
             PaymentsStatus.CANCELED
@@ -204,7 +204,7 @@ class PaymentApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("$V1_TOSS_PAYMENTS/$KEY_IN_PAYMENT_ORDER_ID", paymentOrder.id)
+                .post("$V1_TOSS_PAYMENTS/$KEY_IN_PAYMENT_ORDER_ID", paymentOrder.id())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -230,7 +230,7 @@ class PaymentApiTest @Autowired constructor(
         val wrongRequestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
 
         val paymentOrder = PaymentOrder.newInstance(
-            account.id!!,
+            account.id()!!,
             "originOrderName",
             wrongRequestDto.amount
         )
@@ -241,7 +241,7 @@ class PaymentApiTest @Autowired constructor(
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
-                .post("$V1_TOSS_PAYMENTS/$KEY_IN_PAYMENT_ORDER_ID", paymentOrder.id)
+                .post("$V1_TOSS_PAYMENTS/$KEY_IN_PAYMENT_ORDER_ID", paymentOrder.id())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)
@@ -270,7 +270,7 @@ class PaymentApiTest @Autowired constructor(
 
         paymentHistoryRepository.save(
             PaymentHistory.newInstanceFrom(
-            entity.id!!,
+            entity.id()!!,
             LocalDateTime.now(),
             "ord_202306172137299642490491",
             "테스트결제",
@@ -324,7 +324,7 @@ class PaymentApiTest @Autowired constructor(
         val entity = accountRepository.save(account)
 
         val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
-        val reqBody = objectMapper.writeValueAsString(PaymentOrderRequest(entity.id!!, "테스트 주문상품", 10))
+        val reqBody = objectMapper.writeValueAsString(PaymentOrderRequest(entity.id()!!, "테스트 주문상품", 10))
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders

@@ -4,5 +4,5 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 
 interface RestClient<REQUEST, RESPONSE> {
-    fun postForEntity(url: String, request: HttpEntity<REQUEST>): ResponseEntity<RESPONSE>
+    fun keyIn(url: String, request: HttpEntity<REQUEST>): ResponseEntity<RESPONSE>
 }
