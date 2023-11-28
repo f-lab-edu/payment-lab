@@ -6,13 +6,12 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
 
 class TossPaymentsRestClient(
-    private val restTemplate: RestTemplate,
-    private val paymentProperties: PaymentPropertiesResolver
+    private val restTemplate: RestTemplate
 ): RestClient<TossPaymentsKeyInDto, TossPaymentsApprovalResponse> {
-    override fun postForEntity(
+    override fun keyIn(
         url: String,
         request: HttpEntity<TossPaymentsKeyInDto>
     ): ResponseEntity<TossPaymentsApprovalResponse> {
-        return restTemplate.postForEntity("${paymentProperties.url}key-in", request, TossPaymentsApprovalResponse::class.java)
+        return restTemplate.postForEntity(url, request, TossPaymentsApprovalResponse::class.java)
     }
 }

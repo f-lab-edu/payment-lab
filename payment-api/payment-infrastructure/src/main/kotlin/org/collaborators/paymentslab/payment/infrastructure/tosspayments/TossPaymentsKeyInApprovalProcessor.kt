@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 
 class TossPaymentsKeyInApprovalProcessor(
-    private val restTemplate: TossPaymentsRestClient,
+    private val tossPaymentsRestClient: TossPaymentsRestClient,
     private val paymentOrderRepository: PaymentOrderRepository,
     private val paymentsTransactionEventPublisher: TossPaymentsTransactionEventPublisher,
     private val paymentProperties: PaymentPropertiesResolver
@@ -27,7 +27,7 @@ class TossPaymentsKeyInApprovalProcessor(
         var result = TossPaymentsApprovalResponse.preResponseOf(paymentOrder, dto)
         try {
             val request = createRequest(paymentOrder, dto)
-            val response = restTemplate.postForEntity("${paymentProperties.url}key-in", request)
+            val response = tossPaymentsRestClient.keyIn("${paymentProperties.url}key-in", request)
             if (response.statusCode == HttpStatus.OK && response.hasBody()) {
                 paymentOrder.complete()
                 result = response.body!!
@@ -51,7 +51,7 @@ class TossPaymentsKeyInApprovalProcessor(
         headers.contentType = MediaType.APPLICATION_JSON
 
         val account = getCurrentAccount()
-        val idempotencyKey = "po_${paymentOrder.id}_acc_${account.id}}"
+        val idempotencyKey = "po_${paymentOrder.id()}_acc_${account.id}}"
         headers.set("Idempotency-Key", String(Base64.getEncoder().encode(idempotencyKey.toByteArray(StandardCharsets.ISO_8859_1))))
 
         return HttpEntity(dto, headers)

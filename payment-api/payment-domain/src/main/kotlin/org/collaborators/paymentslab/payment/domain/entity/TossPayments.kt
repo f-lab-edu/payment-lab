@@ -27,10 +27,10 @@ class TossPayments protected constructor(
     private val createdAt: LocalDateTime? = null,
     @UpdateTimestamp
     private val modifiedAt: LocalDateTime? = null
-): AbstractAggregateRoot() {
+): AbstractAggregateRoot<Long>() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
+    val id: Long? = null
 
     @Column(nullable = false)
     var accountId: Long? = null
@@ -42,6 +42,10 @@ class TossPayments protected constructor(
         status: String,
         payMethod: PayMethod
     ) : this(info, cancelInfo, cardInfo, status, payMethod, null, null)
+
+    override fun id(): Long {
+        return this.id!!
+    }
 
     fun resultOf(accountId: Long, paymentsStatus: PaymentsStatus) {
         this.accountId = accountId

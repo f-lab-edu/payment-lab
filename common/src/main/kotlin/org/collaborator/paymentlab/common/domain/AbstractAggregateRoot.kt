@@ -2,8 +2,10 @@ package org.collaborator.paymentlab.common.domain
 
 import java.util.Collections
 
-abstract class AbstractAggregateRoot {
+abstract class AbstractAggregateRoot<T> {
     private val events = mutableListOf<DomainEvent>()
+
+    abstract fun id(): T?
 
     protected fun registerEvent(domainEvent: DomainEvent) {
         this.events.add(domainEvent)
