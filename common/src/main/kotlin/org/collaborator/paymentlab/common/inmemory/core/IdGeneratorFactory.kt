@@ -1,4 +1,4 @@
-package org.collaborators.paymentslab.payment.infrastructure.inmemory.core
+package org.collaborator.paymentlab.common.inmemory.core
 
 class IdGeneratorFactory {
     companion object {

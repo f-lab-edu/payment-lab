@@ -1,4 +1,4 @@
-package org.collaborators.paymentslab.payment.infrastructure.inmemory.core
+package org.collaborator.paymentlab.common.inmemory.core
 
 import jakarta.persistence.Id
 import org.collaborator.paymentlab.common.domain.AbstractAggregateRoot

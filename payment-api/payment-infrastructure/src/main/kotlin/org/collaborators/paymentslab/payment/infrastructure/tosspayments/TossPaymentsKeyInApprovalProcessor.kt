@@ -1,6 +1,7 @@
 package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 
 
+import org.collaborator.paymentlab.common.domain.RestClient
 import org.collaborator.paymentlab.common.error.ErrorCode
 import org.collaborator.paymentlab.common.error.ServiceException
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
@@ -17,7 +18,7 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 
 class TossPaymentsKeyInApprovalProcessor(
-    private val tossPaymentsRestClient: TossPaymentsRestClient,
+    private val tossPaymentsRestClient: RestClient<TossPaymentsKeyInDto, TossPaymentsApprovalResponse>,
     private val paymentOrderRepository: PaymentOrderRepository,
     private val paymentsTransactionEventPublisher: TossPaymentsTransactionEventPublisher,
     private val paymentProperties: PaymentPropertiesResolver

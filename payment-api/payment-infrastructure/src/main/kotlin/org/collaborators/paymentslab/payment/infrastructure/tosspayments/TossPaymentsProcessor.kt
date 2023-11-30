@@ -26,18 +26,18 @@ open class TossPaymentsProcessor(
 
         tossPaymentsValidator.validate(paymentOrder, amount, orderName)
 
-//        tossPaymentsKeyInApprovalProcessor.approval(
-//            paymentOrder,
-//            TossPaymentsKeyInDto(
-//                amount,
-//                orderId,
-//                orderName,
-//                cardNumber,
-//                cardExpirationYear,
-//                cardExpirationMonth,
-//                cardPassword,
-//                customerIdentityNumber
-//            )
-//        )
+        tossPaymentsKeyInApprovalProcessor.approval(
+            paymentOrder,
+            TossPaymentsKeyInDto(
+                amount,
+                orderId,
+                orderName,
+                cardNumber,
+                cardExpirationYear,
+                cardExpirationMonth,
+                cardPassword,
+                customerIdentityNumber
+            )
+        )
     }
 }

@@ -1,4 +1,4 @@
-package org.collaborators.paymentslab.payment.infrastructure.inmemory.core
+package org.collaborator.paymentlab.common.inmemory.core
 
 class SequentialLongIdGenerator: IdGenerator<Long> {
     private var sequence = 1L;

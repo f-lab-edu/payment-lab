@@ -15,8 +15,6 @@ import org.collaborators.paymentslab.payment.presentation.mock.MockPayments
 import org.collaborators.paymentslab.payment.presentation.request.PaymentOrderRequest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.anyString
-import org.mockito.kotlin.doNothing
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
@@ -357,7 +355,7 @@ class PaymentApiTest @Autowired constructor(
     @DisplayName("변조된 사용자 계정 id로 주문 결제 발행 api 테스트")
     fun testWithInvalidAccountGeneratePaymentOrder() {
         val account = testEntityForRegister("originalGeneratedPaymentOrder@gmail.com")
-        val originalUser = accountRepository.save(account)
+        accountRepository.save(account)
         val invalidAccountId = 9999L
         val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
         val invalidPaymentOrderRequest = PaymentOrderRequest(invalidAccountId, "잘못된 테스트 주문상품", 10)

@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-@Profile(value = ["!test"])
 @Transactional
 class PaymentService(
     private val paymentsProcessor: PaymentsProcessor,

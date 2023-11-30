@@ -1,7 +1,8 @@
-package org.collaborators.paymentslab.payment.infrastructure.inmemory
+package org.collaborators.paymentslab.payment.infrastructure
 
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
+import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.PaymentOrderNotFoundException
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
 
@@ -15,6 +16,6 @@ class InMemoryPaymentOrderRepositoryAdapter(
     }
 
     override fun findById(id: Long): PaymentOrder {
-        return inMemoryPaymentOrderRepository.findById(id)!!
+        return inMemoryPaymentOrderRepository.findById(id) ?: throw PaymentOrderNotFoundException()
     }
 }
