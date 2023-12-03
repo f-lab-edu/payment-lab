@@ -4,7 +4,9 @@ import org.collaborator.paymentlab.common.error.ErrorCode
 import org.collaborator.paymentlab.common.error.ResourceNotFoundException
 import org.collaborators.paymentslab.account.domain.Account
 import org.collaborators.paymentslab.account.domain.AccountRepository
+import org.springframework.context.annotation.Profile
 
+@Profile(value = ["!test"])
 class AccountRepositoryAdapter(
     private val jpaAccountRepository: JpaAccountRepository
 ): AccountRepository {

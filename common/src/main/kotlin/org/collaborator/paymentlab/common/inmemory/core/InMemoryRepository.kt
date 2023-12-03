@@ -22,6 +22,10 @@ abstract class InMemoryRepository<T : AbstractAggregateRoot<ID>, ID>(idTypeParam
         return entity
     }
 
+    fun findAll(): List<T> {
+        return storage.values.toList()
+    }
+
     private fun assignNewId(id: ID, entity: T) {
         for (field in entity::class.java.declaredFields) {
             if (field.isAnnotationPresent(Id::class.java)) {
