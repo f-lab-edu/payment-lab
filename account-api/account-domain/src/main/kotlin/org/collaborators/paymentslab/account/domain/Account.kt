@@ -12,7 +12,7 @@ import java.util.*
 @Table(name = "ACCOUNTS")
 class Account protected constructor(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null,
+    var id: Long? = null,
     var accountKey: String = KeyGenerator.generate("act_"),
     var email: String,
     var username: String,

@@ -6,6 +6,7 @@ import org.collaborator.paymentlab.common.URI_HOST
 import org.collaborator.paymentlab.common.URI_PORT
 import org.collaborator.paymentlab.common.URI_SCHEME
 import org.collaborators.paymentslab.account.domain.Account
+import org.collaborators.paymentslab.account.domain.AccountRepository
 import org.collaborators.paymentslab.account.domain.PasswordEncrypt
 import org.collaborators.paymentslab.account.domain.TokenGenerator
 import org.junit.jupiter.api.TestInstance
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.kafka.core.*
 import org.springframework.kafka.listener.*
 import org.springframework.kafka.test.context.EmbeddedKafka
@@ -61,6 +63,9 @@ abstract class AbstractApiTest {
 
     @Value("\${admin.key}")
     protected lateinit var adminKey: String
+
+    @MockBean
+    protected lateinit var accountRepository: AccountRepository
 
     protected fun testEntityForRegister(email: String): Account {
         val account = Account.register(

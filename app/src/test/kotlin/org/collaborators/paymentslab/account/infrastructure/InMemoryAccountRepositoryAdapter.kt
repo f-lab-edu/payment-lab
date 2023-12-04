@@ -4,12 +4,8 @@ import org.collaborator.paymentlab.common.error.ErrorCode
 import org.collaborator.paymentlab.common.error.ResourceNotFoundException
 import org.collaborators.paymentslab.account.domain.Account
 import org.collaborators.paymentslab.account.domain.AccountRepository
-import org.springframework.context.annotation.Profile
-import org.springframework.stereotype.Repository
-import javax.security.auth.login.AccountNotFoundException
 
-@Repository
-@Profile(value = ["test"])
+
 class InMemoryAccountRepositoryAdapter(
     private val inMemoryAccountRepository: InMemoryAccountRepository
 ): AccountRepository {

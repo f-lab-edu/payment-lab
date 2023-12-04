@@ -27,7 +27,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.time.LocalDateTime
 
 class PaymentApiTest @Autowired constructor(
-    private val accountRepository: AccountRepository,
+//    private val accountRepository: AccountRepository,
     private val paymentHistoryRepository: PaymentHistoryRepository,
     private val paymentOrderRepository: PaymentOrderRepository
 ) : AbstractApiTest() {
