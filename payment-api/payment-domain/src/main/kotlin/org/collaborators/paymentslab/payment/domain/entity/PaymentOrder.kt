@@ -21,7 +21,7 @@ class PaymentOrder protected constructor(
 ): AbstractAggregateRoot<Long>() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null
+    var id: Long? = null
 
     override fun id(): Long? {
         return this.id
@@ -39,6 +39,11 @@ class PaymentOrder protected constructor(
 
     fun inProcess() {
         this.status = PaymentsStatus.IN_PROGRESS
+        registerEvent(PaymentOrderRecordEvent(this))
+    }
+
+    fun cancel() {
+        this.status = PaymentsStatus.CANCELED
         registerEvent(PaymentOrderRecordEvent(this))
     }
 

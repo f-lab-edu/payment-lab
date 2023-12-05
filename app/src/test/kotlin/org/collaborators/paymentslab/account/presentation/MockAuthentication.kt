@@ -1,5 +1,6 @@
 package org.collaborators.paymentslab.account.presentation
 
+import org.collaborator.paymentlab.common.Role
 import org.collaborators.paymentslab.account.domain.Account
 import org.collaborators.paymentslab.account.presentation.request.RegisterAccountRequest
 import org.collaborators.paymentslab.account.presentation.request.RegisterAdminAccountRequest
@@ -21,6 +22,17 @@ object MockAuthentication {
         account.id = 1L
         account.emailVerified = true
         return account
+    }
+
+    fun mockAdminAccount(): Account {
+        val account = Account.register(
+            "hello2@gmail.com",
+            testEncrypyPassword, "hello2", "010-1234-1234", hashSetOf(Role.USER, Role.ADMIN)
+        )
+        account.id = 1L
+        account.emailVerified = true
+        return account
+
     }
 
     fun mockWrongUserAccount(): Account {

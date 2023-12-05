@@ -5,17 +5,19 @@ import org.collaborator.paymentlab.common.PAYMENT_ORDER
 import org.collaborator.paymentlab.common.Role
 import org.collaborator.paymentlab.common.V1_TOSS_PAYMENTS
 import org.collaborators.paymentslab.AbstractApiTest
-import org.collaborators.paymentslab.account.domain.AccountRepository
+import org.collaborators.paymentslab.account.presentation.MockAuthentication
+import org.collaborators.paymentslab.payment.data.PageData
 import org.collaborators.paymentslab.payment.domain.entity.PaymentHistory
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 import org.collaborators.paymentslab.payment.domain.entity.PaymentsStatus
-import org.collaborators.paymentslab.payment.domain.repository.PaymentHistoryRepository
-import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
+import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.PaymentOrderNotFoundException
 import org.collaborators.paymentslab.payment.presentation.mock.MockPayments
 import org.collaborators.paymentslab.payment.presentation.request.PaymentOrderRequest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
+import org.mockito.Mock
+import org.mockito.kotlin.any
+import org.mockito.kotlin.given
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
@@ -26,26 +28,18 @@ import org.springframework.restdocs.payload.RequestFieldsSnippet
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.time.LocalDateTime
 
-class PaymentApiTest @Autowired constructor(
-//    private val accountRepository: AccountRepository,
-    private val paymentHistoryRepository: PaymentHistoryRepository,
-    private val paymentOrderRepository: PaymentOrderRepository
-) : AbstractApiTest() {
+class PaymentApiTest: AbstractApiTest() {
 
     @Test
     @DisplayName("카드결제 api 동작")
     fun keyIn() {
-        val account = testEntityForAdminRegister("keyInTest@gmail.com")
-        accountRepository.save(account)
+        val account = MockAuthentication.mockAdminAccount()
+        given(accountRepository.findByEmail(any())).willReturn(account)
 
         val requestDto = MockPayments.testTossPaymentsRequest
 
-        val paymentOrder = PaymentOrder.newInstance(
-            account.id()!!,
-            requestDto.orderName,
-            requestDto.amount
-        )
-        paymentOrderRepository.save(paymentOrder)
+        val paymentOrder = MockPayments.mockReadyPaymentOrder(account)
+        given(paymentOrderRepository.findById(paymentOrder.id()!!)).willReturn(paymentOrder)
 
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
         val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
@@ -71,17 +65,13 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("카드번호 입력에 숫자가 아닌 값이 입력되거나 총 16자가 아니면 에러가 발생한다.")
     fun cardNumErrorKeyIn() {
-        val account = testEntityForAdminRegister("keyInCardNumTest@gmail.com")
-        accountRepository.save(account)
+        val account = MockAuthentication.mockAdminAccount()
+        given(accountRepository.findByEmail(any())).willReturn(account)
 
         val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
 
-        val paymentOrder = PaymentOrder.newInstance(
-            account.id()!!,
-            requestDto.orderName,
-            requestDto.amount
-        )
-        paymentOrderRepository.save(paymentOrder)
+        val paymentOrder = MockPayments.mockReadyPaymentOrder(account)
+        given(paymentOrderRepository.findById(paymentOrder.id()!!)).willReturn(paymentOrder)
 
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
         val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
@@ -108,17 +98,12 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("주문 결제 정보가 존재하지 않는 주문 결제로 변조된 경우 결제 승인이 실패한다.")
     fun paymentError() {
-        val account = testEntityForAdminRegister("keyInWrongPaymentOrderTest@gmail.com")
-        accountRepository.save(account)
+        val account = MockAuthentication.mockAdminAccount()
+        given(accountRepository.findByEmail(any())).willReturn(account)
 
-        val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
+        val requestDto = MockPayments.testTossPaymentsRequest
 
-        val paymentOrder = PaymentOrder.newInstance(
-            account.id()!!,
-            requestDto.orderName,
-            requestDto.amount
-        )
-        paymentOrderRepository.save(paymentOrder)
+        given(paymentOrderRepository.findById(any())).willThrow(PaymentOrderNotFoundException())
 
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
         val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
@@ -145,19 +130,16 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("주문 결제 정보의 소유자가 아닌 다른 사용자 계정으로 결제 승인을 요청할 경우 해당 결제 요청은 실패한다.")
     fun paymentWrongUserError() {
-        val account = testEntityForAdminRegister("keyInWrongUserTest@gmail.com")
-        val wrongAccount = testEntityForAdminRegister("wrongUser123@gmail.com")
-        accountRepository.save(account)
-        accountRepository.save(wrongAccount)
+        val account = MockAuthentication.mockAdminAccount()
+        val wrongAccount = MockAuthentication.mockWrongUserAccount()
+        given(accountRepository.findByEmail(any())).willReturn(account)
 
         val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
 
-        val paymentOrder = PaymentOrder.newInstance(
-            account.id()!!,
-            requestDto.orderName,
-            requestDto.amount
-        )
-        paymentOrderRepository.save(paymentOrder)
+        val paymentOrder = MockPayments.mockReadyPaymentOrder(account)
+
+        val mockWrongPaymentsOrder = MockPayments.mockReadyPaymentOrder(wrongAccount)
+        given(paymentOrderRepository.findById(mockWrongPaymentsOrder.id()!!)).willReturn(mockWrongPaymentsOrder)
 
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
         val wrongToken = tokenGenerator.generate(wrongAccount.email, setOf(Role.USER))
@@ -184,18 +166,13 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("이미 결제 진행이 불가능한 주문 결제를 승인 요청할 경우 해당 요청은 실패한다.")
     fun paymentAlreadyDonePaymentOrderError() {
-        val account = testEntityForAdminRegister("keyInInvalidStatusTest@gmail.com")
-        accountRepository.save(account)
+        val account = MockAuthentication.mockAdminAccount()
+        given(accountRepository.findByEmail(any())).willReturn(account)
 
         val requestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
 
-        val paymentOrder = PaymentOrder.newInstance(
-            account.id()!!,
-            requestDto.orderName,
-            requestDto.amount,
-            PaymentsStatus.CANCELED
-        )
-        paymentOrderRepository.save(paymentOrder)
+        val paymentOrder = MockPayments.mockCanceledPaymentOrder(account)
+        given(paymentOrderRepository.findById(paymentOrder.id()!!)).willReturn(paymentOrder)
 
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
         val wrongToken = tokenGenerator.generate(account.email, setOf(Role.USER))
@@ -222,17 +199,14 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("변조된 결제요청 정보로 결제 승인 요청할 경우 해당 요청은 실패한다.")
     fun paymentInvalidPaymentOrderError() {
-        val account = testEntityForAdminRegister("keyInInvalidPaymentOrderTest@gmail.com")
-        accountRepository.save(account)
+        val account = MockAuthentication.mockAdminAccount()
+        given(accountRepository.findByEmail(any())).willReturn(account)
 
         val wrongRequestDto = MockPayments.invalidCardNumberTestTossPaymentsRequest
 
-        val paymentOrder = PaymentOrder.newInstance(
-            account.id()!!,
-            "originOrderName",
-            wrongRequestDto.amount
-        )
-        paymentOrderRepository.save(paymentOrder)
+        val paymentOrder = MockPayments.mockReadyPaymentOrder(account)
+        val mutatedPaymentOrder = MockPayments.mockMutatedReadyPaymentOrder(account)
+        given(paymentOrderRepository.findById(paymentOrder.id()!!)).willReturn(mutatedPaymentOrder)
 
         val reqBody = this.objectMapper.writeValueAsString(wrongRequestDto)
         val wrongToken = tokenGenerator.generate(account.email, setOf(Role.USER))
@@ -261,21 +235,14 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("사용자 계정별 카드결제 이력 조회 api")
     fun readHistoriesTest() {
-        val account = testEntityForAdminRegister("readHistoriesTest@gmail.com")
-        val entity = accountRepository.save(account)
+        val account = MockAuthentication.mockUserAccount()
+        given(accountRepository.findByEmail(any())).willReturn(account)
 
         val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
 
-        paymentHistoryRepository.save(
-            PaymentHistory.newInstanceFrom(
-            entity.id()!!,
-            LocalDateTime.now(),
-            "ord_202306172137299642490491",
-            "테스트결제",
-            10000,
-            "testPaymentKey",
-            "DONE"
-        ))
+        val paymentHistory = MockPayments.mockPaymentHistory(account)
+        val defaultPageData = PageData(0, 6, "DESC", listOf("id") )
+        given(paymentHistoryRepository.findAllByAccountId(account.id()!!, defaultPageData)).willReturn(listOf(paymentHistory))
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
@@ -318,11 +285,12 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("주문 결제 발행 api 테스트")
     fun testGeneratePaymentOrder() {
-        val account = testEntityForRegister("generatePaymentOrder@gmail.com")
-        val entity = accountRepository.save(account)
+        val account = MockAuthentication.mockUserAccount()
+        given(accountRepository.findByEmail(any())).willReturn(account)
 
         val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
-        val reqBody = objectMapper.writeValueAsString(PaymentOrderRequest(entity.id()!!, "테스트 주문상품", 10))
+        val reqBody = objectMapper.writeValueAsString(PaymentOrderRequest(account.id()!!, "테스트 주문상품", 10))
+        given(paymentOrderRepository.save(any())).willReturn(MockPayments.mockCreatedPaymentOrder(account))
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
@@ -354,12 +322,14 @@ class PaymentApiTest @Autowired constructor(
     @Test
     @DisplayName("변조된 사용자 계정 id로 주문 결제 발행 api 테스트")
     fun testWithInvalidAccountGeneratePaymentOrder() {
-        val account = testEntityForRegister("originalGeneratedPaymentOrder@gmail.com")
-        accountRepository.save(account)
-        val invalidAccountId = 9999L
-        val tokens = tokenGenerator.generate(account.email, setOf(Role.USER))
-        val invalidPaymentOrderRequest = PaymentOrderRequest(invalidAccountId, "잘못된 테스트 주문상품", 10)
+        val account = MockAuthentication.mockUserAccount()
+        given(accountRepository.findByEmail(any())).willReturn(account)
+        val wrongAccount = MockAuthentication.mockWrongUserAccount()
+
+        val tokens = tokenGenerator.generate(wrongAccount.email, setOf(Role.USER))
+        val invalidPaymentOrderRequest = PaymentOrderRequest(wrongAccount.id()!!, "잘못된 테스트 주문상품", 10)
         val reqBody = objectMapper.writeValueAsString(invalidPaymentOrderRequest)
+        given(paymentOrderRepository.save(any())).willReturn(MockPayments.mockMutatedReadyPaymentOrder(wrongAccount))
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders

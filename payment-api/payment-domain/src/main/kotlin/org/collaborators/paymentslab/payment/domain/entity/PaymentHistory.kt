@@ -27,7 +27,7 @@ class PaymentHistory protected constructor(
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    var id: Long? = null
 
     companion object {
         private fun newInstanceFrom(event: PaymentOrderRecordEvent): PaymentHistory {
