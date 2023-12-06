@@ -11,8 +11,12 @@ import org.collaborators.paymentslab.account.domain.PasswordEncrypt
 import org.collaborators.paymentslab.account.domain.TokenGenerator
 import org.collaborators.paymentslab.payment.domain.repository.PaymentHistoryRepository
 import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doNothing
+import org.mockito.kotlin.given
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -32,27 +36,12 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@EmbeddedKafka(partitions = 1, brokerProperties = ["listeners=PLAINTEXT://localhost:29092"], ports = [9092])
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(uriScheme = URI_SCHEME, uriHost = URI_HOST, uriPort = URI_PORT)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(RestDocumentationExtension::class)
 @ActiveProfiles("test")
 abstract class AbstractApiTest {
-
-    @Autowired
-    protected lateinit var mockMvc: MockMvc
-
-    @Autowired
-    protected lateinit var objectMapper: ObjectMapper
-
-    @Autowired
-    protected lateinit var tokenGenerator: TokenGenerator
-
-    @Autowired lateinit var encrypt: PasswordEncrypt
-
-    @Autowired
-    protected lateinit var kafkaTemplate: KafkaTemplate<String, String>
 
     @Value("\${uri.scheme}")
     protected lateinit var scheme: String
@@ -66,6 +55,17 @@ abstract class AbstractApiTest {
     @Value("\${admin.key}")
     protected lateinit var adminKey: String
 
+    @Autowired
+    protected lateinit var mockMvc: MockMvc
+
+    @Autowired
+    protected lateinit var tokenGenerator: TokenGenerator
+
+    @Autowired lateinit var encrypt: PasswordEncrypt
+
+    @MockBean
+    protected lateinit var kafkaTemplate: KafkaTemplate<String, String>
+
     @MockBean
     protected lateinit var accountRepository: AccountRepository
 
@@ -75,28 +75,7 @@ abstract class AbstractApiTest {
     @MockBean
     protected lateinit var paymentOrderRepository: PaymentOrderRepository
 
-    protected fun testEntityForRegister(email: String): Account {
-        val account = Account.register(
-            email,
-            encrypt.encode("qqqwww123"),
-            "testName",
-            "010-1234-1234"
-        )
-        account.completeRegister()
-        return account
-    }
-
-    protected fun testEntityForAdminRegister(email: String): Account {
-        val account = Account.register(
-            email,
-            encrypt.encode("qqqwww123"),
-            "testName",
-            "010-1234-1234",
-            hashSetOf(Role.USER, Role.ADMIN)
-        )
-        account.completeRegister()
-        return account
-    }
+    protected val objectMapper: ObjectMapper = ObjectMapper()
 
     protected fun getDocumentRequest(): OperationRequestPreprocessor {
         return Preprocessors.preprocessRequest(
