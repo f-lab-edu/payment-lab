@@ -59,6 +59,10 @@ dependencies {
 
 	/** resilience4j **/
 	implementation("io.github.resilience4j:resilience4j-spring-boot3:2.1.0")
+
+	/** monitoring **/
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	runtimeOnly("io.micrometer:micrometer-registry-prometheus")
 }
 
 tasks {
