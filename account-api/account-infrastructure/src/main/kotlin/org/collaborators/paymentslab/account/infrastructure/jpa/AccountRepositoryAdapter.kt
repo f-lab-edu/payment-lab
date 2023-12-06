@@ -5,6 +5,7 @@ import org.collaborator.paymentlab.common.error.ResourceNotFoundException
 import org.collaborators.paymentslab.account.domain.Account
 import org.collaborators.paymentslab.account.domain.AccountRepository
 
+
 class AccountRepositoryAdapter(
     private val jpaAccountRepository: JpaAccountRepository
 ): AccountRepository {

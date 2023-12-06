@@ -53,6 +53,12 @@ dependencies {
 
 	/** kafka **/
 	implementation("org.springframework.kafka:spring-kafka")
+	/** kafka test **/
+	implementation("org.springframework.kafka:spring-kafka-test")
+	implementation("org.testcontainers:kafka:1.19.3")
+
+	/** resilience4j **/
+	implementation("io.github.resilience4j:resilience4j-spring-boot3:2.1.0")
 }
 
 tasks {

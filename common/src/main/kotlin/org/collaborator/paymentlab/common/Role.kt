@@ -11,7 +11,7 @@ enum class Role {
     companion object {
         fun findByRole(role: String): Role {
             return Arrays.stream(Role.values())
-                .filter { r -> r.name.equals(role) }
+                .filter { r -> r.name == role }
                 .findFirst()
                 .orElseThrow { IllegalArgumentException() }
         }

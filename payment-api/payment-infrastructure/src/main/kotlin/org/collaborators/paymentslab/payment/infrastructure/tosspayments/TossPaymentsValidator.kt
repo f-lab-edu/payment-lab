@@ -28,19 +28,19 @@ class TossPaymentsValidator {
 
     private fun checkAccountId(paymentOrder: PaymentOrder, accountId: Long) {
         if (paymentOrder.accountId != accountId) {
-            logAndThrow("invalid accountId from paymentOrderId ${paymentOrder.id}", InvalidPaymentOrderAccountIdException())
+            logAndThrow("invalid accountId from paymentOrderId ${paymentOrder.id()}", InvalidPaymentOrderAccountIdException())
         }
     }
 
     private fun checkPaymentDetails(paymentOrder: PaymentOrder, amount: Int, orderName: String) {
         if (paymentOrder.amount != amount || paymentOrder.orderName != orderName || !PaymentsStatus.isInRange(paymentOrder.status)) {
-            logAndThrow("invalid amount from paymentOrderId ${paymentOrder.id}", InvalidPaymentOrderException())
+            logAndThrow("invalid amount from paymentOrderId ${paymentOrder.id()}", InvalidPaymentOrderException())
         }
     }
 
     private fun checkPaymentStatus(paymentOrder: PaymentOrder) {
         statusToException[paymentOrder.status]?.let {
-            logAndThrow("already ${paymentOrder.status.name.lowercase(Locale.getDefault())} paymentOrderId ${paymentOrder.id}", it)
+            logAndThrow("already ${paymentOrder.status.name.lowercase(Locale.getDefault())} paymentOrderId ${paymentOrder.id()}", it)
         }
     }
 

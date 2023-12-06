@@ -12,7 +12,7 @@ import java.util.*
 @Table(name = "ACCOUNTS")
 class Account protected constructor(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null,
     var accountKey: String = KeyGenerator.generate("act_"),
     var email: String,
     var username: String,
@@ -27,7 +27,7 @@ class Account protected constructor(
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     var roles: MutableSet<Role> = hashSetOf(Role.USER)
-): AbstractAggregateRoot() {
+): AbstractAggregateRoot<Long>() {
 
     init {
         generateEmailCheckToken()
@@ -35,6 +35,10 @@ class Account protected constructor(
 
     var password: String? = null
         private set
+
+    override fun id(): Long? {
+        return this.id
+    }
 
     companion object {
         fun register(

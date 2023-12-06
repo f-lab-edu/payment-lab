@@ -1,6 +1,5 @@
 package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 
-import org.collaborators.paymentslab.payment.domain.TossPaymentsCardInfo
 import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
 import java.time.LocalDateTime
 

@@ -27,5 +27,4 @@ import org.springframework.context.annotation.Import
     ]
 )
 @Configuration
-class AccountModuleConfiguration {
-}
+class AccountModuleConfiguration

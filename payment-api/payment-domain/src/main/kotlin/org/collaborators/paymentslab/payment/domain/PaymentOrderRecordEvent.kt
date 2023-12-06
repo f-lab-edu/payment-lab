@@ -13,7 +13,7 @@ class PaymentOrderRecordEvent(
     private val typeSimpleName: String = PaymentOrderRecordEvent::class.simpleName!!
 ): DomainEvent {
     constructor(paymentOrder: PaymentOrder): this(
-        paymentOrder.id!!,
+        paymentOrder.id()!!,
         paymentOrder.accountId,
         paymentOrder.status.name,
         Date.from(paymentOrder.createAt.atZone(ZoneId.systemDefault()).toInstant())

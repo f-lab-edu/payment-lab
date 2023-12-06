@@ -1,15 +1,16 @@
 package org.collaborators.paymentslab.account.presentation
 
 import org.collaborator.paymentlab.common.*
+import org.collaborator.paymentlab.common.error.ErrorCode
+import org.collaborator.paymentlab.common.error.ResourceNotFoundException
 import org.collaborators.paymentslab.AbstractApiTest
-import org.collaborators.paymentslab.account.domain.Account
-import org.collaborators.paymentslab.account.domain.AccountRepository
 import org.collaborators.paymentslab.account.presentation.request.LoginAccountRequest
 import org.collaborators.paymentslab.account.presentation.request.RegisterAccountRequest
 import org.collaborators.paymentslab.account.presentation.request.RegisterAdminAccountRequest
 import org.collaborators.paymentslab.account.presentation.request.RegisterConfirmRequest
 import org.junit.jupiter.api.*
-import org.springframework.beans.factory.annotation.Autowired
+import org.mockito.kotlin.any
+import org.mockito.kotlin.given
 import org.springframework.http.MediaType
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
@@ -22,14 +23,17 @@ import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class AuthenticationApiTest @Autowired constructor(
-    private val accountRepository: AccountRepository
-) : AbstractApiTest() {
+class AuthenticationApiTest : AbstractApiTest() {
     @Test
     @DisplayName("회원가입 api 동작")
     fun registerTest() {
         val requestDto = RegisterAccountRequest("hello@gmail.com", "qwer1234", "helloUsername", "010-1234-5678")
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
+
+        val mockMember = MockAuthentication.mockUserAccountFrom(requestDto)
+        given(accountRepository.existByEmail(mockMember.email)).willReturn(false)
+        given(accountRepository.save(any())).willReturn(mockMember)
+        given(accountRepository.findByEmail(any())).willReturn(mockMember)
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
@@ -69,6 +73,11 @@ class AuthenticationApiTest @Autowired constructor(
         val requestDto =
             RegisterAdminAccountRequest("helloAdmin@gmail.com", "qwer1234", "helloUsername", "010-1234-5678", adminKey)
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
+
+        val mockMember = MockAuthentication.mockAdminAccountFrom(requestDto)
+        given(accountRepository.existByEmail(mockMember.email)).willReturn(false)
+        given(accountRepository.save(any())).willReturn(mockMember)
+        given(accountRepository.findByEmail(any())).willReturn(mockMember)
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
@@ -190,9 +199,9 @@ class AuthenticationApiTest @Autowired constructor(
     @Test
     @DisplayName("회원가입 검증 api 동작 테스트")
     fun confirmTest() {
-        val registered = accountRepository.save(Account.register("hello2@gmail.com",
-            encrypt.encode("qqqwww123"), "hello2", "010-1234-1234"))
-        val account = accountRepository.findByEmail(registered.email)
+        val account = MockAuthentication.mockUserAccount()
+        given(accountRepository.save(any())).willReturn(account)
+        given(accountRepository.findByEmail(any())).willReturn(account)
 
         val requestDto = RegisterConfirmRequest(account.emailCheckToken!!, account.email)
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
@@ -224,10 +233,11 @@ class AuthenticationApiTest @Autowired constructor(
     @Test
     @DisplayName("로그인 api 동작 테스트")
     fun loginTest() {
-        val registered = testEntityForRegister("hello3@gmail.com")
-        val account = accountRepository.save(registered)
+        val account = MockAuthentication.mockUserAccount()
+        given(accountRepository.save(any())).willReturn(account)
+        given(accountRepository.findByEmail(any())).willReturn(account)
 
-        val requestDto = LoginAccountRequest(account.email, "qqqwww123")
+        val requestDto = LoginAccountRequest(account.email, MockAuthentication.testPlainPassword)
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
 
         this.mockMvc.perform(
@@ -270,11 +280,10 @@ class AuthenticationApiTest @Autowired constructor(
     @Test
     @DisplayName("잘못된 로그인 api 에러 테스트")
     fun loginErrorTest() {
-        val registered = accountRepository.save(Account.register("invalid@gmail.com",
-            encrypt.encode("qqqwww123"), "hello2", "010-1234-1234"))
-        val account = accountRepository.findByEmail(registered.email)
+        val account = MockAuthentication.mockUserAccount()
+        given(accountRepository.findByEmail(any())).willReturn(account)
 
-        val requestDto = LoginAccountRequest(account.email, "wrongpassword123")
+        val requestDto = LoginAccountRequest(account.email, MockAuthentication.testWrongPlainPassword)
         val reqBody = this.objectMapper.writeValueAsString(requestDto)
 
         this.mockMvc.perform(
@@ -305,9 +314,10 @@ class AuthenticationApiTest @Autowired constructor(
     @Test
     @DisplayName("토큰 재발급 api 테스트")
     fun reIssuanceTest() {
-        val registered = testEntityForRegister("hello4@gmail.com")
-        val account = accountRepository.save(registered)
+        val account = MockAuthentication.mockUserAccount()
         val tokens = tokenGenerator.generate(account.email, account.roles)
+
+        given(accountRepository.findByEmail(any())).willReturn(account)
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders
@@ -344,8 +354,9 @@ class AuthenticationApiTest @Autowired constructor(
     @Test
     @DisplayName("회원 등록이 안된 사용자의 토큰으로 재발급 실패 api 테스트")
     fun notRegisteredReIssuanceTest() {
-        val registered = testEntityForRegister("nouser123@gmail.com")
-        val tokens = tokenGenerator.generate(registered.email, registered.roles)
+        val account = MockAuthentication.mockUserAccount()
+        given(accountRepository.findByEmail(MockAuthentication.testWrongReissuerEmail)).willThrow(ResourceNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND))
+        val tokens = tokenGenerator.generate(MockAuthentication.testWrongReissuerEmail, account.roles)
 
         this.mockMvc.perform(
             RestDocumentationRequestBuilders

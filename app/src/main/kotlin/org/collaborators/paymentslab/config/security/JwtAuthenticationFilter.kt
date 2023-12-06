@@ -38,7 +38,7 @@ class JwtAuthenticationFilter(
 
             if (SecurityContextHolder.getContext().authentication == null) {
                 val context = UsernamePasswordAuthenticationToken(
-                    AuthenticatedUser(account.id!!, account.accountKey!!, account.roles), null, authorities(account.roles)
+                    AuthenticatedUser(account.id()!!, account.accountKey!!, account.roles), null, authorities(account.roles)
                 )
                 SecurityContextHolder.getContext().authentication = context
             }

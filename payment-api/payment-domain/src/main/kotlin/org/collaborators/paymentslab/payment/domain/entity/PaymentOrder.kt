@@ -18,10 +18,14 @@ class PaymentOrder protected constructor(
     var status: PaymentsStatus,
     @Column(nullable = false)
     val createAt: LocalDateTime = LocalDateTime.now(),
-): AbstractAggregateRoot() {
+): AbstractAggregateRoot<Long>() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    var id: Long? = null
+
+    override fun id(): Long? {
+        return this.id
+    }
 
     fun ready() {
         this.status = PaymentsStatus.READY
@@ -35,6 +39,11 @@ class PaymentOrder protected constructor(
 
     fun inProcess() {
         this.status = PaymentsStatus.IN_PROGRESS
+        registerEvent(PaymentOrderRecordEvent(this))
+    }
+
+    fun cancel() {
+        this.status = PaymentsStatus.CANCELED
         registerEvent(PaymentOrderRecordEvent(this))
     }
 
