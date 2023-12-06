@@ -3,7 +3,6 @@ package org.collaborators.paymentslab.account.application
 import org.collaborator.paymentlab.common.Role
 import org.collaborators.paymentslab.account.application.command.LoginAccount
 import org.collaborators.paymentslab.account.application.command.RegisterAccount
-import org.collaborators.paymentslab.account.application.command.RegisterAdminAccount
 import org.collaborators.paymentslab.account.application.command.RegisterConfirm
 import org.collaborators.paymentslab.account.domain.*
 import org.slf4j.LoggerFactory

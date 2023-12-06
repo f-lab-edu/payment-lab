@@ -7,15 +7,11 @@ import org.collaborator.paymentlab.common.V1_TOSS_PAYMENTS
 import org.collaborators.paymentslab.AbstractApiTest
 import org.collaborators.paymentslab.account.presentation.MockAuthentication
 import org.collaborators.paymentslab.payment.data.PageData
-import org.collaborators.paymentslab.payment.domain.entity.PaymentHistory
-import org.collaborators.paymentslab.payment.domain.entity.PaymentOrder
-import org.collaborators.paymentslab.payment.domain.entity.PaymentsStatus
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.PaymentOrderNotFoundException
 import org.collaborators.paymentslab.payment.presentation.mock.MockPayments
 import org.collaborators.paymentslab.payment.presentation.request.PaymentOrderRequest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.mockito.Mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.given
 import org.springframework.http.MediaType
@@ -26,7 +22,6 @@ import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.payload.RequestFieldsSnippet
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import java.time.LocalDateTime
 
 class PaymentApiTest: AbstractApiTest() {
 

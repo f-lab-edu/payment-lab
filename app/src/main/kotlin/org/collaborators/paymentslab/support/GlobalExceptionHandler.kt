@@ -102,7 +102,7 @@ class GlobalExceptionHandler(private val objectMapper: ObjectMapper): ErrorContr
         }.collect(Collectors.joining("  "))
     }
 
-    private fun format(f: FieldError): String? {
+    private fun format(f: FieldError): String {
         return if (f.field == "password") {
             "Field : [" + f.field + "] " + "Reason: [" + f.defaultMessage + "]"
         } else "Field : [" + f.field + "] " + "Value: [" + f.rejectedValue + "]"

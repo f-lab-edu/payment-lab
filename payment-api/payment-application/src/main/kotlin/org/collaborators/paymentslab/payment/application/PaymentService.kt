@@ -1,13 +1,10 @@
 package org.collaborators.paymentslab.payment.application
 
-import org.collaborators.paymentslab.payment.application.command.PaymentOrderCommand
 import org.collaborators.paymentslab.payment.application.command.TossPaymentsKeyInPayCommand
 import org.collaborators.paymentslab.payment.application.query.PaymentHistoryQuery
 import org.collaborators.paymentslab.payment.application.query.PaymentHistoryQueryQueryModel
-import org.collaborators.paymentslab.payment.domain.PaymentOrderProcessor
 import org.collaborators.paymentslab.payment.domain.PaymentsProcessor
 import org.collaborators.paymentslab.payment.domain.PaymentsQueryManager
-import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
