@@ -1,0 +1,9 @@
+scrape_configs:
+  - job_name: 'payment-lab-prod'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 3s
+    scheme: https
+    static_configs:
+      - targets: ['api.wannidev.com']
+        labels:
+          application: 'payment-lab-prod-label'
