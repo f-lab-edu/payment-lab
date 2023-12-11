@@ -32,27 +32,29 @@ jobs:
           uses: webfactory/ssh-agent@v0.8.0
           with:
             ssh-private-key: ${{ secrets.APP_RUNNER_PRIVATE_KEY }}
+        - run: |
+            ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'git clone https://github.com/wanniDev/payment-lab'
 
-        - name: SSH to server
-          run: |
-            ssh-keyscan -H ${{ secrets.APP_MAIN_SERVER }} >> ~/.ssh/known_hosts
-            ssh -o StrictHostKeyChecking=no nruuner@${{ secrets.APP_MAIN_SERVER }} exit
+        # - name: SSH to server
+        #   run: |
+        #     ssh-keyscan -H ${{ secrets.APP_MAIN_SERVER }} >> ~/.ssh/known_hosts
+        #     ssh -o StrictHostKeyChecking=no nruuner@${{ secrets.APP_MAIN_SERVER }} exit
         
-        - name: clone repository
-          run: ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'git clone https://github.com/wanniDev/payment-lab'
+        # - name: clone repository
+        #   run: ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'git clone https://github.com/wanniDev/payment-lab'
 
-        - name: Inject property files
-          run: |
-            ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'mkdir -p ./payment-lab/app/src/main/resources/'
-            ssh nruuner@${{ secrets.APP_MAIN_SERVER }} '[[ ! -f ./payment-lab/app/src/main/resources/application-dev.yml ]] && echo "${{ secrets.APP_PROPS_DEV }}" > ./payment-lab/app/src/main/resources/application-dev.yml'
-            ssh nruuner@${{ secrets.APP_MAIN_SERVER }} '[[ ! -f ./payment-lab/app/src/main/resources/application-test.yml ]] && echo "${{ secrets.APP_PROPS }}" > ./payment-lab/app/src/main/resources/application-test.yml'
+        # - name: Inject property files
+        #   run: |
+        #     ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'mkdir -p ./payment-lab/app/src/main/resources/'
+        #     ssh nruuner@${{ secrets.APP_MAIN_SERVER }} '[[ ! -f ./payment-lab/app/src/main/resources/application-dev.yml ]] && echo "${{ secrets.APP_PROPS_DEV }}" > ./payment-lab/app/src/main/resources/application-dev.yml'
+        #     ssh nruuner@${{ secrets.APP_MAIN_SERVER }} '[[ ! -f ./payment-lab/app/src/main/resources/application-test.yml ]] && echo "${{ secrets.APP_PROPS }}" > ./payment-lab/app/src/main/resources/application-test.yml'
         
-        - name: Build application
-          run: ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'chmod +x ./payment-lab/gradlew; cd ./payment-lab && ./gradlew clean build'
+        # - name: Build application
+        #   run: ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'chmod +x ./payment-lab/gradlew; cd ./payment-lab && ./gradlew clean build'
         
-        - name: Deploy
-          run: |
-            ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'pid=$(ps axww | grep -v grep | grep "./app/build/libs/app-0.0.1.jar" | awk "{print \$1}"); if [ -n "$pid" ]; then kill -9 $pid; fi'
-            ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'mv ./payment-lab/app/build/libs/app-0.0.1.jar ~/'
-            ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'nohup java -Dspring.profiles.active=dev -DadminKey=${{ secrets.APP_ADMIN_KEY }} -jar ~/app-0.0.1.jar > /dev/null 2>&1 &'
-            ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'echo "Application started"'
+        # - name: Deploy
+        #   run: |
+        #     ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'pid=$(ps axww | grep -v grep | grep "./app/build/libs/app-0.0.1.jar" | awk "{print \$1}"); if [ -n "$pid" ]; then kill -9 $pid; fi'
+        #     ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'mv ./payment-lab/app/build/libs/app-0.0.1.jar ~/'
+        #     ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'nohup java -Dspring.profiles.active=dev -DadminKey=${{ secrets.APP_ADMIN_KEY }} -jar ~/app-0.0.1.jar > /dev/null 2>&1 &'
+        #     ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'echo "Application started"'
