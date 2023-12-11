@@ -27,11 +27,16 @@ jobs:
       steps:
         - name: checkout
           uses: actions/checkout@v3
-
+        
         - name: set up ssh
           uses: webfactory/ssh-agent@v0.8.0
           with:
             ssh-private-key: ${{ secrets.APP_RUNNER_PRIVATE_KEY }}
+
+        - name: SSH to server
+          run: |
+            ssh-keyscan -H ${{ secrets.APP_MAIN_SERVER }} >> ~/.ssh/known_hosts
+            ssh -o StrictHostKeyChecking=no nruuner@${{ secrets.APP_MAIN_SERVER }} exit
         
         - name: clone repository
           run: ssh nruuner@${{ secrets.APP_MAIN_SERVER }} 'git clone https://github.com/wanniDev/payment-lab'
