@@ -57,6 +57,8 @@ class SecurityConfig(
             .requestMatchers(POST,"$V1_AUTH/register/admin").permitAll()
             .requestMatchers(POST,"$V1_AUTH/login").permitAll()
             .requestMatchers(GET, "$V1_AUTH/confirm").permitAll()
+            .requestMatchers(GET, "/actuator").permitAll()
+            .requestMatchers(GET, "/actuator/*").permitAll()
             .anyRequest().authenticated()
             .and()
             .formLogin().disable()
