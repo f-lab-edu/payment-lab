@@ -183,3 +183,6 @@ app/src/main/resources/static/
 
 app/src/main/resources/application-*
 logs/
+
+# monitoring
+monitoring/prometheus/data/

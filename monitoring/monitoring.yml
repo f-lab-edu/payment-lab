@@ -6,6 +6,12 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/data:/data
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/data'
+      - '--web.enable-lifecycle'
+      - '--storage.tsdb.retention.time=20d'
 
   grafana:
     image: grafana/grafana:9.5.2
