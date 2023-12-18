@@ -52,9 +52,4 @@ jobs:
         
         - name: Deploy
           run: |
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'ps axww | grep -v grep | grep "app-0.0.1.jar" | awk '{print $1}' | xargs -r sudo kill -9'
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} '[[ -f ~/app-0.0.1.jar ]] && rm -rf ~/app-0.0.1.jar'
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'mv ./payment-lab/app/build/libs/app-0.0.1.jar ~/app-0.0.1.jar'
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'sudo nohup java -Dspring.profiles.active=dev -DadminKey=${{ secrets.APP_ADMIN_KEY }} -jar ~/app-0.0.1.jar > /dev/null 2>&1 &'
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'rm -rf ./payment-lab'
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'echo "Application started"'
+            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} './deploy.sh'
