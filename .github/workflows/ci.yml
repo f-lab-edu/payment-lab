@@ -40,15 +40,6 @@ jobs:
         
         - name: clone repository
           run: ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'git clone https://github.com/wanniDev/payment-lab'
-
-        - name: Inject property files
-          run: |
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'mkdir -p ./payment-lab/app/src/main/resources/'
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} '[[ ! -f ./payment-lab/app/src/main/resources/application-dev.yml ]] && echo "${{ secrets.APP_PROPS_DEV }}" > ./payment-lab/app/src/main/resources/application-dev.yml'
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} '[[ ! -f ./payment-lab/app/src/main/resources/application-test.yml ]] && echo "${{ secrets.APP_PROPS }}" > ./payment-lab/app/src/main/resources/application-test.yml'
-        
-        - name: Build application
-          run: ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'chmod +x ./payment-lab/gradlew; cd ./payment-lab && ./gradlew clean build'
         
         - name: Deploy
           run: |
