@@ -47,10 +47,10 @@ class TossPayments protected constructor(
         return this.id!!
     }
 
-    fun resultOf(accountId: Long, paymentsStatus: PaymentsStatus) {
+    fun resultOf(accountId: Long, paymentOrderId: Long, paymentsStatus: PaymentsStatus) {
         this.accountId = accountId
         this.status = paymentsStatus.name
-        registerEvent(PaymentResultEvent(this))
+        registerEvent(PaymentResultEvent(this, paymentOrderId))
     }
 
     override fun equals(other: Any?): Boolean {

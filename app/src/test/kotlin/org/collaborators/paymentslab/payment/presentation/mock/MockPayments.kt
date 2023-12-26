@@ -32,9 +32,10 @@ object MockPayments {
         customerIdentityNumber = "991212",
     )
 
-    fun mockPaymentHistory(account: Account): PaymentHistory {
+    fun mockPaymentHistory(account: Account, paymentOrderId: Long = 1L): PaymentHistory {
         val paymentHistory = PaymentHistory.newInstanceFrom(
             account.id()!!,
+            paymentOrderId,
             LocalDateTime.now(),
             "ord_202306172137299642490491",
             "테스트결제",

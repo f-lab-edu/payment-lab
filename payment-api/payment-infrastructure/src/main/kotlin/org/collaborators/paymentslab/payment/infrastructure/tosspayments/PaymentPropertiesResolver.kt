@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value
 
 class PaymentPropertiesResolver(
     @Value("\${toss.payments.url}")
-    val keyInUrl: String,
+    private val keyInUrl: String,
     @Value("\${toss.payments.url}")
     val url: String,
     @Value("\${toss.payments.secretKey}")
