@@ -63,6 +63,14 @@ dependencies {
 	/** monitoring **/
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	runtimeOnly("io.micrometer:micrometer-registry-prometheus")
+
+	implementation("org.togglz:togglz-spring-boot-starter:3.1.2")
+	implementation("org.togglz:togglz-kotlin:2.8.0")
+	implementation("org.togglz:togglz-console:3.1.2")
+	implementation("org.togglz:togglz-spring-security:3.1.2")
+	implementation("com.github.heneke.thymeleaf:thymeleaf-extras-togglz:2.0.1.RELEASE")
+
+	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 }
 
 tasks {
