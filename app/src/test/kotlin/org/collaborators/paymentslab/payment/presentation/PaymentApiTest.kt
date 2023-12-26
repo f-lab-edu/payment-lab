@@ -8,7 +8,7 @@ import org.collaborator.paymentlab.common.V1_TOSS_PAYMENTS
 import org.collaborators.paymentslab.AbstractApiTest
 import org.collaborators.paymentslab.account.presentation.MockAuthentication
 import org.collaborators.paymentslab.payment.data.PageData
-import org.collaborators.paymentslab.payment.infrastructure.togglz.PaymentFeature
+import org.collaborator.paymentlab.common.PaymentFeature
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.PaymentOrderNotFoundException
 import org.collaborators.paymentslab.payment.presentation.mock.MockPayments
 import org.collaborators.paymentslab.payment.presentation.request.PaymentOrderRequest

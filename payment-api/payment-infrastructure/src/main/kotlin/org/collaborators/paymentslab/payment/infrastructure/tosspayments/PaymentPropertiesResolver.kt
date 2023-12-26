@@ -1,6 +1,6 @@
 package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 
-import org.collaborators.paymentslab.payment.infrastructure.togglz.PaymentFeature
+import org.collaborator.paymentlab.common.PaymentFeature
 import org.springframework.beans.factory.annotation.Value
 
 class PaymentPropertiesResolver(

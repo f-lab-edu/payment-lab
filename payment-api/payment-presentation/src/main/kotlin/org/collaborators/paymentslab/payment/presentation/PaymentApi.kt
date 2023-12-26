@@ -2,6 +2,7 @@ package org.collaborators.paymentslab.payment.presentation
 
 import jakarta.validation.Valid
 import org.collaborator.paymentlab.common.KEY_IN_PAYMENT_ORDER_ID
+import org.collaborator.paymentlab.common.KEY_IN_TOGGLE
 import org.collaborator.paymentlab.common.PAYMENT_ORDER
 import org.collaborator.paymentlab.common.V1_TOSS_PAYMENTS
 import org.collaborator.paymentlab.common.result.ApiResult
@@ -27,6 +28,11 @@ class PaymentApi(
     private val paymentService: PaymentService,
     private val paymentOrderService: PaymentOrderService
     ) {
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping(KEY_IN_TOGGLE)
+    fun keyInToggle() {
+        paymentService.toggleKeyInPay()
+    }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping(KEY_IN_PAYMENT_ORDER_ID)

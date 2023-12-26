@@ -3,7 +3,7 @@ package org.collaborators.paymentslab.payment.infrastructure.tosspayments
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.collaborator.paymentlab.common.domain.RestClient
 import org.collaborators.paymentslab.payment.domain.entity.PaymentsStatus
-import org.collaborators.paymentslab.payment.infrastructure.togglz.PaymentFeature
+import org.collaborator.paymentlab.common.PaymentFeature
 import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity

@@ -1,4 +1,4 @@
-package org.collaborators.paymentslab.payment.infrastructure.togglz
+package org.collaborator.paymentlab.common
 
 import org.togglz.core.annotation.EnabledByDefault
 import org.togglz.core.annotation.Label

@@ -1,7 +1,7 @@
 package org.collaborators.paymentslab.payment.infrastructure
 
 import io.kotlintest.shouldBe
-import org.collaborators.paymentslab.payment.infrastructure.togglz.PaymentFeature
+import org.collaborator.paymentlab.common.PaymentFeature
 import org.junit.jupiter.api.Test
 import org.togglz.kotlin.FeatureManagerSupport
 import org.togglz.kotlin.FeatureManagerSupport.createFeatureManagerForTest
