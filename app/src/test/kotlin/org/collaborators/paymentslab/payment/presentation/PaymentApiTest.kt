@@ -32,7 +32,7 @@ class PaymentApiTest: AbstractApiTest() {
     internal fun `should use test payments api url when disabled`() {
         FeatureManagerSupport.disable { PaymentFeature.TOSS_PAYMENTS_FEATURE.name }
         PaymentFeature.TOSS_PAYMENTS_FEATURE.isActive() shouldBe false
-        (paymentPropertiesResolver.url() == paymentPropertiesResolver.keyInUrl) shouldBe false
+        (paymentPropertiesResolver.url() == paymentPropertiesResolver.url) shouldBe false
     }
 
     @Test
