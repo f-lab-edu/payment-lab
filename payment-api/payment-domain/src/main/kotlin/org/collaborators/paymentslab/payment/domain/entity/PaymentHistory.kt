@@ -13,6 +13,8 @@ class PaymentHistory protected constructor(
     @Column(nullable = false)
     val accountId: Long? = null,
     @Column(nullable = false)
+    val paymentOrderId: Long? = null,
+    @Column(nullable = false)
     val approvedAt: LocalDateTime,
     @Column(nullable = false)
     val orderId: String,
@@ -33,6 +35,7 @@ class PaymentHistory protected constructor(
         private fun newInstanceFrom(event: PaymentOrderRecordEvent): PaymentHistory {
             return PaymentHistory(
                 event.accountId,
+                event.id,
                 event.occurredOn().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
                 "",
                 "",
@@ -45,6 +48,7 @@ class PaymentHistory protected constructor(
         private fun newInstanceFrom(event: PaymentResultEvent): PaymentHistory {
             return PaymentHistory(
                 event.accountId,
+                event.paymentOrderId,
                 event.occurredOn().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
                 event.orderId,
                 event.orderName,
@@ -54,9 +58,10 @@ class PaymentHistory protected constructor(
             )
         }
 
-        fun newInstanceFrom(tossPayments: TossPayments): PaymentHistory {
+        fun newInstanceFrom(tossPayments: TossPayments, paymentOrderId: Long): PaymentHistory {
             return PaymentHistory(
                 tossPayments.accountId!!,
+                paymentOrderId,
                 tossPayments.info!!.approvedAt,
                 tossPayments.info!!.orderId,
                 tossPayments.info!!.orderName,
@@ -67,6 +72,7 @@ class PaymentHistory protected constructor(
         }
 
         fun newInstanceFrom(accountId: Long,
+                            paymentOrderId: Long,
                             approvedAt: LocalDateTime,
                             orderId: String,
                             orderName: String,
@@ -75,6 +81,7 @@ class PaymentHistory protected constructor(
                             status: String): PaymentHistory {
             return PaymentHistory(
                 accountId,
+                paymentOrderId,
                 approvedAt,
                 orderId,
                 orderName,

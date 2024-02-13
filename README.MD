@@ -7,33 +7,35 @@
 - **팀원 구성 :** 백엔드 1인, 리뷰어 1인
 - **주요 스킬 :** kotlin, spring boot, jpa, mysql, kafka, rest docs, docker
 - **진행도 관리 :** [GitHub project kanban](https://github.com/users/wanniDev/projects/6)
-- **api 정의서 :** [https://api.wannidev.com/](https://api.wannidev.com/)
+- **api 정의서 :** [wiki api 정의서 페이지](https://github.com/f-lab-edu/payment-lab/wiki/%F0%9F%93%82-API-%EC%A0%95%EC%9D%98%EC%84%9C)
+
+## 실행 방법
+해당 방법은 리포지토리를 클론하여, 바로 로컬에 빌드하고 실행하는 방법입니다.
+배포 환경에서 실행하고 싶다면, 별도로 db 및 kafka를 구성하고 별도로 토스페이먼츠 pg 테스트 환경을 구성하셔야 합니다.
+
+### 1. Docker-compose로 카프카 구성 실행
+
+```bash
+docker-compose -f ./docker-compose-kafka-single-broker.yml up -d
+```
+
+### 2. 프로젝트 빌드
+
+```bash
+./gradlew build
+```
+
+### 3. 프로젝트 실행
+gradle로 실행
+```bash
+./gradlew bootRun
+```
+jar로 실행
+```bash
+java -jar ${projectDir}/app/build/libs/app-0.0.1.jar
+```
 
 ## Git management
-
-## 트렁크 기반 개발(Trunk-Based Development, TBD)
-
-**오직 Trunk(main) 브렌치에서 직접 모든 작업을 처리하는 것.**
-
-![img](https://trunkbaseddevelopment.com/trunk1a.png)
-
-> 이미지 출처: https://trunkbaseddevelopment.com
-
-### WHY?
-
-1. 몇 가지 안전한 규칙을 기반으로 하여 브렌치 하나를 가지고 관리하여 개발 생명주기의 과정을 최대한 단순화하여, 코드 리뷰 빈도수를 높이고, 배포 주기를 늘려서 기능 개발 및 품질 개선 작업의 템포를 높이고자 한다.
-2. 각 팀원이 항상 최신의 코드를 공유하는 환경을 조성하여 협업 환경을 유도하고, 영역이 달라도 서로의 작업에 대한 이해도를 높여 개인의 능력 보다는 팀의 능력 개선을 추구하는 방향을 가지고자 한다.
-3. 단순하고 직관적인 깃 로그 추적 및 관리를 위해 해당 깃 관리 정책을 채택하였다.
-4. main 브렌치에 직접 푸시함으로서, 즉시 코드 통합 시키는 진정한 의미의 CI(Continuous Integration)을 실현시키고자 한다.
-5. merge로 인한 충돌 자체가 일어날 수 없기 때문에 리팩토링이 용이하다.
-
-### HOW?
-
-1. 버그 및 작업 관련 이슈가 발생하면, 작업 영역에 상관없이 같이 해결하기
-2. 항상 릴리즈가 가능한 상태를 유지하여 신뢰할 수 있는 빌드 전략 수립(테스트 자동화 및 배포 전략 수립)
-3. '[Branch by Abstraction](https://trunkbaseddevelopment.com/branch-by-abstraction/)' 또는 '[Feature Flags](https://martinfowler.com/articles/feature-toggles.html)'를 활용하여 작업이 완료되지 않는 부분은 숨기기
-4. '[소규모 배치](https://cloud.google.com/architecture/devops/devops-process-working-in-small-batches?hl=ko)'로 작업하기
-5. 빠른 빌드 필요(빌드 및 테스트는 수 분 내에 실행되어야 한다.)
 
 ### 커밋 메세지 제목 작성 가이드
 

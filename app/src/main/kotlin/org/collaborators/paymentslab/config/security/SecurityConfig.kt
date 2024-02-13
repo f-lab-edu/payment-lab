@@ -52,6 +52,7 @@ class SecurityConfig(
             .and()
             .authorizeHttpRequests()
             .requestMatchers(GET, "/", "/index.html").permitAll()
+            .requestMatchers(GET, "health").permitAll()
             .requestMatchers(GET, V1_TOSS_PAYMENTS).permitAll()
             .requestMatchers(POST,"$V1_AUTH/register").permitAll()
             .requestMatchers(POST,"$V1_AUTH/register/admin").permitAll()
@@ -74,7 +75,6 @@ class SecurityConfig(
         return filter
     }
     @Bean
-    @Profile("test")
     fun webSecurityCustomizer(): WebSecurityCustomizer {
         return WebSecurityCustomizer { web ->
             web.ignoring()

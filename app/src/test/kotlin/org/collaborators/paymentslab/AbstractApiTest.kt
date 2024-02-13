@@ -9,6 +9,7 @@ import org.collaborators.paymentslab.account.domain.PasswordEncrypt
 import org.collaborators.paymentslab.account.domain.TokenGenerator
 import org.collaborators.paymentslab.payment.domain.repository.PaymentHistoryRepository
 import org.collaborators.paymentslab.payment.domain.repository.PaymentOrderRepository
+import org.collaborators.paymentslab.payment.infrastructure.tosspayments.PaymentPropertiesResolver
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -69,6 +70,9 @@ abstract class AbstractApiTest {
     protected lateinit var paymentOrderRepository: PaymentOrderRepository
 
     protected val objectMapper: ObjectMapper = ObjectMapper()
+
+    @Autowired
+    protected lateinit var paymentPropertiesResolver: PaymentPropertiesResolver
 
     protected fun getDocumentRequest(): OperationRequestPreprocessor {
         return Preprocessors.preprocessRequest(

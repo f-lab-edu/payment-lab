@@ -1,5 +1,6 @@
 package org.collaborators.paymentslab.payment.presentation
 
+import io.kotlintest.shouldBe
 import org.collaborator.paymentlab.common.KEY_IN_PAYMENT_ORDER_ID
 import org.collaborator.paymentlab.common.PAYMENT_ORDER
 import org.collaborator.paymentlab.common.Role
@@ -7,6 +8,7 @@ import org.collaborator.paymentlab.common.V1_TOSS_PAYMENTS
 import org.collaborators.paymentslab.AbstractApiTest
 import org.collaborators.paymentslab.account.presentation.MockAuthentication
 import org.collaborators.paymentslab.payment.data.PageData
+import org.collaborator.paymentlab.common.PaymentFeature
 import org.collaborators.paymentslab.payment.infrastructure.tosspayments.exception.PaymentOrderNotFoundException
 import org.collaborators.paymentslab.payment.presentation.mock.MockPayments
 import org.collaborators.paymentslab.payment.presentation.request.PaymentOrderRequest
@@ -22,8 +24,16 @@ import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.payload.RequestFieldsSnippet
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.togglz.kotlin.FeatureManagerSupport
 
 class PaymentApiTest: AbstractApiTest() {
+
+    @Test
+    internal fun `should use test payments api url when disabled`() {
+        FeatureManagerSupport.disable { PaymentFeature.TOSS_PAYMENTS_FEATURE.name }
+        PaymentFeature.TOSS_PAYMENTS_FEATURE.isActive() shouldBe false
+        (paymentPropertiesResolver.url() == paymentPropertiesResolver.url) shouldBe false
+    }
 
     @Test
     @DisplayName("카드결제 api 동작")

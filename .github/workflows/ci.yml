@@ -16,45 +16,8 @@ jobs:
       - name: make properties directory
         run: mkdir -p ./app/src/main/resources/
       - name: inject properties yml
-        run: echo "${{ secrets.APP_PROPS }}" >> ./app/src/main/resources/application.yml
+        run: echo "${{ secrets.APP_PROPS }}" >> ./app/src/main/resources/application-test.yml
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew test --info
-  delivery:
-      needs: test
-      runs-on: ubuntu-latest
-      steps:
-        - name: checkout
-          uses: actions/checkout@v3
-        
-        - name: set up ssh
-          uses: webfactory/ssh-agent@v0.8.0
-          with:
-            ssh-private-key: ${{ secrets.APP_RUNNER_PRIVATE_KEY }}
-
-        - name: SSH to server
-          run: |
-            ssh-keyscan -H ${{ secrets.APP_MAIN_SERVER }} >> ~/.ssh/known_hosts
-            ssh -o StrictHostKeyChecking=no ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} exit
-        
-        - name: clone repository
-          run: ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'git clone https://github.com/wanniDev/payment-lab'
-
-        - name: Inject property files
-          run: |
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'mkdir -p ./payment-lab/app/src/main/resources/'
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} '[[ ! -f ./payment-lab/app/src/main/resources/application-dev.yml ]] && echo "${{ secrets.APP_PROPS_DEV }}" > ./payment-lab/app/src/main/resources/application-dev.yml'
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} '[[ ! -f ./payment-lab/app/src/main/resources/application-test.yml ]] && echo "${{ secrets.APP_PROPS }}" > ./payment-lab/app/src/main/resources/application-test.yml'
-        
-        - name: Build application
-          run: ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'chmod +x ./payment-lab/gradlew; cd ./payment-lab && ./gradlew clean build'
-        
-        - name: Deploy
-          run: |
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'ps axww | grep -v grep | grep "app-0.0.1.jar" | awk '{print $1}' | xargs -r sudo kill -9'
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} '[[ -f ~/app-0.0.1.jar ]] && rm -rf ~/app-0.0.1.jar'
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'mv ./payment-lab/app/build/libs/app-0.0.1.jar ~/app-0.0.1.jar'
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'sudo nohup java -Dspring.profiles.active=dev -DadminKey=${{ secrets.APP_ADMIN_KEY }} -jar ~/app-0.0.1.jar > /dev/null 2>&1 &'
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'rm -rf ./payment-lab'
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'echo "Application started"'

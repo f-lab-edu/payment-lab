@@ -6,6 +6,7 @@ import java.util.*
 
 class PaymentResultEvent(
     val accountId: Long,
+    val paymentOrderId: Long,
     var orderId: String,
     val orderName: String,
     val amount: Int,
@@ -15,8 +16,9 @@ class PaymentResultEvent(
     private val typeSimpleName: String = PaymentResultEvent::class.simpleName!!
 ): DomainEvent {
 
-    constructor(tossPayments: TossPayments): this(
+    constructor(tossPayments: TossPayments, paymentOrderId: Long): this(
         tossPayments.accountId!!,
+        paymentOrderId,
         tossPayments.info!!.orderId,
         tossPayments.info!!.orderName,
         tossPayments.cardInfo!!.amount,

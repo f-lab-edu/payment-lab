@@ -24,7 +24,7 @@ class TossPaymentsTransactionEventPublisher(
     fun publishAndRecord(result: TossPaymentsApprovalResponse, paymentOrder: PaymentOrder) {
         val currentAccount = getCurrentAccount()
         val newPaymentEntity = TossPaymentsFactory.create(result)
-        newPaymentEntity.resultOf(currentAccount.id, paymentOrder.status)
+        newPaymentEntity.resultOf(currentAccount.id, paymentOrder.id!!, paymentOrder.status)
         val newPaymentRecord = tossPaymentsRepository.save(newPaymentEntity)
 
         newPaymentRecord.pollAllEvents().forEach {

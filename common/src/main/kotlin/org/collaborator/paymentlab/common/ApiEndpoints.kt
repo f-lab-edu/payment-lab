@@ -10,5 +10,6 @@ const val RE_ISSUANCE = "reIssuance"
 
 /* Payment domain api signature */
 const val V1_TOSS_PAYMENTS = "/v1/toss-payments"
+const val KEY_IN_TOGGLE = "key-in/toggle"
 const val KEY_IN_PAYMENT_ORDER_ID = "key-in/{paymentOrderId}"
 const val PAYMENT_ORDER = "payment-order"

@@ -33,7 +33,7 @@ class PaymentsLabApplication: ApplicationListener<ApplicationReadyEvent> {
 	private fun isProfileDev(env: ConfigurableEnvironment) = "dev" in env.activeProfiles
 
 	private fun isProfileTest(env: ConfigurableEnvironment) = "test" in env.activeProfiles
-	private fun isProfileLocal(env: ConfigurableEnvironment) = "local" in env.activeProfiles
+	private fun isProfileLocal(env: ConfigurableEnvironment) = "local" in env.activeProfiles || env.activeProfiles.isEmpty()
 
 	companion object {
 		@JvmStatic

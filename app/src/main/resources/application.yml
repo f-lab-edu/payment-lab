@@ -1,0 +1,69 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:payment-lab;MODE=MYSQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+uri:
+  scheme: http
+  host: api.wannidev.com
+  port: 8080
+
+app.security.jwt:
+  tokenExpirationSec: 1800
+  refreshExpirationSec: 604800
+  tokenIssuer: paymentslab
+  base64TokenSigningKey: u8mG3bUUU2tEFQdxB3ZvRZrlHUX6g9hE0lkyMD0zK+cJi/pvpWBCj731VDVI
+
+toss:
+  payments:
+    secretKey: ${toss.secret:test_sk_k6bJXmgo28egmEgZpAAVLAnGKWx4}
+    url: ${toss.url:https://api.tosspayments.com/v1/payments/}
+
+logging:
+  level:
+    root: info
+    org.collaborators.paymentslab.*: debug
+
+collaborators:
+  kafka:
+    bootstrap-servers: ${kafka.bootstrap-servers:34.81.197.214:29092}
+    topic:
+      payment:
+        transaction:
+          name: ${transaction.topic.name:local.payment.transaction.event}
+          numPartitions: ${transaction.topic.numPartitions:1}
+          replicationFactor: ${transaction.topic.replicationFactor:1}
+          groupId: ${transaction.groupId:payment.complete}
+
+event:
+  record:
+    dir: ${event.dir:~/Documents/dev/study/record/payment}
+
+redirect:
+  url:
+    login: http://localhost:3000/login
+admin:
+  key: ${adminKey:payment-admin-test-key}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: [ "prometheus" ]
+togglz:
+  console:
+    enabled: true
+    path: /togglz-console
+    secured: false
+  features:
+    TOSS_PAYMENTS_FEATURE:
+      enabled: true
+  feature-enums:

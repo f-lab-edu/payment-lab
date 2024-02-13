@@ -12,6 +12,14 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.kafka:spring-kafka")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    /** togglz **/
+    implementation("org.togglz:togglz-spring-boot-starter:3.1.2")
+    implementation("org.togglz:togglz-kotlin:2.8.0")
+    implementation("org.togglz:togglz-console:3.1.2")
+    implementation("org.togglz:togglz-spring-security:3.1.2")
+    implementation("com.github.heneke.thymeleaf:thymeleaf-extras-togglz:1.0.1.RELEASE")
+
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 }
 
 tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
