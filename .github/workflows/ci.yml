@@ -16,31 +16,8 @@ jobs:
       - name: make properties directory
         run: mkdir -p ./app/src/main/resources/
       - name: inject properties yml
-        run: echo "${{ secrets.APP_PROPS }}" >> ./app/src/main/resources/application.yml
+        run: echo "${{ secrets.APP_PROPS }}" >> ./app/src/main/resources/application-test.yml
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew test --info
-  delivery:
-      needs: test
-      runs-on: ubuntu-latest
-      steps:
-        - name: checkout
-          uses: actions/checkout@v3
-        
-        - name: set up ssh
-          uses: webfactory/ssh-agent@v0.8.0
-          with:
-            ssh-private-key: ${{ secrets.APP_RUNNER_PRIVATE_KEY }}
-
-        - name: SSH to server
-          run: |
-            ssh-keyscan -H ${{ secrets.APP_MAIN_SERVER }} >> ~/.ssh/known_hosts
-            ssh -o StrictHostKeyChecking=no ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} exit
-        
-        - name: clone repository
-          run: ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} 'git clone https://github.com/wanniDev/payment-lab'
-        
-        - name: Deploy
-          run: |
-            ssh ${{ secrets.APP_RUNNER }}@${{ secrets.APP_MAIN_SERVER }} './deploy.sh'
