@@ -75,7 +75,6 @@ class SecurityConfig(
         return filter
     }
     @Bean
-    @Profile("test")
     fun webSecurityCustomizer(): WebSecurityCustomizer {
         return WebSecurityCustomizer { web ->
             web.ignoring()
